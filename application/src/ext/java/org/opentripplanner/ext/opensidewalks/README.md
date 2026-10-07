@@ -17,6 +17,7 @@ This page is for those working on the code.
 | `api/PedestrianCostParametersMapper`          | Maps `pedestrianCost` of the walk preferences of a GTFS GraphQL plan query to the request.        |
 | `OswDataset`                                  | Reads the nodes and edges of a dataset.                                                           |
 | `OswModule`                                   | The graph builder module: builds the street edges.                                                |
+| `OswStopLinkModule`                           | A graph builder module that links stops to the edges that travellers who can not use all need.    |
 | `PedestrianCostProfile`, `PedestrianCostSpec` | The profile format, and the cost function for one set of parameter values.                        |
 | `PedestrianCostParameters`                    | The parameter values of a request. Carried by the route request to the street search and linking. |
 | `OswCosting`                                  | The profile of a graph, shared by its edges. Turns the values of a request into a cost function.  |

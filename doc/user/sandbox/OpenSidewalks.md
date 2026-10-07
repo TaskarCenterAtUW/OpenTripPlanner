@@ -233,6 +233,33 @@ then from the defaults of the profile.
 
 Without a profile every edge can be walked, at the cost OTP gives any other street.
 
+### Transit stops and transfers
+
+Stops are linked to the streets, and the paths of the transfers between them are found, when the
+graph is built. No traveller is known then, so both are done for several.
+
+- A stop is linked to the nearest edge every traveller can use, as far as the ranges of the
+  parameters go. It is also linked to the nearest edge that the traveller of the build
+  configuration can use, and to the nearest one for each of the travellers at the ends of those
+  ranges, if that is another edge. A traveller walks to and from a stop along a link they can use.
+- The paths of transfers are found for the requests in `transferRequests` of `build-config.json`,
+  which is one walking request unless it is set. List a request for each kind of traveller that
+  should have a path of their own:
+
+    ```JSON
+    // build-config.json
+    {
+      "transferRequests": [
+        { "modes": "WALK" },
+        { "modes": "WALK", "pedestrianCost": { "uphill": 0.04, "downhill": 0.04, "avoid_curbs": true } }
+      ]
+    }
+    ```
+
+  When a trip is planned, each of those paths is walked again as the traveller of the request. A
+  path with an edge that traveller can not use is dropped, and the quickest of the others is the
+  transfer.
+
 ### Profile format
 
 ```JSON
@@ -282,12 +309,12 @@ Without a profile every edge can be walked, at the cost OTP gives any other stre
 - The profile applies to walking only, and not to walking a bicycle or scooter.
 - The parameter values of a request can be set in the GTFS GraphQL API, but not in the Transmodel
   API.
-- Transit stops are linked when the graph is built, to the nearest edge that every traveller can
-  use. A stop that is only near edges some travellers can not use is linked to an edge farther
-  away, or not at all.
-- Transfers between stops are found when the graph is built, for a request without parameter
-  values. Their time and cost are worked out again for the traveller of each request, and a
-  transfer along an edge that traveller can not use is dropped, also when there is another path.
+- The walk between a stop and the edge it is linked to is not part of the trip, like the one
+  between a place and its edge. A stop that is linked to several edges lets a traveller start
+  from any of those they can use, also when another is nearer. The edges are all within 100 meters
+  of the stop.
+- A traveller whose values are between the ones transfers were found for is given the best of
+  those paths that they can use, which may not be the best path there is for them.
 - A place is linked to the nearest edge the traveller can use within a kilometer, also when that
   is far from the place. R5 and AccessMap give up beyond 50 meters. The walk between the place and
   the edge is not part of the trip.

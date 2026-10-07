@@ -166,14 +166,19 @@ public class PedestrianCostProfile {
    * switch never makes an edge both easier for some and harder for others.
    */
   List<PedestrianCostSpec> extremes() {
-    List<Map<String, Object>> corners = new ArrayList<>();
+    return extremeValues().stream().map(this::resolve).toList();
+  }
+
+  /** The parameter values of the travellers at the corners of the ranges of the parameters. */
+  List<Map<String, String>> extremeValues() {
+    List<Map<String, String>> corners = new ArrayList<>();
     corners.add(new LinkedHashMap<>());
     for (Parameter p : parameters.values()) {
-      List<Map<String, Object>> next = new ArrayList<>();
+      List<Map<String, String>> next = new ArrayList<>();
       for (var corner : corners) {
         for (Object value : p.extremes()) {
           var withValue = new LinkedHashMap<>(corner);
-          withValue.put(p.name, value);
+          withValue.put(p.name, value.toString());
           next.add(withValue);
         }
       }
@@ -181,7 +186,7 @@ public class PedestrianCostProfile {
         corners = next;
       }
     }
-    return corners.stream().map(this::resolve).toList();
+    return corners;
   }
 
   /** The index of the first layer the tags of an edge match, or -1 if they match none. */

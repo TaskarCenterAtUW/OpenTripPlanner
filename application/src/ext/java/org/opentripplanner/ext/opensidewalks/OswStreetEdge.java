@@ -55,6 +55,10 @@ public class OswStreetEdge extends StreetEdge {
     );
   }
 
+  OswCosting costing() {
+    return costing;
+  }
+
   /** The share of the delay of the whole OpenSidewalks edge that this edge has. */
   public float delayShare() {
     return delayShare;

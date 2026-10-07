@@ -5,9 +5,11 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.nio.file.Files;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
 import javax.annotation.Nullable;
 import org.opentripplanner.apis.support.InvalidInputException;
+import org.opentripplanner.street.graph.Graph;
 
 /**
  * The pedestrian cost profile the OpenSidewalks edges of a graph are costed with. It is part of
@@ -46,6 +48,14 @@ public final class OswCosting implements Serializable {
         e
       );
     }
+  }
+
+  /** The profile the OpenSidewalks edges of the graph are costed with, if it has such edges. */
+  public static Optional<OswCosting> of(Graph graph) {
+    for (var edge : graph.findEdges(OswStreetEdge.class)) {
+      return Optional.of(edge.costing());
+    }
+    return Optional.empty();
   }
 
   public PedestrianCostProfile profile() {
