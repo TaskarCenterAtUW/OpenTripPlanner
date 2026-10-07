@@ -20,9 +20,43 @@ The profiles are the ones used by the OpenSidewalks support in
 cost functions of the TDEI Walksheds service. The same profile file gives the same cost for the
 same edge in OTP, R5 and Unweaver.
 
-### Configuration
+### Getting started
 
-Enable the feature in `otp-config.json`:
+#### 1. Get a dataset
+
+Put the dataset in the directory OTP is run on, next to the configuration files. It can be:
+
+- a zip file containing the nodes and edges files,
+- a directory containing them, or
+- the edges file itself, with the nodes file beside it.
+
+The files can be named `nodes.geojson` and `edges.geojson`, or have a prefix, as in
+`goldendale.nodes.geojson` and `goldendale.edges.geojson`. Other files of the dataset, such as
+points and zones, are ignored.
+
+A small dataset to try it with is the one the tests use, in
+`application/src/ext-test/resources/org/opentripplanner/ext/opensidewalks/goldendale/goldendale.osw.zip`.
+
+#### 2. Get a profile (optional)
+
+Without a profile every edge can be walked, at the cost OTP gives any other street. That is
+enough for a first try.
+
+To cost the edges like the TDEI Walksheds service does, copy `ws-prod.json` from
+`application/src/ext-test/resources/org/opentripplanner/ext/opensidewalks/` to the same directory.
+Its parameters are:
+
+| Parameter          | Meaning                                                                    | Default |
+|--------------------|----------------------------------------------------------------------------|---------|
+| `uphill`           | Steepest uphill grade the traveller can manage, 0.085 for 8.5%             | 0.085   |
+| `downhill`         | Steepest downhill grade, as a positive number                              | 0.1     |
+| `avoid_curbs`      | Only use crossings with curb ramps, and no steps                           | false   |
+| `street_avoidance` | How strongly to avoid walking in streets: 0 not at all, 1 never            | 1       |
+| `fan_out`          | Use streets at no extra cost, to bridge gaps between sidewalks             | false   |
+
+#### 3. Configure OTP
+
+Three files go in the directory:
 
 ```JSON
 // otp-config.json
@@ -33,23 +67,77 @@ Enable the feature in `otp-config.json`:
 }
 ```
 
-Then list the datasets, and optionally a profile, in `build-config.json`:
-
 ```JSON
 // build-config.json
 {
   "openSidewalks": {
-    "sources": ["seattle.osw.zip"],
+    "sources": ["goldendale.osw.zip"],
     "profile": "ws-prod.json",
     "parameters": {
       "uphill": 0.083,
-      "downhill": 0.1,
-      "avoid_curbs": true,
-      "street_avoidance": 1
+      "downhill": 0.083,
+      "avoid_curbs": true
     }
   }
 }
 ```
+
+Leave `profile` and `parameters` out to run without a profile.
+
+```JSON
+// router-config.json
+{
+  "routingDefaults": {
+    "walk": {
+      "speed": 1.3
+    }
+  }
+}
+```
+
+The walk speed is optional. The default of OTP is 1.35 m/s. R5 and the Walksheds service walk at
+1.3 m/s, so set it to that to get the durations they give.
+
+#### 4. Build the graph and start OTP
+
+```bash
+mvn package -DskipTests
+java -Xmx2G -jar otp-shaded/target/otp-shaded-*.jar --build --save /path/to/directory
+java -Xmx2G -jar otp-shaded/target/otp-shaded-*.jar --load /path/to/directory
+```
+
+No OpenStreetMap or transit data is needed. Transit feeds in the directory are loaded as usual,
+and their stops are linked to the OpenSidewalks edges.
+
+The build logs what it did:
+
+```
+Costing OpenSidewalks edges with pedestrian cost profile ws-prod (profileId 017c..., runSpecId 38a4..., parameters {uphill=0.083, downhill=0.083, avoid_curbs=true, street_avoidance=1.0, fan_out=false})
+Built 2604 street edges from OpenSidewalks data. Left out 686 the profile makes impassable and 0 that are not usable ways.
+```
+
+The profile is applied while the graph is built. **After changing the profile or its parameters,
+build the graph again.**
+
+#### 5. Plan a walk
+
+Open the GraphiQL client at <http://localhost:8080/graphiql>, or send a request:
+
+```bash
+curl -s -X POST -H 'Content-Type: application/json' http://localhost:8080/otp/gtfs/v1 -d '{
+  "query": "{ planConnection(origin: {location: {coordinate: {latitude: 45.8218772, longitude: -120.822579}}}, destination: {location: {coordinate: {latitude: 45.820537, longitude: -120.8239937}}}, modes: {direct: [WALK], directOnly: true}) { edges { node { duration walkDistance } } routingErrors { code } } }"
+}'
+```
+
+With the Goldendale dataset and the configuration above, this is a walk of about 254 meters that
+takes about five and a half minutes.
+
+A `NO_DIRECT_MODE_CONNECTION` error means that there is no path the traveller of the profile can
+use between the two places.
+
+### Configuration
+
+The `openSidewalks` section of `build-config.json` has these parameters:
 
 | Parameter    | Type       | Description                                                                                                                                              |
 |--------------|------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
