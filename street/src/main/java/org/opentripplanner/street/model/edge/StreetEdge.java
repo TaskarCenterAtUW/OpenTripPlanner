@@ -124,6 +124,7 @@ public class StreetEdge
     inAngle = lineStringInOutAngles.inAngle();
     outAngle = lineStringInOutAngles.outAngle();
     elevationExtension = builder.streetElevationExtension();
+    costExtension = builder.costExtension();
   }
 
   public StreetEdgeBuilder<?> toBuilder() {
@@ -141,7 +142,9 @@ public class StreetEdge
    * only blocked from one way.
    */
   public boolean canTraverse(TraverseModeSet modes) {
-    return getPermission().allows(modes);
+    return (
+      getPermission().allows(modes) && (costExtension == null || costExtension.canLink(this, modes))
+    );
   }
 
   /**
@@ -705,6 +708,9 @@ public class StreetEdge
     seb.withBicycleSafetyFactor(bicycleSafetyFactor);
     seb.withWalkSafetyFactor(walkSafetyFactor);
     seb.withCarSpeed(carSpeed);
+    if (costExtension != null) {
+      seb.withCostExtension(costExtension.partial(fromDistance, toDistance));
+    }
 
     var partialElevationProfileFromParent =
       elevationExtension != null ? elevationExtension.partial(fromDistance, toDistance) : null;
@@ -793,6 +799,10 @@ public class StreetEdge
       if (this.isReverseOf(backEdge)) {
         return null;
       }
+    }
+
+    if (costExtension != null && !costExtension.canTraverse(s0, traverseMode, walkingBike)) {
+      return null;
     }
 
     var s1 = createEditor(s0, this, traverseMode, walkingBike);

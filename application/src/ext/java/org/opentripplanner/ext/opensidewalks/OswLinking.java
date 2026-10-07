@@ -2,6 +2,8 @@ package org.opentripplanner.ext.opensidewalks;
 
 import java.util.Collection;
 import javax.annotation.Nullable;
+import org.opentripplanner.routing.linking.internal.VertexCreationService.LocationType;
+import org.opentripplanner.street.model.StreetMode;
 import org.opentripplanner.street.model.edge.ExtensionRequestContext;
 
 /**
@@ -48,6 +50,19 @@ public final class OswLinking {
       }
     }
     return linkAs(null);
+  }
+
+  /**
+   * Whether the traveller has a bicycle of their own at a location of the given type, and so is
+   * linked to a street it can be ridden on. With a rented bicycle, and after parking one, the
+   * traveller is on foot.
+   */
+  public static boolean isWithOwnBicycle(StreetMode mode, LocationType type) {
+    return switch (mode) {
+      case BIKE -> true;
+      case BIKE_TO_PARK -> type == LocationType.FROM;
+      default -> false;
+    };
   }
 
   static boolean isLinkable(OswCosting costing, OswEdgeAttributes attributes) {

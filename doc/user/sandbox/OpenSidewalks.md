@@ -182,6 +182,7 @@ The `openSidewalks` section of `build-config.json` has these parameters:
 | `sources`    | `string[]` | The datasets to load: a zip file or a directory containing `*.nodes.geojson` and `*.edges.geojson`, or an `*.edges.geojson` file.                        |
 | `profile`    | `string`   | The pedestrian cost profile to cost the edges with. Optional.                                                                                            |
 | `parameters` | `object`   | The parameter values a request has when it gives none itself. A parameter that is left out has the default value the profile gives it. Optional.          |
+| `walkOnOtherStreets` | `boolean` | Let people on foot walk the streets from other data too. Defaults to `false`. See [With OpenStreetMap data](#with-openstreetmap-data).            |
 
 A relative path is resolved against the OTP base directory, the one holding `build-config.json`.
 
@@ -198,11 +199,47 @@ that requests are planned for, for example `{ "uphill": 0.083, "avoid_curbs": tr
   rely on this, for example where steps end on a node of their own that sits on a sidewalk node.
 - Transit stops are linked to these streets like to any other. OTP can be run on OpenSidewalks
   data alone, with transit data, or both.
-- OpenSidewalks streets are not connected to streets from OpenStreetMap data. If both are loaded,
-  a walk can not change between the two, so leave out the OpenStreetMap data, or make sure it does
-  not cover the same area.
 - Small disconnected parts of the network are kept if there is no OpenStreetMap data, since island
   pruning only runs when there is.
+
+### With OpenStreetMap data
+
+OpenStreetMap data can be loaded in the same graph, for driving and cycling. The streets from it
+and the OpenSidewalks edges are two networks that are not joined to each other, so each is for
+its own travellers:
+
+- **People on foot walk the OpenSidewalks edges only.** The places of their trips, and transit
+  stops, are linked to OpenSidewalks edges, and the pedestrian cost profile applies to all of
+  their walking.
+- **Cars use the OpenStreetMap streets.**
+- **Bicycles use the OpenStreetMap streets,** ridden where they may be and walked where they may
+  not, at the cost OTP gives that. A trip with one's own bicycle is linked to the nearest street
+  it can be ridden on. With a rented bicycle, and after parking one, the traveller is on foot.
+
+In Seattle, with both loaded, the 338 walks that were found over the OpenSidewalks data alone were
+the same to the meter and the second, and cycling and driving trips were found over the
+OpenStreetMap streets.
+
+Things to know:
+
+- There is no walking where there is no OpenSidewalks data. If the OpenStreetMap data covers a
+  larger area, people on foot can not walk in the rest of it.
+- What OpenStreetMap has for people on foot is not used by them: squares and other areas to walk
+  across, stairs, elevators and station entrances. Pathways from GTFS still are.
+- Island pruning runs when there is OpenStreetMap data, and removes small disconnected parts of
+  the OpenSidewalks network too. A place next to such a part is then linked to the rest of the
+  network instead, so some trips are found that would otherwise have none. Set
+  `islandPruning.islandWithoutStopsMaxSize` and `islandWithStopsMaxSize` to 0 in the build
+  configuration to keep those parts.
+- A bicycle park is linked for walking only, so a trip that parks a bicycle may not reach one
+  from the OpenStreetMap streets.
+- This can not be used together with the Data Overlay sandbox feature. Both use the one extension
+  a street edge has.
+
+Set `walkOnOtherStreets` to `true` to let people on foot walk the OpenStreetMap streets as well,
+at the cost OTP gives them and without the limits of the traveller. A walk then stays on the kind
+of street that is nearest to where it starts, and can not change from one to the other. In Seattle
+this lost nearly half of the walks.
 
 ### How a profile is applied
 

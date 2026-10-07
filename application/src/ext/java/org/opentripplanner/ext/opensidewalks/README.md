@@ -17,6 +17,7 @@ This page is for those working on the code.
 | `api/PedestrianCostParametersMapper`          | Maps `pedestrianCost` of the walk preferences of a GTFS GraphQL plan query to the request.        |
 | `OswDataset`                                  | Reads the nodes and edges of a dataset.                                                           |
 | `OswModule`                                   | The graph builder module: builds the street edges.                                                |
+| `NotOnFoot`                                   | Keeps people on foot off the streets from other data, which are not joined to the OpenSidewalks edges. |
 | `OswStopLinkModule`, `OswStopLink`            | A graph builder module that links stops to the edges that travellers who can not use all need.    |
 | `OswTravellers`                               | Finds the least able travellers who can use an edge, which says who can use it.                   |
 | `OswTransferModule`                           | A graph builder module that finds transfer paths for travellers who can not use the ones OTP found. |

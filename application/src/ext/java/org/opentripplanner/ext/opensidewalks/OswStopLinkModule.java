@@ -178,7 +178,7 @@ public class OswStopLinkModule implements GraphBuilderModule {
     record Candidate(StreetEdge edge, double distance) {}
     List<Candidate> candidates = new ArrayList<>();
     for (Edge e : graph.findEdges(envelope)) {
-      if (e instanceof StreetEdge edge && edge.getPermission().allows(TraverseMode.WALK)) {
+      if (e instanceof StreetEdge edge && canBeWalked(edge)) {
         double distance = Math.sqrt(
           edge.squaredEquirectangularDistanceToPoint(stop.getLon(), stop.getLat(), xscale)
         );
@@ -199,6 +199,13 @@ public class OswStopLinkModule implements GraphBuilderModule {
       last = c.distance();
     }
     return streets;
+  }
+
+  /** Whether anyone can walk the edge. For an OpenSidewalks edge, some traveller can. */
+  private static boolean canBeWalked(StreetEdge edge) {
+    return edge instanceof OswStreetEdge
+      ? edge.getPermission().allows(TraverseMode.WALK)
+      : edge.canTraverse(WALK);
   }
 
   /**

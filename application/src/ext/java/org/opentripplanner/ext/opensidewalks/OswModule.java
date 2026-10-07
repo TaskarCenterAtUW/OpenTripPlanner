@@ -15,8 +15,10 @@ import org.opentripplanner.street.geometry.GeometryUtils;
 import org.opentripplanner.street.geometry.SphericalDistanceLibrary;
 import org.opentripplanner.street.graph.Graph;
 import org.opentripplanner.street.model.StreetTraversalPermission;
+import org.opentripplanner.street.model.edge.StreetEdge;
 import org.opentripplanner.street.model.edge.StreetEdgeBuilder;
 import org.opentripplanner.street.model.vertex.StreetVertex;
+import org.opentripplanner.street.search.TraverseMode;
 import org.opentripplanner.streetadapter.VertexFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +48,7 @@ public class OswModule implements GraphBuilderModule {
   private final List<PedestrianCostSpec> extremeTravellers;
 
   private final VertexFactory vertexFactory;
+  private final boolean walkOnOtherStreets;
 
   private int builtEdges = 0;
   private int edgesNotForAll = 0;
@@ -58,6 +61,20 @@ public class OswModule implements GraphBuilderModule {
    *                walking them to OTP
    */
   public OswModule(Graph graph, List<File> sources, @Nullable OswCosting costing) {
+    this(graph, sources, costing, false);
+  }
+
+  /**
+   * @param walkOnOtherStreets whether people on foot can walk the streets already in the graph,
+   *                           which come from other data
+   */
+  public OswModule(
+    Graph graph,
+    List<File> sources,
+    @Nullable OswCosting costing,
+    boolean walkOnOtherStreets
+  ) {
+    this.walkOnOtherStreets = walkOnOtherStreets;
     this.graph = graph;
     this.sources = List.copyOf(sources);
     this.costing = costing;
@@ -83,7 +100,7 @@ public class OswModule implements GraphBuilderModule {
       config.profile() == null
         ? null
         : OswCosting.fromFile(resolve(baseDirectory, config.profile()), config.parameters());
-    return new OswModule(graph, sources, costing);
+    return new OswModule(graph, sources, costing, config.walkOnOtherStreets());
   }
 
   private static File resolve(File baseDirectory, String path) {
@@ -112,6 +129,9 @@ public class OswModule implements GraphBuilderModule {
         spec.runSpecId()
       );
     }
+    if (!walkOnOtherStreets) {
+      keepPeopleOnFootOffOtherStreets();
+    }
     for (int i = 0; i < sources.size(); i++) {
       // Node ids are only unique within a dataset
       String labelPrefix = sources.size() == 1 ? "osw:" : "osw:" + i + ":";
@@ -128,6 +148,26 @@ public class OswModule implements GraphBuilderModule {
     if (fasterThanWalking) {
       LOG.warn(
         "The pedestrian cost profile makes some edges faster than the walking speed of the request. Street searches may then miss the best path."
+      );
+    }
+  }
+
+  /**
+   * The streets that are in the graph before the OpenSidewalks edges are from other data. They
+   * are not joined to the OpenSidewalks edges, so people on foot are kept to the latter.
+   */
+  private void keepPeopleOnFootOffOtherStreets() {
+    int streets = 0;
+    for (StreetEdge edge : graph.findEdges(StreetEdge.class)) {
+      if (edge.getPermission().allows(TraverseMode.WALK)) {
+        edge.setCostExtension(NotOnFoot.INSTANCE);
+        streets++;
+      }
+    }
+    if (streets > 0) {
+      LOG.info(
+        "Kept people on foot off {} street edges from other data. They walk the OpenSidewalks edges.",
+        streets
       );
     }
   }
