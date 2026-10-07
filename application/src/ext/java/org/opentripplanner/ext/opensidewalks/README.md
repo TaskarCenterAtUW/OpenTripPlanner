@@ -14,6 +14,7 @@ This page is for those working on the code.
 | Class                                         | What it does                                                                                      |
 |-----------------------------------------------|---------------------------------------------------------------------------------------------------|
 | `config/OpenSidewalksConfig`                  | The `openSidewalks` section of `build-config.json`, and `pedestrianCost` of the routing defaults. |
+| `api/PedestrianCostParametersMapper`          | Maps `pedestrianCost` of the walk preferences of a GTFS GraphQL plan query to the request.        |
 | `OswDataset`                                  | Reads the nodes and edges of a dataset.                                                           |
 | `OswModule`                                   | The graph builder module: builds the street edges.                                                |
 | `PedestrianCostProfile`, `PedestrianCostSpec` | The profile format, and the cost function for one set of parameter values.                        |

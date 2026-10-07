@@ -138,6 +138,35 @@ curl -s -X POST -H 'Content-Type: application/json' http://localhost:8080/otp/gt
 With the Goldendale dataset and the configuration above, this is a walk of about 254 meters that
 takes about five and a half minutes.
 
+A query can say what its traveller can manage, with the names the profile gives its parameters.
+The values are text:
+
+```graphql
+{
+  planConnection(
+    origin: { location: { coordinate: { latitude: 45.8148243, longitude: -120.8235854 } } }
+    destination: { location: { coordinate: { latitude: 45.8147042, longitude: -120.827688 } } }
+    modes: { direct: [WALK], directOnly: true }
+    preferences: {
+      street: {
+        walk: {
+          pedestrianCost: [
+            { name: "uphill", value: "0.083" }
+            { name: "avoid_curbs", value: "true" }
+          ]
+        }
+      }
+    }
+  ) {
+    edges { node { duration walkDistance } }
+    routingErrors { code }
+  }
+}
+```
+
+A parameter the query leaves out has the value of the router configuration. A value outside the
+range of its parameter, or a name the profile does not have, gives a `BadRequestError`.
+
 A `NO_DIRECT_MODE_CONNECTION` error means that there is no path the traveller of the profile can
 use between the two places.
 
@@ -176,6 +205,7 @@ that requests are planned for, for example `{ "uphill": 0.083, "avoid_curbs": tr
 
 The profile is set in the build configuration and is part of the graph. The values of its
 parameters, which say what a traveller can manage, belong to each request. They come from
+`preferences.street.walk.pedestrianCost` of a plan query of the GTFS GraphQL API, then from
 `routingDefaults.pedestrianCost` in the router configuration, then from the build configuration,
 then from the defaults of the profile.
 
@@ -250,15 +280,14 @@ Without a profile every edge can be walked, at the cost OTP gives any other stre
 ### Limitations
 
 - The profile applies to walking only, and not to walking a bicycle or scooter.
-- The parameter values of a request can be set in the router configuration, but not yet in the
-  request itself through the APIs.
+- The parameter values of a request can be set in the GTFS GraphQL API, but not in the Transmodel
+  API.
 - Transit stops are linked when the graph is built, to the nearest edge that every traveller can
   use. A stop that is only near edges some travellers can not use is linked to an edge farther
   away, or not at all.
 - Transfers between stops are found when the graph is built, for a request without parameter
   values. Their time and cost are worked out again for the traveller of each request, and a
   transfer along an edge that traveller can not use is dropped, also when there is another path.
-  Travellers with different parameter values may be given each other's transfers.
 - A place is linked to the nearest edge the traveller can use within a kilometer, also when that
   is far from the place. R5 and AccessMap give up beyond 50 meters. The walk between the place and
   the edge is not part of the trip.

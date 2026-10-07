@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
 import org.junit.jupiter.api.Test;
+import org.opentripplanner.apis.support.InvalidInputException;
 import org.opentripplanner.astar.model.ShortestPathTree;
 import org.opentripplanner.core.model.i18n.I18NString;
 import org.opentripplanner.ext.opensidewalks.config.OpenSidewalksConfig;
@@ -139,10 +140,10 @@ class OswModuleTest {
   @Test
   void invalidParameterValuesOfARequestAreRejected() {
     var graph = build(PROFILE);
-    assertThrows(IllegalArgumentException.class, () ->
+    assertThrows(InvalidInputException.class, () ->
       reachableFrom(graph, "2", traveller("uphill", "7"))
     );
-    assertThrows(IllegalArgumentException.class, () ->
+    assertThrows(InvalidInputException.class, () ->
       reachableFrom(graph, "2", traveller("uphil", "0.1"))
     );
   }
