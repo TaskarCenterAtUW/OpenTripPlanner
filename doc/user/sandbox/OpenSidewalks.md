@@ -37,6 +37,9 @@ points and zones, are ignored.
 A small dataset to try it with is the one the tests use, in
 `application/src/ext-test/resources/org/opentripplanner/ext/opensidewalks/goldendale/goldendale.osw.zip`.
 
+Check that the edges of the dataset have an `incline`. The uphill and downhill limits of a
+traveller only apply to edges that have one, see [Inclines](#inclines) below.
+
 #### 2. Get a profile (optional)
 
 Without a profile every edge can be walked, at the cost OTP gives any other street. That is
@@ -233,6 +236,28 @@ then from the defaults of the profile.
 
 Without a profile every edge can be walked, at the cost OTP gives any other street.
 
+### Inclines
+
+The steepness limits of a traveller, and the slowing down on slopes, come from the `incline`
+property of each edge: its grade in the direction the edge is mapped, 0.05 for 5% uphill. OTP does
+not work out inclines itself, and does not use its own elevation data for these edges.
+
+**An edge without an `incline` is walked at plain speed by every traveller, however steep it is on
+the ground.** This is what the profile format says, and what the Walksheds service does, but it
+means that a dataset with inclines missing sends travellers with limits over slopes they can not
+manage.
+
+So give OTP a dataset that has an incline on its edges:
+
+- Datasets from TDEI can have inclines added from elevation data by the TDEI incline job
+  (`POST /api/v1/osw/dataset-inclination/{dataset id}` of the TDEI API). Use the dataset after
+  that job has run.
+- To see how complete a dataset is, count the features of its edges file that have an `incline`
+  among the sidewalks, crossings and footways.
+- The inclines of two routing engines have to be the same for their routes to be. A service that
+  works out inclines of its own, as AccessMap does for some of its regions, will route differently
+  from OTP on the same dataset, see [Verification](#verification).
+
 ### Transit stops and transfers
 
 Stops are linked to the streets, and the paths of the transfers between them are found, when the
@@ -304,6 +329,51 @@ graph is built. No traveller is known then, so both are done for all of them.
   `"unless": "$fan_out"` switches the avoidance off when true.
 - Any setting can be a literal or a `"$parameter"` reference. Unknown or misspelled settings are
   rejected, and so are settings of the wrong JSON type.
+
+### Verification
+
+The walks OTP plans over OpenSidewalks data have been compared with those of three other routing
+engines that use the same cost function: the TDEI Walksheds service, R5, and AccessMap. The
+comparisons were made in October 2026.
+
+**Goldendale, WA.** 74 pairs of places under the four traveller profiles of the TDEI quality
+reports, on a dataset of 1,645 edges. This comparison is a test,
+`OswRoutingComparisonTest`, which plans the walks with the traveller set per request and fails if
+they move away from the saved answers of R5 and AccessMap.
+
+- OTP finds a route for every pair R5 and AccessMap do. Of the 170 routes, 169 are within 2% of
+  the length R5 has, and all are within 5% of its duration. The one that differs is a route where
+  OTP and AccessMap take a path that is 50 m shorter than the one R5 takes.
+- OTP walks the same path as R5 or AccessMap on all 170 routes, to within 20 m.
+
+**Seattle, WA.** 200 pairs of places sampled from the 40,222 of a quality reports run, as a manual
+wheelchair user (grades up to 8.3%, curb ramps required) and as an unconstrained pedestrian. OTP
+planned the 400 walks on one graph of 320,232 street edges in 3.5 seconds.
+
+Against AccessMap on the same dataset with the same inclines (its "Seattle, WA (1.8)" region):
+
+|                                         | Manual wheelchair | Unconstrained pedestrian |
+|-----------------------------------------|-------------------|--------------------------|
+| Both find a route                       | 148               | 182                      |
+| Neither does                            | 47                | 15                       |
+| Only OTP does                           | 5                 | 3                        |
+| Only AccessMap does                     | 0                 | 0                        |
+| Lengths within 2%, of routes both find  | 135 (91%)         | 168 (92%)                |
+| Lengths within 5%                       | 147 (99%)         | 177 (97%)                |
+| Durations within 5%                     | 132 (89%)         | 172 (95%)                |
+
+The routes only OTP finds are all between places that AccessMap does not link to the network,
+because they are more than 50 m from it. OTP links a place up to a kilometer away.
+
+Against AccessMap's main Seattle region, which reads another dataset and works out inclines of its
+own instead of using the ones in the data, the agreement is lower: 73% of the wheelchair routes
+and 83% of the pedestrian routes are within 2% in length, and 17 of the 149 wheelchair routes are
+more than 25% apart, nearly all because AccessMap walks farther. A quarter of the sidewalks of
+that dataset have no `incline`, so OTP lets a wheelchair user over them where AccessMap, with an
+incline of its own for each, closes the steep ones. The cause was not confirmed route by route,
+but the large differences are gone on the dataset where both use the same inclines.
+
+No transit was compared. None of the routes AccessMap returned used a bus or a train.
 
 ### Limitations
 
