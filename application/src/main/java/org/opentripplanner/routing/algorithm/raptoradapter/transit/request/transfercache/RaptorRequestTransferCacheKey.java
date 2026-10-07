@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Objects;
 import org.opentripplanner.routing.api.request.RouteRequest;
 import org.opentripplanner.street.model.StreetMode;
+import org.opentripplanner.street.model.edge.ExtensionRequestContext;
 import org.opentripplanner.street.search.request.BikeRequest;
 import org.opentripplanner.street.search.request.CarRequest;
 import org.opentripplanner.street.search.request.StreetSearchRequest;
@@ -76,6 +77,7 @@ class RaptorRequestTransferCacheKey {
     private final CarRequest car;
     private final WheelchairRequest wheelchair;
     private final double turnReluctance;
+    private final List<ExtensionRequestContext> extensions;
 
     public StreetRelevantOptions(StreetSearchRequest request) {
       this.transferMode = request.mode();
@@ -85,6 +87,7 @@ class RaptorRequestTransferCacheKey {
       this.bike = transferMode.includesBiking() ? request.bike() : BikeRequest.DEFAULT;
       this.car = transferMode.includesDriving() ? request.car() : CarRequest.DEFAULT;
       this.turnReluctance = request.turnReluctance();
+      this.extensions = request.listExtensionRequestContexts();
       this.wheelchair = request.wheelchairEnabled()
         ? request.wheelchair()
         : WheelchairRequest.DEFAULT;
@@ -100,6 +103,7 @@ class RaptorRequestTransferCacheKey {
         .addObj("car", car, CarRequest.DEFAULT)
         .addNum("turnReluctance", turnReluctance)
         .addObj("wheelchair", wheelchair, WheelchairRequest.DEFAULT)
+        .addCol("extensions", extensions, List.of())
         .toString();
     }
 
@@ -112,7 +116,8 @@ class RaptorRequestTransferCacheKey {
         bike,
         car,
         turnReluctance,
-        wheelchair
+        wheelchair,
+        extensions
       );
     }
 
@@ -131,7 +136,8 @@ class RaptorRequestTransferCacheKey {
         Objects.equals(that.bike, bike) &&
         Objects.equals(that.car, car) &&
         Objects.equals(that.turnReluctance, turnReluctance) &&
-        Objects.equals(that.wheelchair, wheelchair)
+        Objects.equals(that.wheelchair, wheelchair) &&
+        that.extensions.equals(extensions)
       );
     }
   }

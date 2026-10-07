@@ -12,17 +12,20 @@ import org.opentripplanner.street.search.state.State;
  */
 public class TemporaryOswStreetEdge extends TemporaryPartialStreetEdge {
 
-  private final float speedFactor;
-  private final float delaySeconds;
+  private final OswCosting costing;
+  private final OswEdgeAttributes attributes;
+  private final float delayShare;
 
   private TemporaryOswStreetEdge(
     TemporaryPartialStreetEdgeBuilder builder,
-    float speedFactor,
-    float delaySeconds
+    OswCosting costing,
+    OswEdgeAttributes attributes,
+    float delayShare
   ) {
     super(builder);
-    this.speedFactor = speedFactor;
-    this.delaySeconds = delaySeconds;
+    this.costing = costing;
+    this.attributes = attributes;
+    this.delayShare = delayShare;
   }
 
   /**
@@ -31,8 +34,9 @@ public class TemporaryOswStreetEdge extends TemporaryPartialStreetEdge {
   static TemporaryOswStreetEdge createAndConnect(
     OswStreetEdge parent,
     StreetEdge plainPart,
-    float speedFactor,
-    float delaySeconds
+    OswCosting costing,
+    OswEdgeAttributes attributes,
+    float delayShare
   ) {
     var builder = new TemporaryPartialStreetEdgeBuilder()
       .withParentEdge(parent)
@@ -42,16 +46,17 @@ public class TemporaryOswStreetEdge extends TemporaryPartialStreetEdge {
       .withName(plainPart.getName())
       .withMilliMeterLength((int) Math.round(plainPart.getDistanceMeters() * 1000))
       .withBack(plainPart.isBack());
-    return connectToGraph(new TemporaryOswStreetEdge(builder, speedFactor, delaySeconds));
+    return connectToGraph(new TemporaryOswStreetEdge(builder, costing, attributes, delayShare));
   }
 
-  public float delaySeconds() {
-    return delaySeconds;
+  /** The share of the delay of the whole OpenSidewalks edge that this edge has. */
+  public float delayShare() {
+    return delayShare;
   }
 
   @Override
   public State[] traverse(State s0) {
-    var states = OswWalkCost.traverse(s0, this, speedFactor, delaySeconds);
+    var states = OswWalkCost.traverse(s0, this, costing, attributes, delayShare);
     return states != null ? states : super.traverse(s0);
   }
 }

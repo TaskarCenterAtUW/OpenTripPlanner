@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 import org.opentripplanner.ext.dataoverlay.api.DataOverlayParameters;
 import org.opentripplanner.routing.api.request.RoutingTag;
+import org.opentripplanner.street.model.edge.ExtensionRequestContext;
 import org.opentripplanner.utils.tostring.ToStringBuilder;
 
 /**
@@ -29,12 +30,14 @@ public class SystemPreferences implements Serializable {
 
   private final Set<RoutingTag> tags;
   private final DataOverlayParameters dataOverlay;
+  private final List<ExtensionRequestContext> extensions;
   private final boolean geoidElevation;
   private final Duration maxJourneyDuration;
 
   private SystemPreferences() {
     this.tags = Set.of();
     this.dataOverlay = null;
+    this.extensions = List.of();
     this.geoidElevation = false;
     this.maxJourneyDuration = Duration.ofHours(24);
   }
@@ -42,6 +45,7 @@ public class SystemPreferences implements Serializable {
   private SystemPreferences(Builder builder) {
     this.tags = Set.copyOf(builder.tags);
     this.dataOverlay = builder.dataOverlay;
+    this.extensions = List.copyOf(builder.extensions);
     this.geoidElevation = builder.geoidElevation;
     this.maxJourneyDuration = Objects.requireNonNull(builder.maxJourneyDuration);
   }
@@ -66,6 +70,19 @@ public class SystemPreferences implements Serializable {
     return dataOverlay;
   }
 
+  /**
+   * What sandbox extensions need to know about the request. Each extension has a type of its
+   * own, and finds it again where the request is used: the contexts are passed on to the street
+   * searches of the request, see
+   * {@link org.opentripplanner.street.search.state.State#getExtensionRequestContext(Class)}, and
+   * to the linking of its locations.
+   * <p>
+   * A context must be immutable and have value equality, like the rest of the request.
+   */
+  public List<ExtensionRequestContext> extensions() {
+    return extensions;
+  }
+
   /** Whether to apply the ellipsoid→geoid offset to all elevations in the response */
   public boolean geoidElevation() {
     return geoidElevation;
@@ -88,13 +105,14 @@ public class SystemPreferences implements Serializable {
       geoidElevation == that.geoidElevation &&
       tags.equals(that.tags) &&
       Objects.equals(dataOverlay, that.dataOverlay) &&
+      extensions.equals(that.extensions) &&
       maxJourneyDuration.equals(that.maxJourneyDuration)
     );
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(tags, dataOverlay, geoidElevation, maxJourneyDuration);
+    return Objects.hash(tags, dataOverlay, extensions, geoidElevation, maxJourneyDuration);
   }
 
   @Override
@@ -102,6 +120,7 @@ public class SystemPreferences implements Serializable {
     return ToStringBuilder.of(SystemPreferences.class)
       .addCol("tags", tags, DEFAULT.tags)
       .addObj("dataOverlay", dataOverlay, DEFAULT.dataOverlay)
+      .addCol("extensions", extensions, DEFAULT.extensions)
       .addBoolIfTrue("geoidElevation", geoidElevation)
       .addDuration("maxJourneyDuration", maxJourneyDuration, DEFAULT.maxJourneyDuration)
       .toString();
@@ -113,6 +132,7 @@ public class SystemPreferences implements Serializable {
     private final SystemPreferences original;
     private final List<RoutingTag> tags = new ArrayList<>();
     private DataOverlayParameters dataOverlay;
+    private final List<ExtensionRequestContext> extensions = new ArrayList<>();
     private boolean geoidElevation;
     private Duration maxJourneyDuration;
 
@@ -120,6 +140,7 @@ public class SystemPreferences implements Serializable {
       this.original = original;
       this.tags.addAll(original.tags);
       this.dataOverlay = original.dataOverlay;
+      this.extensions.addAll(original.extensions);
       this.geoidElevation = original.geoidElevation;
       this.maxJourneyDuration = original.maxJourneyDuration;
     }
@@ -135,6 +156,13 @@ public class SystemPreferences implements Serializable {
 
     public Builder withDataOverlay(DataOverlayParameters dataOverlay) {
       this.dataOverlay = dataOverlay;
+      return this;
+    }
+
+    /** Set the context of an extension, in place of the one of the same type, if there is one. */
+    public Builder withExtension(ExtensionRequestContext extension) {
+      this.extensions.removeIf(it -> it.getClass() == extension.getClass());
+      this.extensions.add(extension);
       return this;
     }
 

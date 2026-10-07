@@ -18,6 +18,7 @@ import static org.opentripplanner.standalone.config.routerequest.WheelchairConfi
 import java.time.Duration;
 import java.util.stream.Collectors;
 import org.opentripplanner.api.parameter.QualifiedModeSet;
+import org.opentripplanner.ext.opensidewalks.config.OpenSidewalksConfig;
 import org.opentripplanner.framework.application.OTPFeature;
 import org.opentripplanner.routing.api.request.RequestModes;
 import org.opentripplanner.routing.api.request.RouteRequest;
@@ -759,6 +760,7 @@ public class RouteRequestConfig {
           )
           .asDuration(dft.maxJourneyDuration())
       );
+    OpenSidewalksConfig.mapPedestrianCost(c, "pedestrianCost").ifPresent(builder::withExtension);
     if (OTPFeature.DataOverlay.isOn()) {
       builder.withDataOverlay(
         DataOverlayParametersMapper.map(

@@ -2,6 +2,7 @@ package org.opentripplanner.street.search.request;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -153,10 +154,13 @@ public class StreetSearchRequestBuilder {
     return this;
   }
 
+  /** Add the given contexts to the ones the request already has. */
   public StreetSearchRequestBuilder withExtensionRequestContexts(
     Collection<ExtensionRequestContext> contexts
   ) {
-    this.extensionRequestContexts = contexts;
+    var all = new ArrayList<>(this.extensionRequestContexts);
+    all.addAll(contexts);
+    this.extensionRequestContexts = all;
     return this;
   }
 

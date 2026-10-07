@@ -4,7 +4,9 @@ import static org.opentripplanner.standalone.config.framework.json.OtpVersion.V2
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import javax.annotation.Nullable;
+import org.opentripplanner.ext.opensidewalks.PedestrianCostParameters;
 import org.opentripplanner.standalone.config.framework.json.NodeAdapter;
 
 /**
@@ -28,8 +30,7 @@ public record OpenSidewalksConfig(
       .description(
         """
         Each edge of the datasets becomes a street that can only be walked. With a `profile`, the
-        edges are costed by that pedestrian cost profile, and edges the profile makes impassable
-        are left out. See the [OpenSidewalks sandbox documentation](sandbox/OpenSidewalks.md).
+        edges are costed by that pedestrian cost profile for the traveller of each request. See the [OpenSidewalks sandbox documentation](sandbox/OpenSidewalks.md).
         """
       )
       .asObject();
@@ -65,11 +66,37 @@ public record OpenSidewalksConfig(
         .summary("The values of the parameters of the profile.")
         .description(
           """
-          For example `{ "uphill": 0.083, "avoid_curbs": true }`. A parameter that is left out
-          has the default value the profile gives it.
+          For example `{ "uphill": 0.083, "avoid_curbs": true }`. These are the values a request
+          has for the parameters it gives no value itself. A parameter that is left out here has
+          the default value the profile gives it.
           """
         )
         .asStringMap()
     );
+  }
+
+  /**
+   * The parameter values a request has for the pedestrian cost profile, in the routing defaults
+   * of the router configuration, if there are any.
+   */
+  public static Optional<PedestrianCostParameters> mapPedestrianCost(
+    NodeAdapter c,
+    String parameterName
+  ) {
+    // This is read whether the feature is on or not, since OTP reads the configuration files
+    // before it turns the features on
+    var values = c
+      .of(parameterName)
+      .since(V2_11)
+      .summary("The values of the parameters of the OpenSidewalks pedestrian cost profile.")
+      .description(
+        """
+        What the traveller can manage, for example `{ "uphill": 0.083, "avoid_curbs": true }`.
+        A parameter that is left out has the value of the build configuration. See the
+        [OpenSidewalks sandbox documentation](sandbox/OpenSidewalks.md).
+        """
+      )
+      .asStringMap();
+    return values.isEmpty() ? Optional.empty() : Optional.of(PedestrianCostParameters.of(values));
   }
 }

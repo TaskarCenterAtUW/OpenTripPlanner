@@ -20,6 +20,7 @@ public class LinkingContextRequestMapper {
       .withEgressMode(request.journey().egress().mode())
       .withDirectMode(directMode)
       .withTransferMode(request.journey().transfer().mode())
+      .withExtensions(request.preferences().system().extensions())
       .build();
   }
 }

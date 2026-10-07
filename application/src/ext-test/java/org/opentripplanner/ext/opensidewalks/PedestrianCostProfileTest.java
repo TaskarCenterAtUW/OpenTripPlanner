@@ -171,6 +171,35 @@ class PedestrianCostProfileTest {
   }
 
   @Test
+  void theRangeOfASliderIsTheRangeOfTheParameter() throws IOException {
+    var profile = PedestrianCostProfile.fromFile(RESOURCES.file("ws-prod.json"));
+    // The uphill limit can be anything from 0 to 1, but its slider goes from 4% to 15%
+    profile.resolve(Map.of("uphill", 0.04));
+    assertThrows(IllegalArgumentException.class, () -> profile.resolve(Map.of("uphill", 0.03)));
+    assertThrows(IllegalArgumentException.class, () -> profile.resolve(Map.of("uphill", 0.16)));
+  }
+
+  @Test
+  void theExtremeTravellersAreAtTheEndsOfTheRanges() throws IOException {
+    var extremes = loadProfile().extremes();
+    // Two numbers with a range and a switch
+    assertThat(extremes).hasSize(8);
+
+    // A sidewalk that is 9% uphill is passable for the ones who can manage any grade
+    long usableBy = extremes
+      .stream()
+      .filter(t -> !t.evaluate(SIDEWALK, 0.09, 100, CurbRamps.UNKNOWN).isImpassable())
+      .count();
+    assertEquals(4, usableBy);
+    // A crossing without curb ramps for the ones who do not avoid curbs
+    usableBy = extremes
+      .stream()
+      .filter(t -> !t.evaluate(CROSSING, Double.NaN, 20, CurbRamps.NO).isImpassable())
+      .count();
+    assertEquals(4, usableBy);
+  }
+
+  @Test
   void invalidParametersAreRejected() throws IOException {
     var profile = loadProfile();
     assertThrows(IllegalArgumentException.class, () -> profile.resolve(Map.of("uphil", 0.1)));

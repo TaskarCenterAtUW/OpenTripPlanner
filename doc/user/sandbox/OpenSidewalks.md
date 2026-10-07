@@ -90,12 +90,21 @@ Leave `profile` and `parameters` out to run without a profile.
   "routingDefaults": {
     "walk": {
       "speed": 1.3
+    },
+    "pedestrianCost": {
+      "uphill": 0.083,
+      "downhill": 0.083,
+      "avoid_curbs": true
     }
   }
 }
 ```
 
-The walk speed is optional. The default of OTP is 1.35 m/s. R5 and the Walksheds service walk at
+`pedestrianCost` is optional. It has the parameter values of the traveller that requests are
+planned for, and can be changed without building the graph again. A parameter it leaves out has
+the value of the build configuration, or else the default of the profile.
+
+The walk speed is optional too. The default of OTP is 1.35 m/s. R5 and the Walksheds service walk at
 1.3 m/s, so set it to that to get the durations they give.
 
 #### 4. Build the graph and start OTP
@@ -112,12 +121,9 @@ and their stops are linked to the OpenSidewalks edges.
 The build logs what it did:
 
 ```
-Costing OpenSidewalks edges with pedestrian cost profile ws-prod (profileId 017c..., runSpecId 38a4..., parameters {uphill=0.083, downhill=0.083, avoid_curbs=true, street_avoidance=1.0, fan_out=false})
-Built 2604 street edges from OpenSidewalks data. Left out 686 the profile makes impassable and 0 that are not usable ways.
+Costing OpenSidewalks edges with pedestrian cost profile ws-prod (profileId 017c...). A request without parameter values has {uphill=0.083, downhill=0.083, avoid_curbs=true, street_avoidance=1, fan_out=false} (runSpecId 38a4...)
+Built 3290 street edges from OpenSidewalks data, 774 of which only some travellers can use. Left out 0 that no traveller can use and 0 that are not usable ways.
 ```
-
-The profile is applied while the graph is built. **After changing the profile or its parameters,
-build the graph again.**
 
 #### 5. Plan a walk
 
@@ -143,9 +149,12 @@ The `openSidewalks` section of `build-config.json` has these parameters:
 |--------------|------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `sources`    | `string[]` | The datasets to load: a zip file or a directory containing `*.nodes.geojson` and `*.edges.geojson`, or an `*.edges.geojson` file.                        |
 | `profile`    | `string`   | The pedestrian cost profile to cost the edges with. Optional.                                                                                            |
-| `parameters` | `object`   | The values of the parameters of the profile. A parameter that is left out has the default value the profile gives it. Optional.                           |
+| `parameters` | `object`   | The parameter values a request has when it gives none itself. A parameter that is left out has the default value the profile gives it. Optional.          |
 
 A relative path is resolved against the OTP base directory, the one holding `build-config.json`.
+
+`routingDefaults.pedestrianCost` in `router-config.json` has the parameter values of the traveller
+that requests are planned for, for example `{ "uphill": 0.083, "avoid_curbs": true }`.
 
 ### How a dataset becomes streets
 
@@ -165,25 +174,32 @@ A relative path is resolved against the OTP base directory, the one holding `bui
 
 ### How a profile is applied
 
-The profile and its parameter values are set in the build configuration, and are evaluated once
-for each direction of each edge while the graph is built. All trips planned with the graph are
-costed with it. To use other parameter values the graph has to be built again.
+The profile is set in the build configuration and is part of the graph. The values of its
+parameters, which say what a traveller can manage, belong to each request. They come from
+`routingDefaults.pedestrianCost` in the router configuration, then from the build configuration,
+then from the defaults of the profile.
 
-- A direction of an edge that the profile makes impassable is left out of the graph. An edge with
-  an `incline` of 0.1 and an uphill limit of 0.085 can then be walked from its end to its start,
-  but not the other way. Nothing is linked to an edge that is left out, so a trip never starts or
-  ends on a sidewalk the traveller can not use.
+- A value has to be in the range the profile gives the parameter: from `sliderMin` to `sliderMax`
+  if the parameter has those, or else from `min` to `max`. A request with another value fails.
+- A direction of an edge that the traveller of a request can not use is not walked in that
+  request. An edge with an `incline` of 0.1 can be walked from its end to its start by a traveller
+  with an uphill limit of 0.085, but not the other way.
+- The places a trip starts and ends at are linked to the nearest edge the traveller of the request
+  can use.
+- A direction of an edge that no traveller can use, whatever the values of the parameters in their
+  ranges, is left out of the graph.
 - The other edges are walked at the walking speed of the request multiplied with the speed factor
-  the profile gives the edge, plus any delay. The cost is that time multiplied with the walk
-  reluctance of the request.
+  the profile gives the edge for the traveller, plus any delay. The cost is that time multiplied
+  with the walk reluctance of the request.
 - The cost replaces the one OTP would calculate. The slope, stairs, walk safety and wheelchair
   accessibility preferences of the request are not applied on top of it, since the profile already
   says what the edge costs for the traveller it describes. Turning from one of these edges onto
   another costs nothing.
 - Where a stop is linked to an edge, or a trip starts or ends partway along one, each part of the
   edge is costed like the whole, with the share of the delay that corresponds to its length.
-- The build log has the profile id and the run spec id, which identify the definition of the cost
-  function and the parameter values. They are the same ids R5 reports for the same profile.
+- The build log has the profile id, which identifies the definition of the cost function, and the
+  run spec id of a request without parameter values. They are the same ids R5 reports for the
+  same profile and values.
 
 Without a profile every edge can be walked, at the cost OTP gives any other street.
 
@@ -234,10 +250,17 @@ Without a profile every edge can be walked, at the cost OTP gives any other stre
 ### Limitations
 
 - The profile applies to walking only, and not to walking a bicycle or scooter.
-- The profile is the same for every request. It can not be chosen, and its parameters can not be
-  set, in a request.
-- A place is linked to the nearest edge the traveller can use, also when that is far from the
-  place. R5 gives up beyond 50 meters. The walk between the place and the edge is not part of the
-  trip.
+- The parameter values of a request can be set in the router configuration, but not yet in the
+  request itself through the APIs.
+- Transit stops are linked when the graph is built, to the nearest edge that every traveller can
+  use. A stop that is only near edges some travellers can not use is linked to an edge farther
+  away, or not at all.
+- Transfers between stops are found when the graph is built, for a request without parameter
+  values. Their time and cost are worked out again for the traveller of each request, and a
+  transfer along an edge that traveller can not use is dropped, also when there is another path.
+  Travellers with different parameter values may be given each other's transfers.
+- A place is linked to the nearest edge the traveller can use within a kilometer, also when that
+  is far from the place. R5 and AccessMap give up beyond 50 meters. The walk between the place and
+  the edge is not part of the trip.
 - A profile should not make any edge faster than the walking speed, with a `speedFactor` above 1.
   Street searches may then miss the best path.

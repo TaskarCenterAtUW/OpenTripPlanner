@@ -160,6 +160,40 @@ public class PedestrianCostProfile {
     return new PedestrianCostSpec(this, resolved);
   }
 
+  /**
+   * The travellers at the corners of the ranges of the parameters. An edge is as hard to use as
+   * it gets for one of them, and as easy as it gets for another, since a higher limit or a
+   * switch never makes an edge both easier for some and harder for others.
+   */
+  List<PedestrianCostSpec> extremes() {
+    List<Map<String, Object>> corners = new ArrayList<>();
+    corners.add(new LinkedHashMap<>());
+    for (Parameter p : parameters.values()) {
+      List<Map<String, Object>> next = new ArrayList<>();
+      for (var corner : corners) {
+        for (Object value : p.extremes()) {
+          var withValue = new LinkedHashMap<>(corner);
+          withValue.put(p.name, value);
+          next.add(withValue);
+        }
+      }
+      if (!next.isEmpty()) {
+        corners = next;
+      }
+    }
+    return corners.stream().map(this::resolve).toList();
+  }
+
+  /** The index of the first layer the tags of an edge match, or -1 if they match none. */
+  int layerIndex(Map<String, String> tags) {
+    for (int i = 0; i < layers.size(); i++) {
+      if (layers.get(i).match.matches(tags)) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
   private static JsonNode require(JsonNode spec, String key) {
     JsonNode v = spec.get(key);
     if (v == null || v.isNull()) {
@@ -204,8 +238,9 @@ public class PedestrianCostProfile {
       }
       this.isBoolean = type.equals("boolean");
       this.defaultValue = spec.get("default");
-      this.min = spec.has("min") ? spec.get("min").asDouble() : null;
-      this.max = spec.has("max") ? spec.get("max").asDouble() : null;
+      // The range a user interface offers, if one is given, is the range travellers can have
+      this.min = number(spec, "sliderMin", "min");
+      this.max = number(spec, "sliderMax", "max");
       // The settings beyond type, default, min and max are for user interfaces showing the
       // parameter. They are accepted so that a profile can be shared with R5 unchanged.
       checkKeys(
@@ -225,6 +260,25 @@ public class PedestrianCostProfile {
         ),
         "parameter " + name
       );
+    }
+
+    @Nullable
+    private static Double number(JsonNode spec, String key, String otherwise) {
+      JsonNode v = spec.has(key) ? spec.get(key) : spec.get(otherwise);
+      return v == null || v.isNull() ? null : v.asDouble();
+    }
+
+    /** The values at the ends of the range of the parameter, or its default if it has no range. */
+    List<Object> extremes() {
+      if (isBoolean) {
+        return List.of(false, true);
+      }
+      if (min != null && max != null) {
+        return List.of(min, max);
+      }
+      return defaultValue == null || defaultValue.isNull()
+        ? List.of()
+        : List.of(defaultValue.asDouble());
     }
 
     /** Text is read as the type the parameter declares, anything else must already have it. */

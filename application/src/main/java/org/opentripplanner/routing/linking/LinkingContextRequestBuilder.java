@@ -3,6 +3,7 @@ package org.opentripplanner.routing.linking;
 import java.util.List;
 import org.opentripplanner.model.GenericLocation;
 import org.opentripplanner.street.model.StreetMode;
+import org.opentripplanner.street.model.edge.ExtensionRequestContext;
 
 public class LinkingContextRequestBuilder {
 
@@ -14,6 +15,7 @@ public class LinkingContextRequestBuilder {
   private StreetMode egressMode;
   private StreetMode directMode;
   private StreetMode transferMode;
+  private List<ExtensionRequestContext> extensions;
 
   public LinkingContextRequestBuilder(LinkingContextRequest original) {
     this.original = original;
@@ -24,6 +26,7 @@ public class LinkingContextRequestBuilder {
     this.egressMode = original.egressMode();
     this.directMode = original.directMode();
     this.transferMode = original.transferMode();
+    this.extensions = original.extensions();
   }
 
   public LinkingContextRequestBuilder withFrom(GenericLocation from) {
@@ -89,6 +92,15 @@ public class LinkingContextRequestBuilder {
 
   public StreetMode transferMode() {
     return transferMode;
+  }
+
+  public List<ExtensionRequestContext> extensions() {
+    return extensions;
+  }
+
+  public LinkingContextRequestBuilder withExtensions(List<ExtensionRequestContext> extensions) {
+    this.extensions = extensions;
+    return this;
   }
 
   public LinkingContextRequest build() {
