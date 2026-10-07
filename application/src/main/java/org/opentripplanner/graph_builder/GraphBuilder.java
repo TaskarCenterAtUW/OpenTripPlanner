@@ -10,6 +10,7 @@ import javax.annotation.Nullable;
 import org.opentripplanner.core.model.deduplicator.DeduplicatorService;
 import org.opentripplanner.ext.emission.EmissionRepository;
 import org.opentripplanner.ext.empiricaldelay.EmpiricalDelayRepository;
+import org.opentripplanner.ext.opensidewalks.OswModule;
 import org.opentripplanner.ext.stopconsolidation.StopConsolidationRepository;
 import org.opentripplanner.ext.taxi.TaxiRepository;
 import org.opentripplanner.framework.application.OTPFeature;
@@ -125,6 +126,11 @@ public class GraphBuilder implements Runnable {
     if (dataSources.hasOsm()) {
       graphBuilder.addModule(factory.osmModule());
     }
+
+    graphBuilder.addModuleOptional(
+      OswModule.create(config.openSidewalks, graph, dataSources.getBaseDirectory()),
+      OTPFeature.OpenSidewalks
+    );
 
     if (dataSources.hasGtfs()) {
       graphBuilder.addModule(factory.gtfsModule());

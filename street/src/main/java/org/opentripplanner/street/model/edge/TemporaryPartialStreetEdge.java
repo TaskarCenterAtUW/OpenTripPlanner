@@ -3,7 +3,7 @@ package org.opentripplanner.street.model.edge;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineString;
 
-public final class TemporaryPartialStreetEdge extends StreetEdge implements TemporaryEdge {
+public class TemporaryPartialStreetEdge extends StreetEdge implements TemporaryEdge {
 
   /**
    * The edge on which this lies.
@@ -19,7 +19,7 @@ public final class TemporaryPartialStreetEdge extends StreetEdge implements Temp
    * is negative, a new length is calculated from the geometry. The elevation data is calculated
    * using the 'parentEdge' and given 'length'.
    */
-  TemporaryPartialStreetEdge(TemporaryPartialStreetEdgeBuilder builder) {
+  protected TemporaryPartialStreetEdge(TemporaryPartialStreetEdgeBuilder builder) {
     super(builder);
     this.parentEdge = builder.parentEdge();
     this.geometry = super.getGeometry();

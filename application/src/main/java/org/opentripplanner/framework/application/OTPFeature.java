@@ -141,6 +141,11 @@ public enum OTPFeature {
   FaresV2(false, true, "Enable import of GTFS-Fares v2 data."),
   FlexRouting(false, true, "Enable FLEX routing."),
   GoogleCloudStorage(false, true, "Enable Google Cloud Storage integration."),
+  OpenSidewalks(
+    false,
+    true,
+    "Build the pedestrian street network from OpenSidewalks datasets, and cost it with a pedestrian cost profile."
+  ),
   MultiCriteriaGroupMaxFilter(
     false,
     false,

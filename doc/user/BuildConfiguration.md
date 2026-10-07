@@ -89,6 +89,7 @@ Sections follow that describe particular settings in more depth.
 |    [sharedFilePattern](#nd_sharedFilePattern)                                               |       `regexp`       | Pattern for matching shared NeTEx files in a NeTEx bundle.                                                                                                     | *Optional* | `"shared-data\.xml"`              |  2.0  |
 |    [sharedGroupFilePattern](#nd_sharedGroupFilePattern)                                     |       `regexp`       | Pattern for matching shared group NeTEx files in a NeTEx bundle.                                                                                               | *Optional* | `"(\w{3})-.*-shared\.xml"`        |  2.0  |
 |    [ferryIdsNotAllowedForBicycle](#nd_ferryIdsNotAllowedForBicycle)                         |      `string[]`      | List ferries which do not allow bikes.                                                                                                                         | *Optional* |                                   |  2.0  |
+| [openSidewalks](#openSidewalks)                                                             |       `object`       | Build the pedestrian street network from OpenSidewalks datasets.                                                                                               | *Optional* |                                   |  2.11 |
 | [osm](#osm)                                                                                 |      `object[]`      | Configure properties for a given OpenStreetMap feed.                                                                                                           | *Optional* |                                   |  2.2  |
 |       includeOsmStationEntrances                                                            |       `boolean`      | Whether to include station entrances from the OSM data. Overrides the value specified in `osmDefaults`.                                                        | *Optional* | `false`                           |  2.10 |
 |       [osmTagMapping](#osm_0_osmTagMapping)                                                 |        `enum`        | The named set of mapping rules applied when parsing OSM tags. Overrides the value specified in `osmDefaults`.                                                  | *Optional* | `"default"`                       |  2.2  |
@@ -1021,6 +1022,18 @@ where bicycle conveyance can be defined.
 
 For this reason we allow bicycles on ferries by default and allow to override the rare
 case where this is not the case.
+
+
+<h3 id="openSidewalks">openSidewalks</h3>
+
+**Since version:** `2.11` ∙ **Type:** `object` ∙ **Cardinality:** `Optional`   
+**Path:** / 
+
+Build the pedestrian street network from OpenSidewalks datasets.
+
+Each edge of the datasets becomes a street that can only be walked. With a `profile`, the
+edges are costed by that pedestrian cost profile, and edges the profile makes impassable
+are left out. See the [OpenSidewalks sandbox documentation](sandbox/OpenSidewalks.md).
 
 
 <h3 id="osm">osm</h3>

@@ -1,0 +1,5895 @@
+{
+  "description": "Shortest paths between 74 pairs of points of interest in Goldendale, WA, under the four traveller profiles of the TDEI quality reports.",
+  "dataset": "TDEI dataset 486da1e5-9b1c-4192-a9ac-ccc31696f39e (Completed SCLIO Goldendale, version 0.5)",
+  "r5": "TDEI quality reports test run of 2026-10-07 against R5 with the ws-prod profile, at 1.3 m/s",
+  "accessMap": "https://www.accessmap.app/api/v1/routing/shortest_path/custom.json fetched 2026-10-07. Its Goldendale region is TDEI dataset 47d39ea1-86d6-4fea-bf7d-06484ac241fe (Goldendale, WA 1.5), not the dataset above. It has no fan mode.",
+  "metersFromNetwork": "The distance from the origin or the destination, whichever is farther, to the nearest edge of the dataset.",
+  "profiles": [
+    {
+      "name": "fan_out",
+      "parameters": {
+        "uphill": 0.15,
+        "downhill": 0.15,
+        "avoid_curbs": false,
+        "street_avoidance": 0.9,
+        "fan_out": true
+      },
+      "routes": [
+        {
+          "route": 0,
+          "from": {
+            "lat": 45.8218772,
+            "lon": -120.822579
+          },
+          "to": {
+            "lat": 45.819631,
+            "lon": -120.8199202
+          },
+          "metersFromNetwork": 35.1,
+          "r5": {
+            "length": 491.632,
+            "duration": 560
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 491.21,
+            "duration": 539
+          }
+        },
+        {
+          "route": 1,
+          "from": {
+            "lat": 45.8218772,
+            "lon": -120.822579
+          },
+          "to": {
+            "lat": 45.8201458,
+            "lon": -120.8217352
+          },
+          "metersFromNetwork": 61.8,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 2,
+          "from": {
+            "lat": 45.8218772,
+            "lon": -120.822579
+          },
+          "to": {
+            "lat": 45.820537,
+            "lon": -120.8239937
+          },
+          "metersFromNetwork": 11.7,
+          "r5": {
+            "length": 254.232,
+            "duration": 331
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 256.31,
+            "duration": 335
+          }
+        },
+        {
+          "route": 3,
+          "from": {
+            "lat": 45.8218772,
+            "lon": -120.822579
+          },
+          "to": {
+            "lat": 45.8210802,
+            "lon": -120.8231188
+          },
+          "metersFromNetwork": 25.5,
+          "r5": {
+            "length": 108.255,
+            "duration": 182
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 107.8,
+            "duration": 181
+          }
+        },
+        {
+          "route": 4,
+          "from": {
+            "lat": 45.8218772,
+            "lon": -120.822579
+          },
+          "to": {
+            "lat": 45.8211307,
+            "lon": -120.8224415
+          },
+          "metersFromNetwork": 8.6,
+          "r5": {
+            "length": 83.633,
+            "duration": 132
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 84.11,
+            "duration": 131
+          }
+        },
+        {
+          "route": 5,
+          "from": {
+            "lat": 45.8218772,
+            "lon": -120.822579
+          },
+          "to": {
+            "lat": 45.821629,
+            "lon": -120.823616
+          },
+          "metersFromNetwork": 1.7,
+          "r5": {
+            "length": 140.844,
+            "duration": 183
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 141.81,
+            "duration": 176
+          }
+        },
+        {
+          "route": 6,
+          "from": {
+            "lat": 45.8218772,
+            "lon": -120.822579
+          },
+          "to": {
+            "lat": 45.8220192,
+            "lon": -120.8214009
+          },
+          "metersFromNetwork": 7.7,
+          "r5": {
+            "length": 113.378,
+            "duration": 100
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 111.78,
+            "duration": 96
+          }
+        },
+        {
+          "route": 7,
+          "from": {
+            "lat": 45.8218772,
+            "lon": -120.822579
+          },
+          "to": {
+            "lat": 45.8224475,
+            "lon": -120.8255793
+          },
+          "metersFromNetwork": 10.7,
+          "r5": {
+            "length": 285.812,
+            "duration": 334
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 286.67,
+            "duration": 340
+          }
+        },
+        {
+          "route": 8,
+          "from": {
+            "lat": 45.8218772,
+            "lon": -120.822579
+          },
+          "to": {
+            "lat": 45.8224439,
+            "lon": -120.8219721
+          },
+          "metersFromNetwork": 12.8,
+          "r5": {
+            "length": 95.668,
+            "duration": 116
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 93.97,
+            "duration": 112
+          }
+        },
+        {
+          "route": 9,
+          "from": {
+            "lat": 45.8386811,
+            "lon": -120.8151415
+          },
+          "to": {
+            "lat": 45.8371549,
+            "lon": -120.8151758
+          },
+          "metersFromNetwork": 128.4,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 10,
+          "from": {
+            "lat": 45.8199787,
+            "lon": -120.8110097
+          },
+          "to": {
+            "lat": 45.8176138,
+            "lon": -120.8137822
+          },
+          "metersFromNetwork": 72.7,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 11,
+          "from": {
+            "lat": 45.8199787,
+            "lon": -120.8110097
+          },
+          "to": {
+            "lat": 45.8183346,
+            "lon": -120.8094109
+          },
+          "metersFromNetwork": 82.1,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 12,
+          "from": {
+            "lat": 45.8199787,
+            "lon": -120.8110097
+          },
+          "to": {
+            "lat": 45.8194697,
+            "lon": -120.8128314
+          },
+          "metersFromNetwork": 72.7,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 13,
+          "from": {
+            "lat": 45.8199787,
+            "lon": -120.8110097
+          },
+          "to": {
+            "lat": 45.8200853,
+            "lon": -120.8102793
+          },
+          "metersFromNetwork": 72.7,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 14,
+          "from": {
+            "lat": 45.8199787,
+            "lon": -120.8110097
+          },
+          "to": {
+            "lat": 45.8225287,
+            "lon": -120.8128802
+          },
+          "metersFromNetwork": 72.7,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 15,
+          "from": {
+            "lat": 45.8200853,
+            "lon": -120.8102793
+          },
+          "to": {
+            "lat": 45.8176138,
+            "lon": -120.8137822
+          },
+          "metersFromNetwork": 31.6,
+          "r5": {
+            "length": 552.921,
+            "duration": 602
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 541.16,
+            "duration": 593
+          }
+        },
+        {
+          "route": 16,
+          "from": {
+            "lat": 45.8200853,
+            "lon": -120.8102793
+          },
+          "to": {
+            "lat": 45.8183346,
+            "lon": -120.8094109
+          },
+          "metersFromNetwork": 82.1,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 17,
+          "from": {
+            "lat": 45.8200853,
+            "lon": -120.8102793
+          },
+          "to": {
+            "lat": 45.8194697,
+            "lon": -120.8128314
+          },
+          "metersFromNetwork": 31.6,
+          "r5": {
+            "length": 276.311,
+            "duration": 280
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 265.32,
+            "duration": 275
+          }
+        },
+        {
+          "route": 18,
+          "from": {
+            "lat": 45.8200853,
+            "lon": -120.8102793
+          },
+          "to": {
+            "lat": 45.8225287,
+            "lon": -120.8128802
+          },
+          "metersFromNetwork": 40.7,
+          "r5": {
+            "length": 612.556,
+            "duration": 717
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 601.49,
+            "duration": 705
+          }
+        },
+        {
+          "route": 19,
+          "from": {
+            "lat": 45.819631,
+            "lon": -120.8199202
+          },
+          "to": {
+            "lat": 45.8182886,
+            "lon": -120.8195288
+          },
+          "metersFromNetwork": 35.1,
+          "r5": null,
+          "accessMap": {
+            "code": "NoPath",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 20,
+          "from": {
+            "lat": 45.819631,
+            "lon": -120.8199202
+          },
+          "to": {
+            "lat": 45.8201458,
+            "lon": -120.8217352
+          },
+          "metersFromNetwork": 61.8,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 21,
+          "from": {
+            "lat": 45.819631,
+            "lon": -120.8199202
+          },
+          "to": {
+            "lat": 45.820537,
+            "lon": -120.8239937
+          },
+          "metersFromNetwork": 35.1,
+          "r5": {
+            "length": 458.966,
+            "duration": 429
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 459.4,
+            "duration": 434
+          }
+        },
+        {
+          "route": 22,
+          "from": {
+            "lat": 45.819631,
+            "lon": -120.8199202
+          },
+          "to": {
+            "lat": 45.8210802,
+            "lon": -120.8231188
+          },
+          "metersFromNetwork": 35.1,
+          "r5": {
+            "length": 414.177,
+            "duration": 431
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 414.13,
+            "duration": 423
+          }
+        },
+        {
+          "route": 23,
+          "from": {
+            "lat": 45.819631,
+            "lon": -120.8199202
+          },
+          "to": {
+            "lat": 45.8211307,
+            "lon": -120.8224415
+          },
+          "metersFromNetwork": 35.1,
+          "r5": {
+            "length": 407.999,
+            "duration": 396
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 407.1,
+            "duration": 389
+          }
+        },
+        {
+          "route": 24,
+          "from": {
+            "lat": 45.819631,
+            "lon": -120.8199202
+          },
+          "to": {
+            "lat": 45.821629,
+            "lon": -120.823616
+          },
+          "metersFromNetwork": 35.1,
+          "r5": {
+            "length": 540.478,
+            "duration": 575
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 539.81,
+            "duration": 561
+          }
+        },
+        {
+          "route": 25,
+          "from": {
+            "lat": 45.819631,
+            "lon": -120.8199202
+          },
+          "to": {
+            "lat": 45.8220192,
+            "lon": -120.8214009
+          },
+          "metersFromNetwork": 35.1,
+          "r5": {
+            "length": 556.19,
+            "duration": 613
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 558.44,
+            "duration": 594
+          }
+        },
+        {
+          "route": 26,
+          "from": {
+            "lat": 45.819631,
+            "lon": -120.8199202
+          },
+          "to": {
+            "lat": 45.8224439,
+            "lon": -120.8219721
+          },
+          "metersFromNetwork": 35.1,
+          "r5": {
+            "length": 587.3,
+            "duration": 650
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 585.18,
+            "duration": 636
+          }
+        },
+        {
+          "route": 27,
+          "from": {
+            "lat": 45.825598,
+            "lon": -120.8181986
+          },
+          "to": {
+            "lat": 45.82476,
+            "lon": -120.815134
+          },
+          "metersFromNetwork": 272.8,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 28,
+          "from": {
+            "lat": 45.825598,
+            "lon": -120.8181986
+          },
+          "to": {
+            "lat": 45.8253723,
+            "lon": -120.8131901
+          },
+          "metersFromNetwork": 272.8,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 29,
+          "from": {
+            "lat": 45.825598,
+            "lon": -120.8181986
+          },
+          "to": {
+            "lat": 45.8258493,
+            "lon": -120.8162803
+          },
+          "metersFromNetwork": 272.8,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 30,
+          "from": {
+            "lat": 45.8253723,
+            "lon": -120.8131901
+          },
+          "to": {
+            "lat": 45.8225287,
+            "lon": -120.8128802
+          },
+          "metersFromNetwork": 87.6,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 31,
+          "from": {
+            "lat": 45.8253723,
+            "lon": -120.8131901
+          },
+          "to": {
+            "lat": 45.82476,
+            "lon": -120.815134
+          },
+          "metersFromNetwork": 87.6,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 32,
+          "from": {
+            "lat": 45.8253723,
+            "lon": -120.8131901
+          },
+          "to": {
+            "lat": 45.8258493,
+            "lon": -120.8162803
+          },
+          "metersFromNetwork": 223.2,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 33,
+          "from": {
+            "lat": 45.8253723,
+            "lon": -120.8131901
+          },
+          "to": {
+            "lat": 45.8271673,
+            "lon": -120.8102718
+          },
+          "metersFromNetwork": 91.6,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 34,
+          "from": {
+            "lat": 45.8183346,
+            "lon": -120.8094109
+          },
+          "to": {
+            "lat": 45.8176138,
+            "lon": -120.8137822
+          },
+          "metersFromNetwork": 82.1,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 35,
+          "from": {
+            "lat": 45.8183346,
+            "lon": -120.8094109
+          },
+          "to": {
+            "lat": 45.8194697,
+            "lon": -120.8128314
+          },
+          "metersFromNetwork": 82.1,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 36,
+          "from": {
+            "lat": 45.8210802,
+            "lon": -120.8231188
+          },
+          "to": {
+            "lat": 45.8201458,
+            "lon": -120.8217352
+          },
+          "metersFromNetwork": 61.8,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 37,
+          "from": {
+            "lat": 45.8210802,
+            "lon": -120.8231188
+          },
+          "to": {
+            "lat": 45.820537,
+            "lon": -120.8239937
+          },
+          "metersFromNetwork": 25.5,
+          "r5": {
+            "length": 145.977,
+            "duration": 149
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 148.51,
+            "duration": 164
+          }
+        },
+        {
+          "route": 38,
+          "from": {
+            "lat": 45.8210802,
+            "lon": -120.8231188
+          },
+          "to": {
+            "lat": 45.8211307,
+            "lon": -120.8224415
+          },
+          "metersFromNetwork": 25.5,
+          "r5": {
+            "length": 77.69,
+            "duration": 100
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 76.6,
+            "duration": 100
+          }
+        },
+        {
+          "route": 39,
+          "from": {
+            "lat": 45.8210802,
+            "lon": -120.8231188
+          },
+          "to": {
+            "lat": 45.821629,
+            "lon": -120.823616
+          },
+          "metersFromNetwork": 25.5,
+          "r5": {
+            "length": 126.301,
+            "duration": 145
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 125.68,
+            "duration": 137
+          }
+        },
+        {
+          "route": 40,
+          "from": {
+            "lat": 45.8210802,
+            "lon": -120.8231188
+          },
+          "to": {
+            "lat": 45.8220192,
+            "lon": -120.8214009
+          },
+          "metersFromNetwork": 25.5,
+          "r5": {
+            "length": 221.633,
+            "duration": 291
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 218.9,
+            "duration": 282
+          }
+        },
+        {
+          "route": 41,
+          "from": {
+            "lat": 45.8210802,
+            "lon": -120.8231188
+          },
+          "to": {
+            "lat": 45.8224475,
+            "lon": -120.8255793
+          },
+          "metersFromNetwork": 25.5,
+          "r5": {
+            "length": 359.067,
+            "duration": 435
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 359.49,
+            "duration": 437
+          }
+        },
+        {
+          "route": 42,
+          "from": {
+            "lat": 45.8210802,
+            "lon": -120.8231188
+          },
+          "to": {
+            "lat": 45.8224439,
+            "lon": -120.8219721
+          },
+          "metersFromNetwork": 25.5,
+          "r5": {
+            "length": 203.323,
+            "duration": 307
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 201.09,
+            "duration": 297
+          }
+        },
+        {
+          "route": 43,
+          "from": {
+            "lat": 45.8224475,
+            "lon": -120.8255793
+          },
+          "to": {
+            "lat": 45.8201458,
+            "lon": -120.8217352
+          },
+          "metersFromNetwork": 61.8,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 44,
+          "from": {
+            "lat": 45.8224475,
+            "lon": -120.8255793
+          },
+          "to": {
+            "lat": 45.820537,
+            "lon": -120.8239937
+          },
+          "metersFromNetwork": 11.7,
+          "r5": {
+            "length": 429.356,
+            "duration": 543
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 426.2,
+            "duration": 536
+          }
+        },
+        {
+          "route": 45,
+          "from": {
+            "lat": 45.8224475,
+            "lon": -120.8255793
+          },
+          "to": {
+            "lat": 45.8211514,
+            "lon": -120.8290054
+          },
+          "metersFromNetwork": 28.8,
+          "r5": {
+            "length": 369.3,
+            "duration": 467
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 369.12,
+            "duration": 467
+          }
+        },
+        {
+          "route": 46,
+          "from": {
+            "lat": 45.8224475,
+            "lon": -120.8255793
+          },
+          "to": {
+            "lat": 45.8211307,
+            "lon": -120.8224415
+          },
+          "metersFromNetwork": 10.7,
+          "r5": {
+            "length": 367.645,
+            "duration": 481
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 368.97,
+            "duration": 477
+          }
+        },
+        {
+          "route": 47,
+          "from": {
+            "lat": 45.8224475,
+            "lon": -120.8255793
+          },
+          "to": {
+            "lat": 45.821629,
+            "lon": -120.823616
+          },
+          "metersFromNetwork": 10.7,
+          "r5": {
+            "length": 371.234,
+            "duration": 436
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 389.14,
+            "duration": 430
+          }
+        },
+        {
+          "route": 48,
+          "from": {
+            "lat": 45.8224475,
+            "lon": -120.8255793
+          },
+          "to": {
+            "lat": 45.8220192,
+            "lon": -120.8214009
+          },
+          "metersFromNetwork": 10.7,
+          "r5": {
+            "length": 346.788,
+            "duration": 408
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 347.17,
+            "duration": 401
+          }
+        },
+        {
+          "route": 49,
+          "from": {
+            "lat": 45.8224475,
+            "lon": -120.8255793
+          },
+          "to": {
+            "lat": 45.8224439,
+            "lon": -120.8219721
+          },
+          "metersFromNetwork": 12.8,
+          "r5": {
+            "length": 280.278,
+            "duration": 320
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 280.5,
+            "duration": 315
+          }
+        },
+        {
+          "route": 50,
+          "from": {
+            "lat": 45.820537,
+            "lon": -120.8239937
+          },
+          "to": {
+            "lat": 45.8201458,
+            "lon": -120.8217352
+          },
+          "metersFromNetwork": 61.8,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 51,
+          "from": {
+            "lat": 45.820537,
+            "lon": -120.8239937
+          },
+          "to": {
+            "lat": 45.8211514,
+            "lon": -120.8290054
+          },
+          "metersFromNetwork": 28.8,
+          "r5": {
+            "length": 470.878,
+            "duration": 505
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 470.73,
+            "duration": 502
+          }
+        },
+        {
+          "route": 52,
+          "from": {
+            "lat": 45.820537,
+            "lon": -120.8239937
+          },
+          "to": {
+            "lat": 45.8211307,
+            "lon": -120.8224415
+          },
+          "metersFromNetwork": 11.7,
+          "r5": {
+            "length": 174.199,
+            "duration": 220
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 175.84,
+            "duration": 218
+          }
+        },
+        {
+          "route": 53,
+          "from": {
+            "lat": 45.820537,
+            "lon": -120.8239937
+          },
+          "to": {
+            "lat": 45.821629,
+            "lon": -120.823616
+          },
+          "metersFromNetwork": 11.7,
+          "r5": {
+            "length": 224.012,
+            "duration": 258
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 222.85,
+            "duration": 257
+          }
+        },
+        {
+          "route": 54,
+          "from": {
+            "lat": 45.820537,
+            "lon": -120.8239937
+          },
+          "to": {
+            "lat": 45.8220192,
+            "lon": -120.8214009
+          },
+          "metersFromNetwork": 11.7,
+          "r5": {
+            "length": 367.61,
+            "duration": 454
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 367.41,
+            "duration": 445
+          }
+        },
+        {
+          "route": 55,
+          "from": {
+            "lat": 45.820537,
+            "lon": -120.8239937
+          },
+          "to": {
+            "lat": 45.8224439,
+            "lon": -120.8219721
+          },
+          "metersFromNetwork": 12.8,
+          "r5": {
+            "length": 349.9,
+            "duration": 470
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 349.6,
+            "duration": 461
+          }
+        },
+        {
+          "route": 56,
+          "from": {
+            "lat": 45.8148243,
+            "lon": -120.8235854
+          },
+          "to": {
+            "lat": 45.8147042,
+            "lon": -120.827688
+          },
+          "metersFromNetwork": 36.9,
+          "r5": null,
+          "accessMap": {
+            "code": "NoPath",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 57,
+          "from": {
+            "lat": 45.8148243,
+            "lon": -120.8235854
+          },
+          "to": {
+            "lat": 45.8136783,
+            "lon": -120.8189518
+          },
+          "metersFromNetwork": 36.9,
+          "r5": {
+            "length": 458.599,
+            "duration": 527
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 459.04,
+            "duration": 513
+          }
+        },
+        {
+          "route": 58,
+          "from": {
+            "lat": 45.8182886,
+            "lon": -120.8195288
+          },
+          "to": {
+            "lat": 45.8201458,
+            "lon": -120.8217352
+          },
+          "metersFromNetwork": 61.8,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 59,
+          "from": {
+            "lat": 45.8182886,
+            "lon": -120.8195288
+          },
+          "to": {
+            "lat": 45.8211307,
+            "lon": -120.8224415
+          },
+          "metersFromNetwork": 16.3,
+          "r5": null,
+          "accessMap": {
+            "code": "NoPath",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 60,
+          "from": {
+            "lat": 45.8194697,
+            "lon": -120.8128314
+          },
+          "to": {
+            "lat": 45.8176138,
+            "lon": -120.8137822
+          },
+          "metersFromNetwork": 17.5,
+          "r5": {
+            "length": 281.11,
+            "duration": 326
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 280.28,
+            "duration": 320
+          }
+        },
+        {
+          "route": 61,
+          "from": {
+            "lat": 45.8194697,
+            "lon": -120.8128314
+          },
+          "to": {
+            "lat": 45.8225287,
+            "lon": -120.8128802
+          },
+          "metersFromNetwork": 40.7,
+          "r5": {
+            "length": 393.401,
+            "duration": 487
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 395.13,
+            "duration": 476
+          }
+        },
+        {
+          "route": 62,
+          "from": {
+            "lat": 45.8225287,
+            "lon": -120.8128802
+          },
+          "to": {
+            "lat": 45.82476,
+            "lon": -120.815134
+          },
+          "metersFromNetwork": 86.4,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 63,
+          "from": {
+            "lat": 45.8220192,
+            "lon": -120.8214009
+          },
+          "to": {
+            "lat": 45.8201458,
+            "lon": -120.8217352
+          },
+          "metersFromNetwork": 61.8,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 64,
+          "from": {
+            "lat": 45.8220192,
+            "lon": -120.8214009
+          },
+          "to": {
+            "lat": 45.8211307,
+            "lon": -120.8224415
+          },
+          "metersFromNetwork": 8.6,
+          "r5": {
+            "length": 197.011,
+            "duration": 227
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 195.9,
+            "duration": 225
+          }
+        },
+        {
+          "route": 65,
+          "from": {
+            "lat": 45.8220192,
+            "lon": -120.8214009
+          },
+          "to": {
+            "lat": 45.821629,
+            "lon": -120.823616
+          },
+          "metersFromNetwork": 7.7,
+          "r5": {
+            "length": 249.222,
+            "duration": 272
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 248.55,
+            "duration": 265
+          }
+        },
+        {
+          "route": 66,
+          "from": {
+            "lat": 45.8220192,
+            "lon": -120.8214009
+          },
+          "to": {
+            "lat": 45.8224439,
+            "lon": -120.8219721
+          },
+          "metersFromNetwork": 12.8,
+          "r5": {
+            "length": 66.51,
+            "duration": 89
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 66.68,
+            "duration": 89
+          }
+        },
+        {
+          "route": 67,
+          "from": {
+            "lat": 45.8211307,
+            "lon": -120.8224415
+          },
+          "to": {
+            "lat": 45.8201458,
+            "lon": -120.8217352
+          },
+          "metersFromNetwork": 61.8,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 68,
+          "from": {
+            "lat": 45.8211307,
+            "lon": -120.8224415
+          },
+          "to": {
+            "lat": 45.821629,
+            "lon": -120.823616
+          },
+          "metersFromNetwork": 8.6,
+          "r5": {
+            "length": 138.879,
+            "duration": 185
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 139.19,
+            "duration": 177
+          }
+        },
+        {
+          "route": 69,
+          "from": {
+            "lat": 45.8211307,
+            "lon": -120.8224415
+          },
+          "to": {
+            "lat": 45.8224439,
+            "lon": -120.8219721
+          },
+          "metersFromNetwork": 12.8,
+          "r5": {
+            "length": 179.301,
+            "duration": 254
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 178.08,
+            "duration": 246
+          }
+        },
+        {
+          "route": 70,
+          "from": {
+            "lat": 45.8201458,
+            "lon": -120.8217352
+          },
+          "to": {
+            "lat": 45.821629,
+            "lon": -120.823616
+          },
+          "metersFromNetwork": 61.8,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 71,
+          "from": {
+            "lat": 45.8201458,
+            "lon": -120.8217352
+          },
+          "to": {
+            "lat": 45.8224439,
+            "lon": -120.8219721
+          },
+          "metersFromNetwork": 61.8,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 72,
+          "from": {
+            "lat": 45.8258493,
+            "lon": -120.8162803
+          },
+          "to": {
+            "lat": 45.82476,
+            "lon": -120.815134
+          },
+          "metersFromNetwork": 223.2,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 73,
+          "from": {
+            "lat": 45.8224439,
+            "lon": -120.8219721
+          },
+          "to": {
+            "lat": 45.821629,
+            "lon": -120.823616
+          },
+          "metersFromNetwork": 12.8,
+          "r5": {
+            "length": 231.512,
+            "duration": 286
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 230.73,
+            "duration": 280
+          }
+        }
+      ]
+    },
+    {
+      "name": "manual_wheelchair",
+      "parameters": {
+        "uphill": 0.083,
+        "downhill": 0.083,
+        "avoid_curbs": true,
+        "street_avoidance": 1,
+        "fan_out": false
+      },
+      "routes": [
+        {
+          "route": 0,
+          "from": {
+            "lat": 45.8218772,
+            "lon": -120.822579
+          },
+          "to": {
+            "lat": 45.819631,
+            "lon": -120.8199202
+          },
+          "metersFromNetwork": 35.1,
+          "r5": {
+            "length": 491.632,
+            "duration": 605
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 491.21,
+            "duration": 575
+          }
+        },
+        {
+          "route": 1,
+          "from": {
+            "lat": 45.8218772,
+            "lon": -120.822579
+          },
+          "to": {
+            "lat": 45.8201458,
+            "lon": -120.8217352
+          },
+          "metersFromNetwork": 61.8,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 2,
+          "from": {
+            "lat": 45.8218772,
+            "lon": -120.822579
+          },
+          "to": {
+            "lat": 45.820537,
+            "lon": -120.8239937
+          },
+          "metersFromNetwork": 11.7,
+          "r5": {
+            "length": 254.232,
+            "duration": 336
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 256.31,
+            "duration": 351
+          }
+        },
+        {
+          "route": 3,
+          "from": {
+            "lat": 45.8218772,
+            "lon": -120.822579
+          },
+          "to": {
+            "lat": 45.8210802,
+            "lon": -120.8231188
+          },
+          "metersFromNetwork": 25.5,
+          "r5": {
+            "length": 108.255,
+            "duration": 185
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 107.8,
+            "duration": 188
+          }
+        },
+        {
+          "route": 4,
+          "from": {
+            "lat": 45.8218772,
+            "lon": -120.822579
+          },
+          "to": {
+            "lat": 45.8211307,
+            "lon": -120.8224415
+          },
+          "metersFromNetwork": 8.6,
+          "r5": {
+            "length": 83.633,
+            "duration": 135
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 84.11,
+            "duration": 137
+          }
+        },
+        {
+          "route": 5,
+          "from": {
+            "lat": 45.8218772,
+            "lon": -120.822579
+          },
+          "to": {
+            "lat": 45.821629,
+            "lon": -120.823616
+          },
+          "metersFromNetwork": 1.7,
+          "r5": {
+            "length": 140.844,
+            "duration": 192
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 141.81,
+            "duration": 182
+          }
+        },
+        {
+          "route": 6,
+          "from": {
+            "lat": 45.8218772,
+            "lon": -120.822579
+          },
+          "to": {
+            "lat": 45.8220192,
+            "lon": -120.8214009
+          },
+          "metersFromNetwork": 7.7,
+          "r5": {
+            "length": 113.378,
+            "duration": 108
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 111.78,
+            "duration": 104
+          }
+        },
+        {
+          "route": 7,
+          "from": {
+            "lat": 45.8218772,
+            "lon": -120.822579
+          },
+          "to": {
+            "lat": 45.8224475,
+            "lon": -120.8255793
+          },
+          "metersFromNetwork": 10.7,
+          "r5": {
+            "length": 285.612,
+            "duration": 352
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 286.67,
+            "duration": 365
+          }
+        },
+        {
+          "route": 8,
+          "from": {
+            "lat": 45.8218772,
+            "lon": -120.822579
+          },
+          "to": {
+            "lat": 45.8224439,
+            "lon": -120.8219721
+          },
+          "metersFromNetwork": 12.8,
+          "r5": {
+            "length": 95.668,
+            "duration": 125
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 93.97,
+            "duration": 120
+          }
+        },
+        {
+          "route": 9,
+          "from": {
+            "lat": 45.8386811,
+            "lon": -120.8151415
+          },
+          "to": {
+            "lat": 45.8371549,
+            "lon": -120.8151758
+          },
+          "metersFromNetwork": 128.4,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 10,
+          "from": {
+            "lat": 45.8199787,
+            "lon": -120.8110097
+          },
+          "to": {
+            "lat": 45.8176138,
+            "lon": -120.8137822
+          },
+          "metersFromNetwork": 72.7,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 11,
+          "from": {
+            "lat": 45.8199787,
+            "lon": -120.8110097
+          },
+          "to": {
+            "lat": 45.8183346,
+            "lon": -120.8094109
+          },
+          "metersFromNetwork": 82.1,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 12,
+          "from": {
+            "lat": 45.8199787,
+            "lon": -120.8110097
+          },
+          "to": {
+            "lat": 45.8194697,
+            "lon": -120.8128314
+          },
+          "metersFromNetwork": 72.7,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 13,
+          "from": {
+            "lat": 45.8199787,
+            "lon": -120.8110097
+          },
+          "to": {
+            "lat": 45.8200853,
+            "lon": -120.8102793
+          },
+          "metersFromNetwork": 72.7,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 14,
+          "from": {
+            "lat": 45.8199787,
+            "lon": -120.8110097
+          },
+          "to": {
+            "lat": 45.8225287,
+            "lon": -120.8128802
+          },
+          "metersFromNetwork": 72.7,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 15,
+          "from": {
+            "lat": 45.8200853,
+            "lon": -120.8102793
+          },
+          "to": {
+            "lat": 45.8176138,
+            "lon": -120.8137822
+          },
+          "metersFromNetwork": 31.6,
+          "r5": null,
+          "accessMap": {
+            "code": "NoPath",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 16,
+          "from": {
+            "lat": 45.8200853,
+            "lon": -120.8102793
+          },
+          "to": {
+            "lat": 45.8183346,
+            "lon": -120.8094109
+          },
+          "metersFromNetwork": 82.1,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 17,
+          "from": {
+            "lat": 45.8200853,
+            "lon": -120.8102793
+          },
+          "to": {
+            "lat": 45.8194697,
+            "lon": -120.8128314
+          },
+          "metersFromNetwork": 31.6,
+          "r5": {
+            "length": 276.311,
+            "duration": 315
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 265.32,
+            "duration": 316
+          }
+        },
+        {
+          "route": 18,
+          "from": {
+            "lat": 45.8200853,
+            "lon": -120.8102793
+          },
+          "to": {
+            "lat": 45.8225287,
+            "lon": -120.8128802
+          },
+          "metersFromNetwork": 40.7,
+          "r5": {
+            "length": 612.556,
+            "duration": 840
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 601.49,
+            "duration": 835
+          }
+        },
+        {
+          "route": 19,
+          "from": {
+            "lat": 45.819631,
+            "lon": -120.8199202
+          },
+          "to": {
+            "lat": 45.8182886,
+            "lon": -120.8195288
+          },
+          "metersFromNetwork": 35.1,
+          "r5": null,
+          "accessMap": {
+            "code": "NoPath",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 20,
+          "from": {
+            "lat": 45.819631,
+            "lon": -120.8199202
+          },
+          "to": {
+            "lat": 45.8201458,
+            "lon": -120.8217352
+          },
+          "metersFromNetwork": 61.8,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 21,
+          "from": {
+            "lat": 45.819631,
+            "lon": -120.8199202
+          },
+          "to": {
+            "lat": 45.820537,
+            "lon": -120.8239937
+          },
+          "metersFromNetwork": 35.1,
+          "r5": {
+            "length": 458.966,
+            "duration": 437
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 459.4,
+            "duration": 452
+          }
+        },
+        {
+          "route": 22,
+          "from": {
+            "lat": 45.819631,
+            "lon": -120.8199202
+          },
+          "to": {
+            "lat": 45.8210802,
+            "lon": -120.8231188
+          },
+          "metersFromNetwork": 35.1,
+          "r5": {
+            "length": 414.177,
+            "duration": 443
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 414.13,
+            "duration": 436
+          }
+        },
+        {
+          "route": 23,
+          "from": {
+            "lat": 45.819631,
+            "lon": -120.8199202
+          },
+          "to": {
+            "lat": 45.8211307,
+            "lon": -120.8224415
+          },
+          "metersFromNetwork": 35.1,
+          "r5": {
+            "length": 407.999,
+            "duration": 409
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 407.1,
+            "duration": 403
+          }
+        },
+        {
+          "route": 24,
+          "from": {
+            "lat": 45.819631,
+            "lon": -120.8199202
+          },
+          "to": {
+            "lat": 45.821629,
+            "lon": -120.823616
+          },
+          "metersFromNetwork": 35.1,
+          "r5": {
+            "length": 540.478,
+            "duration": 600
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 539.81,
+            "duration": 584
+          }
+        },
+        {
+          "route": 25,
+          "from": {
+            "lat": 45.819631,
+            "lon": -120.8199202
+          },
+          "to": {
+            "lat": 45.8220192,
+            "lon": -120.8214009
+          },
+          "metersFromNetwork": 35.1,
+          "r5": {
+            "length": 605.01,
+            "duration": 663
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 558.44,
+            "duration": 634
+          }
+        },
+        {
+          "route": 26,
+          "from": {
+            "lat": 45.819631,
+            "lon": -120.8199202
+          },
+          "to": {
+            "lat": 45.8224439,
+            "lon": -120.8219721
+          },
+          "metersFromNetwork": 35.1,
+          "r5": {
+            "length": 587.3,
+            "duration": 680
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 585.18,
+            "duration": 666
+          }
+        },
+        {
+          "route": 27,
+          "from": {
+            "lat": 45.825598,
+            "lon": -120.8181986
+          },
+          "to": {
+            "lat": 45.82476,
+            "lon": -120.815134
+          },
+          "metersFromNetwork": 272.8,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 28,
+          "from": {
+            "lat": 45.825598,
+            "lon": -120.8181986
+          },
+          "to": {
+            "lat": 45.8253723,
+            "lon": -120.8131901
+          },
+          "metersFromNetwork": 272.8,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 29,
+          "from": {
+            "lat": 45.825598,
+            "lon": -120.8181986
+          },
+          "to": {
+            "lat": 45.8258493,
+            "lon": -120.8162803
+          },
+          "metersFromNetwork": 272.8,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 30,
+          "from": {
+            "lat": 45.8253723,
+            "lon": -120.8131901
+          },
+          "to": {
+            "lat": 45.8225287,
+            "lon": -120.8128802
+          },
+          "metersFromNetwork": 87.6,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 31,
+          "from": {
+            "lat": 45.8253723,
+            "lon": -120.8131901
+          },
+          "to": {
+            "lat": 45.82476,
+            "lon": -120.815134
+          },
+          "metersFromNetwork": 87.6,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 32,
+          "from": {
+            "lat": 45.8253723,
+            "lon": -120.8131901
+          },
+          "to": {
+            "lat": 45.8258493,
+            "lon": -120.8162803
+          },
+          "metersFromNetwork": 223.2,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 33,
+          "from": {
+            "lat": 45.8253723,
+            "lon": -120.8131901
+          },
+          "to": {
+            "lat": 45.8271673,
+            "lon": -120.8102718
+          },
+          "metersFromNetwork": 91.6,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 34,
+          "from": {
+            "lat": 45.8183346,
+            "lon": -120.8094109
+          },
+          "to": {
+            "lat": 45.8176138,
+            "lon": -120.8137822
+          },
+          "metersFromNetwork": 82.1,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 35,
+          "from": {
+            "lat": 45.8183346,
+            "lon": -120.8094109
+          },
+          "to": {
+            "lat": 45.8194697,
+            "lon": -120.8128314
+          },
+          "metersFromNetwork": 82.1,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 36,
+          "from": {
+            "lat": 45.8210802,
+            "lon": -120.8231188
+          },
+          "to": {
+            "lat": 45.8201458,
+            "lon": -120.8217352
+          },
+          "metersFromNetwork": 61.8,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 37,
+          "from": {
+            "lat": 45.8210802,
+            "lon": -120.8231188
+          },
+          "to": {
+            "lat": 45.820537,
+            "lon": -120.8239937
+          },
+          "metersFromNetwork": 25.5,
+          "r5": {
+            "length": 145.977,
+            "duration": 152
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 148.51,
+            "duration": 180
+          }
+        },
+        {
+          "route": 38,
+          "from": {
+            "lat": 45.8210802,
+            "lon": -120.8231188
+          },
+          "to": {
+            "lat": 45.8211307,
+            "lon": -120.8224415
+          },
+          "metersFromNetwork": 25.5,
+          "r5": {
+            "length": 77.69,
+            "duration": 107
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 76.6,
+            "duration": 111
+          }
+        },
+        {
+          "route": 39,
+          "from": {
+            "lat": 45.8210802,
+            "lon": -120.8231188
+          },
+          "to": {
+            "lat": 45.821629,
+            "lon": -120.823616
+          },
+          "metersFromNetwork": 25.5,
+          "r5": {
+            "length": 126.301,
+            "duration": 157
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 125.68,
+            "duration": 147
+          }
+        },
+        {
+          "route": 40,
+          "from": {
+            "lat": 45.8210802,
+            "lon": -120.8231188
+          },
+          "to": {
+            "lat": 45.8220192,
+            "lon": -120.8214009
+          },
+          "metersFromNetwork": 25.5,
+          "r5": {
+            "length": 221.633,
+            "duration": 310
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 218.9,
+            "duration": 301
+          }
+        },
+        {
+          "route": 41,
+          "from": {
+            "lat": 45.8210802,
+            "lon": -120.8231188
+          },
+          "to": {
+            "lat": 45.8224475,
+            "lon": -120.8255793
+          },
+          "metersFromNetwork": 25.5,
+          "r5": {
+            "length": 359.067,
+            "duration": 460
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 359.49,
+            "duration": 472
+          }
+        },
+        {
+          "route": 42,
+          "from": {
+            "lat": 45.8210802,
+            "lon": -120.8231188
+          },
+          "to": {
+            "lat": 45.8224439,
+            "lon": -120.8219721
+          },
+          "metersFromNetwork": 25.5,
+          "r5": {
+            "length": 203.923,
+            "duration": 327
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 201.09,
+            "duration": 317
+          }
+        },
+        {
+          "route": 43,
+          "from": {
+            "lat": 45.8224475,
+            "lon": -120.8255793
+          },
+          "to": {
+            "lat": 45.8201458,
+            "lon": -120.8217352
+          },
+          "metersFromNetwork": 61.8,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 44,
+          "from": {
+            "lat": 45.8224475,
+            "lon": -120.8255793
+          },
+          "to": {
+            "lat": 45.820537,
+            "lon": -120.8239937
+          },
+          "metersFromNetwork": 11.7,
+          "r5": {
+            "length": 433.756,
+            "duration": 593
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 430.54,
+            "duration": 594
+          }
+        },
+        {
+          "route": 45,
+          "from": {
+            "lat": 45.8224475,
+            "lon": -120.8255793
+          },
+          "to": {
+            "lat": 45.8211514,
+            "lon": -120.8290054
+          },
+          "metersFromNetwork": 28.8,
+          "r5": {
+            "length": 745.8,
+            "duration": 836
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 745.68,
+            "duration": 839
+          }
+        },
+        {
+          "route": 46,
+          "from": {
+            "lat": 45.8224475,
+            "lon": -120.8255793
+          },
+          "to": {
+            "lat": 45.8211307,
+            "lon": -120.8224415
+          },
+          "metersFromNetwork": 10.7,
+          "r5": {
+            "length": 367.645,
+            "duration": 516
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 368.97,
+            "duration": 515
+          }
+        },
+        {
+          "route": 47,
+          "from": {
+            "lat": 45.8224475,
+            "lon": -120.8255793
+          },
+          "to": {
+            "lat": 45.821629,
+            "lon": -120.823616
+          },
+          "metersFromNetwork": 10.7,
+          "r5": {
+            "length": 387.256,
+            "duration": 476
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 389.14,
+            "duration": 466
+          }
+        },
+        {
+          "route": 48,
+          "from": {
+            "lat": 45.8224475,
+            "lon": -120.8255793
+          },
+          "to": {
+            "lat": 45.8220192,
+            "lon": -120.8214009
+          },
+          "metersFromNetwork": 10.7,
+          "r5": {
+            "length": 346.788,
+            "duration": 446
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 347.17,
+            "duration": 439
+          }
+        },
+        {
+          "route": 49,
+          "from": {
+            "lat": 45.8224475,
+            "lon": -120.8255793
+          },
+          "to": {
+            "lat": 45.8224439,
+            "lon": -120.8219721
+          },
+          "metersFromNetwork": 12.8,
+          "r5": {
+            "length": 280.278,
+            "duration": 355
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 280.5,
+            "duration": 350
+          }
+        },
+        {
+          "route": 50,
+          "from": {
+            "lat": 45.820537,
+            "lon": -120.8239937
+          },
+          "to": {
+            "lat": 45.8201458,
+            "lon": -120.8217352
+          },
+          "metersFromNetwork": 61.8,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 51,
+          "from": {
+            "lat": 45.820537,
+            "lon": -120.8239937
+          },
+          "to": {
+            "lat": 45.8211514,
+            "lon": -120.8290054
+          },
+          "metersFromNetwork": 28.8,
+          "r5": {
+            "length": 470.878,
+            "duration": 519
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 470.73,
+            "duration": 520
+          }
+        },
+        {
+          "route": 52,
+          "from": {
+            "lat": 45.820537,
+            "lon": -120.8239937
+          },
+          "to": {
+            "lat": 45.8211307,
+            "lon": -120.8224415
+          },
+          "metersFromNetwork": 11.7,
+          "r5": {
+            "length": 174.199,
+            "duration": 239
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 175.84,
+            "duration": 237
+          }
+        },
+        {
+          "route": 53,
+          "from": {
+            "lat": 45.820537,
+            "lon": -120.8239937
+          },
+          "to": {
+            "lat": 45.821629,
+            "lon": -120.823616
+          },
+          "metersFromNetwork": 11.7,
+          "r5": {
+            "length": 224.012,
+            "duration": 281
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 222.85,
+            "duration": 280
+          }
+        },
+        {
+          "route": 54,
+          "from": {
+            "lat": 45.820537,
+            "lon": -120.8239937
+          },
+          "to": {
+            "lat": 45.8220192,
+            "lon": -120.8214009
+          },
+          "metersFromNetwork": 11.7,
+          "r5": {
+            "length": 367.61,
+            "duration": 490
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 367.41,
+            "duration": 481
+          }
+        },
+        {
+          "route": 55,
+          "from": {
+            "lat": 45.820537,
+            "lon": -120.8239937
+          },
+          "to": {
+            "lat": 45.8224439,
+            "lon": -120.8219721
+          },
+          "metersFromNetwork": 12.8,
+          "r5": {
+            "length": 349.9,
+            "duration": 507
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 349.6,
+            "duration": 497
+          }
+        },
+        {
+          "route": 56,
+          "from": {
+            "lat": 45.8148243,
+            "lon": -120.8235854
+          },
+          "to": {
+            "lat": 45.8147042,
+            "lon": -120.827688
+          },
+          "metersFromNetwork": 36.9,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 57,
+          "from": {
+            "lat": 45.8148243,
+            "lon": -120.8235854
+          },
+          "to": {
+            "lat": 45.8136783,
+            "lon": -120.8189518
+          },
+          "metersFromNetwork": 36.9,
+          "r5": {
+            "length": 456.099,
+            "duration": 597
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 456.57,
+            "duration": 580
+          }
+        },
+        {
+          "route": 58,
+          "from": {
+            "lat": 45.8182886,
+            "lon": -120.8195288
+          },
+          "to": {
+            "lat": 45.8201458,
+            "lon": -120.8217352
+          },
+          "metersFromNetwork": 61.8,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 59,
+          "from": {
+            "lat": 45.8182886,
+            "lon": -120.8195288
+          },
+          "to": {
+            "lat": 45.8211307,
+            "lon": -120.8224415
+          },
+          "metersFromNetwork": 16.3,
+          "r5": null,
+          "accessMap": {
+            "code": "NoPath",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 60,
+          "from": {
+            "lat": 45.8194697,
+            "lon": -120.8128314
+          },
+          "to": {
+            "lat": 45.8176138,
+            "lon": -120.8137822
+          },
+          "metersFromNetwork": 17.5,
+          "r5": null,
+          "accessMap": {
+            "code": "NoPath",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 61,
+          "from": {
+            "lat": 45.8194697,
+            "lon": -120.8128314
+          },
+          "to": {
+            "lat": 45.8225287,
+            "lon": -120.8128802
+          },
+          "metersFromNetwork": 40.7,
+          "r5": {
+            "length": 393.401,
+            "duration": 578
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 395.13,
+            "duration": 564
+          }
+        },
+        {
+          "route": 62,
+          "from": {
+            "lat": 45.8225287,
+            "lon": -120.8128802
+          },
+          "to": {
+            "lat": 45.82476,
+            "lon": -120.815134
+          },
+          "metersFromNetwork": 86.4,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 63,
+          "from": {
+            "lat": 45.8220192,
+            "lon": -120.8214009
+          },
+          "to": {
+            "lat": 45.8201458,
+            "lon": -120.8217352
+          },
+          "metersFromNetwork": 61.8,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 64,
+          "from": {
+            "lat": 45.8220192,
+            "lon": -120.8214009
+          },
+          "to": {
+            "lat": 45.8211307,
+            "lon": -120.8224415
+          },
+          "metersFromNetwork": 8.6,
+          "r5": {
+            "length": 197.011,
+            "duration": 234
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 195.9,
+            "duration": 237
+          }
+        },
+        {
+          "route": 65,
+          "from": {
+            "lat": 45.8220192,
+            "lon": -120.8214009
+          },
+          "to": {
+            "lat": 45.821629,
+            "lon": -120.823616
+          },
+          "metersFromNetwork": 7.7,
+          "r5": {
+            "length": 249.222,
+            "duration": 283
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 248.55,
+            "duration": 277
+          }
+        },
+        {
+          "route": 66,
+          "from": {
+            "lat": 45.8220192,
+            "lon": -120.8214009
+          },
+          "to": {
+            "lat": 45.8224439,
+            "lon": -120.8219721
+          },
+          "metersFromNetwork": 12.8,
+          "r5": {
+            "length": 66.51,
+            "duration": 94
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 66.68,
+            "duration": 96
+          }
+        },
+        {
+          "route": 67,
+          "from": {
+            "lat": 45.8211307,
+            "lon": -120.8224415
+          },
+          "to": {
+            "lat": 45.8201458,
+            "lon": -120.8217352
+          },
+          "metersFromNetwork": 61.8,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 68,
+          "from": {
+            "lat": 45.8211307,
+            "lon": -120.8224415
+          },
+          "to": {
+            "lat": 45.821629,
+            "lon": -120.823616
+          },
+          "metersFromNetwork": 8.6,
+          "r5": {
+            "length": 138.879,
+            "duration": 196
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 139.19,
+            "duration": 186
+          }
+        },
+        {
+          "route": 69,
+          "from": {
+            "lat": 45.8211307,
+            "lon": -120.8224415
+          },
+          "to": {
+            "lat": 45.8224439,
+            "lon": -120.8219721
+          },
+          "metersFromNetwork": 12.8,
+          "r5": {
+            "length": 179.301,
+            "duration": 272
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 178.08,
+            "duration": 263
+          }
+        },
+        {
+          "route": 70,
+          "from": {
+            "lat": 45.8201458,
+            "lon": -120.8217352
+          },
+          "to": {
+            "lat": 45.821629,
+            "lon": -120.823616
+          },
+          "metersFromNetwork": 61.8,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 71,
+          "from": {
+            "lat": 45.8201458,
+            "lon": -120.8217352
+          },
+          "to": {
+            "lat": 45.8224439,
+            "lon": -120.8219721
+          },
+          "metersFromNetwork": 61.8,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 72,
+          "from": {
+            "lat": 45.8258493,
+            "lon": -120.8162803
+          },
+          "to": {
+            "lat": 45.82476,
+            "lon": -120.815134
+          },
+          "metersFromNetwork": 223.2,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 73,
+          "from": {
+            "lat": 45.8224439,
+            "lon": -120.8219721
+          },
+          "to": {
+            "lat": 45.821629,
+            "lon": -120.823616
+          },
+          "metersFromNetwork": 12.8,
+          "r5": {
+            "length": 231.512,
+            "duration": 296
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 230.73,
+            "duration": 291
+          }
+        }
+      ]
+    },
+    {
+      "name": "sidewalks_whenever_possible",
+      "parameters": {
+        "uphill": 0.15,
+        "downhill": 0.15,
+        "avoid_curbs": false,
+        "street_avoidance": 0.9,
+        "fan_out": false
+      },
+      "routes": [
+        {
+          "route": 0,
+          "from": {
+            "lat": 45.8218772,
+            "lon": -120.822579
+          },
+          "to": {
+            "lat": 45.819631,
+            "lon": -120.8199202
+          },
+          "metersFromNetwork": 35.1,
+          "r5": {
+            "length": 491.632,
+            "duration": 560
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 491.21,
+            "duration": 539
+          }
+        },
+        {
+          "route": 1,
+          "from": {
+            "lat": 45.8218772,
+            "lon": -120.822579
+          },
+          "to": {
+            "lat": 45.8201458,
+            "lon": -120.8217352
+          },
+          "metersFromNetwork": 61.8,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 2,
+          "from": {
+            "lat": 45.8218772,
+            "lon": -120.822579
+          },
+          "to": {
+            "lat": 45.820537,
+            "lon": -120.8239937
+          },
+          "metersFromNetwork": 11.7,
+          "r5": {
+            "length": 254.232,
+            "duration": 331
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 256.31,
+            "duration": 335
+          }
+        },
+        {
+          "route": 3,
+          "from": {
+            "lat": 45.8218772,
+            "lon": -120.822579
+          },
+          "to": {
+            "lat": 45.8210802,
+            "lon": -120.8231188
+          },
+          "metersFromNetwork": 25.5,
+          "r5": {
+            "length": 108.255,
+            "duration": 182
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 107.8,
+            "duration": 181
+          }
+        },
+        {
+          "route": 4,
+          "from": {
+            "lat": 45.8218772,
+            "lon": -120.822579
+          },
+          "to": {
+            "lat": 45.8211307,
+            "lon": -120.8224415
+          },
+          "metersFromNetwork": 8.6,
+          "r5": {
+            "length": 83.633,
+            "duration": 132
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 84.11,
+            "duration": 131
+          }
+        },
+        {
+          "route": 5,
+          "from": {
+            "lat": 45.8218772,
+            "lon": -120.822579
+          },
+          "to": {
+            "lat": 45.821629,
+            "lon": -120.823616
+          },
+          "metersFromNetwork": 1.7,
+          "r5": {
+            "length": 140.844,
+            "duration": 183
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 141.81,
+            "duration": 176
+          }
+        },
+        {
+          "route": 6,
+          "from": {
+            "lat": 45.8218772,
+            "lon": -120.822579
+          },
+          "to": {
+            "lat": 45.8220192,
+            "lon": -120.8214009
+          },
+          "metersFromNetwork": 7.7,
+          "r5": {
+            "length": 113.378,
+            "duration": 100
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 111.78,
+            "duration": 96
+          }
+        },
+        {
+          "route": 7,
+          "from": {
+            "lat": 45.8218772,
+            "lon": -120.822579
+          },
+          "to": {
+            "lat": 45.8224475,
+            "lon": -120.8255793
+          },
+          "metersFromNetwork": 10.7,
+          "r5": {
+            "length": 285.812,
+            "duration": 334
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 286.67,
+            "duration": 340
+          }
+        },
+        {
+          "route": 8,
+          "from": {
+            "lat": 45.8218772,
+            "lon": -120.822579
+          },
+          "to": {
+            "lat": 45.8224439,
+            "lon": -120.8219721
+          },
+          "metersFromNetwork": 12.8,
+          "r5": {
+            "length": 95.668,
+            "duration": 116
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 93.97,
+            "duration": 112
+          }
+        },
+        {
+          "route": 9,
+          "from": {
+            "lat": 45.8386811,
+            "lon": -120.8151415
+          },
+          "to": {
+            "lat": 45.8371549,
+            "lon": -120.8151758
+          },
+          "metersFromNetwork": 128.4,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 10,
+          "from": {
+            "lat": 45.8199787,
+            "lon": -120.8110097
+          },
+          "to": {
+            "lat": 45.8176138,
+            "lon": -120.8137822
+          },
+          "metersFromNetwork": 72.7,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 11,
+          "from": {
+            "lat": 45.8199787,
+            "lon": -120.8110097
+          },
+          "to": {
+            "lat": 45.8183346,
+            "lon": -120.8094109
+          },
+          "metersFromNetwork": 82.1,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 12,
+          "from": {
+            "lat": 45.8199787,
+            "lon": -120.8110097
+          },
+          "to": {
+            "lat": 45.8194697,
+            "lon": -120.8128314
+          },
+          "metersFromNetwork": 72.7,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 13,
+          "from": {
+            "lat": 45.8199787,
+            "lon": -120.8110097
+          },
+          "to": {
+            "lat": 45.8200853,
+            "lon": -120.8102793
+          },
+          "metersFromNetwork": 72.7,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 14,
+          "from": {
+            "lat": 45.8199787,
+            "lon": -120.8110097
+          },
+          "to": {
+            "lat": 45.8225287,
+            "lon": -120.8128802
+          },
+          "metersFromNetwork": 72.7,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 15,
+          "from": {
+            "lat": 45.8200853,
+            "lon": -120.8102793
+          },
+          "to": {
+            "lat": 45.8176138,
+            "lon": -120.8137822
+          },
+          "metersFromNetwork": 31.6,
+          "r5": {
+            "length": 552.921,
+            "duration": 602
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 541.16,
+            "duration": 593
+          }
+        },
+        {
+          "route": 16,
+          "from": {
+            "lat": 45.8200853,
+            "lon": -120.8102793
+          },
+          "to": {
+            "lat": 45.8183346,
+            "lon": -120.8094109
+          },
+          "metersFromNetwork": 82.1,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 17,
+          "from": {
+            "lat": 45.8200853,
+            "lon": -120.8102793
+          },
+          "to": {
+            "lat": 45.8194697,
+            "lon": -120.8128314
+          },
+          "metersFromNetwork": 31.6,
+          "r5": {
+            "length": 276.311,
+            "duration": 280
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 265.32,
+            "duration": 275
+          }
+        },
+        {
+          "route": 18,
+          "from": {
+            "lat": 45.8200853,
+            "lon": -120.8102793
+          },
+          "to": {
+            "lat": 45.8225287,
+            "lon": -120.8128802
+          },
+          "metersFromNetwork": 40.7,
+          "r5": {
+            "length": 612.556,
+            "duration": 717
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 601.49,
+            "duration": 705
+          }
+        },
+        {
+          "route": 19,
+          "from": {
+            "lat": 45.819631,
+            "lon": -120.8199202
+          },
+          "to": {
+            "lat": 45.8182886,
+            "lon": -120.8195288
+          },
+          "metersFromNetwork": 35.1,
+          "r5": null,
+          "accessMap": {
+            "code": "NoPath",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 20,
+          "from": {
+            "lat": 45.819631,
+            "lon": -120.8199202
+          },
+          "to": {
+            "lat": 45.8201458,
+            "lon": -120.8217352
+          },
+          "metersFromNetwork": 61.8,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 21,
+          "from": {
+            "lat": 45.819631,
+            "lon": -120.8199202
+          },
+          "to": {
+            "lat": 45.820537,
+            "lon": -120.8239937
+          },
+          "metersFromNetwork": 35.1,
+          "r5": {
+            "length": 458.966,
+            "duration": 429
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 459.4,
+            "duration": 434
+          }
+        },
+        {
+          "route": 22,
+          "from": {
+            "lat": 45.819631,
+            "lon": -120.8199202
+          },
+          "to": {
+            "lat": 45.8210802,
+            "lon": -120.8231188
+          },
+          "metersFromNetwork": 35.1,
+          "r5": {
+            "length": 414.177,
+            "duration": 431
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 414.13,
+            "duration": 423
+          }
+        },
+        {
+          "route": 23,
+          "from": {
+            "lat": 45.819631,
+            "lon": -120.8199202
+          },
+          "to": {
+            "lat": 45.8211307,
+            "lon": -120.8224415
+          },
+          "metersFromNetwork": 35.1,
+          "r5": {
+            "length": 407.999,
+            "duration": 396
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 407.1,
+            "duration": 389
+          }
+        },
+        {
+          "route": 24,
+          "from": {
+            "lat": 45.819631,
+            "lon": -120.8199202
+          },
+          "to": {
+            "lat": 45.821629,
+            "lon": -120.823616
+          },
+          "metersFromNetwork": 35.1,
+          "r5": {
+            "length": 540.478,
+            "duration": 575
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 539.81,
+            "duration": 561
+          }
+        },
+        {
+          "route": 25,
+          "from": {
+            "lat": 45.819631,
+            "lon": -120.8199202
+          },
+          "to": {
+            "lat": 45.8220192,
+            "lon": -120.8214009
+          },
+          "metersFromNetwork": 35.1,
+          "r5": {
+            "length": 556.19,
+            "duration": 613
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 558.44,
+            "duration": 594
+          }
+        },
+        {
+          "route": 26,
+          "from": {
+            "lat": 45.819631,
+            "lon": -120.8199202
+          },
+          "to": {
+            "lat": 45.8224439,
+            "lon": -120.8219721
+          },
+          "metersFromNetwork": 35.1,
+          "r5": {
+            "length": 587.3,
+            "duration": 650
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 585.18,
+            "duration": 636
+          }
+        },
+        {
+          "route": 27,
+          "from": {
+            "lat": 45.825598,
+            "lon": -120.8181986
+          },
+          "to": {
+            "lat": 45.82476,
+            "lon": -120.815134
+          },
+          "metersFromNetwork": 272.8,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 28,
+          "from": {
+            "lat": 45.825598,
+            "lon": -120.8181986
+          },
+          "to": {
+            "lat": 45.8253723,
+            "lon": -120.8131901
+          },
+          "metersFromNetwork": 272.8,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 29,
+          "from": {
+            "lat": 45.825598,
+            "lon": -120.8181986
+          },
+          "to": {
+            "lat": 45.8258493,
+            "lon": -120.8162803
+          },
+          "metersFromNetwork": 272.8,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 30,
+          "from": {
+            "lat": 45.8253723,
+            "lon": -120.8131901
+          },
+          "to": {
+            "lat": 45.8225287,
+            "lon": -120.8128802
+          },
+          "metersFromNetwork": 87.6,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 31,
+          "from": {
+            "lat": 45.8253723,
+            "lon": -120.8131901
+          },
+          "to": {
+            "lat": 45.82476,
+            "lon": -120.815134
+          },
+          "metersFromNetwork": 87.6,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 32,
+          "from": {
+            "lat": 45.8253723,
+            "lon": -120.8131901
+          },
+          "to": {
+            "lat": 45.8258493,
+            "lon": -120.8162803
+          },
+          "metersFromNetwork": 223.2,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 33,
+          "from": {
+            "lat": 45.8253723,
+            "lon": -120.8131901
+          },
+          "to": {
+            "lat": 45.8271673,
+            "lon": -120.8102718
+          },
+          "metersFromNetwork": 91.6,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 34,
+          "from": {
+            "lat": 45.8183346,
+            "lon": -120.8094109
+          },
+          "to": {
+            "lat": 45.8176138,
+            "lon": -120.8137822
+          },
+          "metersFromNetwork": 82.1,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 35,
+          "from": {
+            "lat": 45.8183346,
+            "lon": -120.8094109
+          },
+          "to": {
+            "lat": 45.8194697,
+            "lon": -120.8128314
+          },
+          "metersFromNetwork": 82.1,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 36,
+          "from": {
+            "lat": 45.8210802,
+            "lon": -120.8231188
+          },
+          "to": {
+            "lat": 45.8201458,
+            "lon": -120.8217352
+          },
+          "metersFromNetwork": 61.8,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 37,
+          "from": {
+            "lat": 45.8210802,
+            "lon": -120.8231188
+          },
+          "to": {
+            "lat": 45.820537,
+            "lon": -120.8239937
+          },
+          "metersFromNetwork": 25.5,
+          "r5": {
+            "length": 145.977,
+            "duration": 149
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 148.51,
+            "duration": 164
+          }
+        },
+        {
+          "route": 38,
+          "from": {
+            "lat": 45.8210802,
+            "lon": -120.8231188
+          },
+          "to": {
+            "lat": 45.8211307,
+            "lon": -120.8224415
+          },
+          "metersFromNetwork": 25.5,
+          "r5": {
+            "length": 77.69,
+            "duration": 100
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 76.6,
+            "duration": 100
+          }
+        },
+        {
+          "route": 39,
+          "from": {
+            "lat": 45.8210802,
+            "lon": -120.8231188
+          },
+          "to": {
+            "lat": 45.821629,
+            "lon": -120.823616
+          },
+          "metersFromNetwork": 25.5,
+          "r5": {
+            "length": 126.301,
+            "duration": 145
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 125.68,
+            "duration": 137
+          }
+        },
+        {
+          "route": 40,
+          "from": {
+            "lat": 45.8210802,
+            "lon": -120.8231188
+          },
+          "to": {
+            "lat": 45.8220192,
+            "lon": -120.8214009
+          },
+          "metersFromNetwork": 25.5,
+          "r5": {
+            "length": 221.633,
+            "duration": 291
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 218.9,
+            "duration": 282
+          }
+        },
+        {
+          "route": 41,
+          "from": {
+            "lat": 45.8210802,
+            "lon": -120.8231188
+          },
+          "to": {
+            "lat": 45.8224475,
+            "lon": -120.8255793
+          },
+          "metersFromNetwork": 25.5,
+          "r5": {
+            "length": 359.067,
+            "duration": 435
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 359.49,
+            "duration": 437
+          }
+        },
+        {
+          "route": 42,
+          "from": {
+            "lat": 45.8210802,
+            "lon": -120.8231188
+          },
+          "to": {
+            "lat": 45.8224439,
+            "lon": -120.8219721
+          },
+          "metersFromNetwork": 25.5,
+          "r5": {
+            "length": 203.323,
+            "duration": 307
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 201.09,
+            "duration": 297
+          }
+        },
+        {
+          "route": 43,
+          "from": {
+            "lat": 45.8224475,
+            "lon": -120.8255793
+          },
+          "to": {
+            "lat": 45.8201458,
+            "lon": -120.8217352
+          },
+          "metersFromNetwork": 61.8,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 44,
+          "from": {
+            "lat": 45.8224475,
+            "lon": -120.8255793
+          },
+          "to": {
+            "lat": 45.820537,
+            "lon": -120.8239937
+          },
+          "metersFromNetwork": 11.7,
+          "r5": {
+            "length": 429.356,
+            "duration": 543
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 426.2,
+            "duration": 536
+          }
+        },
+        {
+          "route": 45,
+          "from": {
+            "lat": 45.8224475,
+            "lon": -120.8255793
+          },
+          "to": {
+            "lat": 45.8211514,
+            "lon": -120.8290054
+          },
+          "metersFromNetwork": 28.8,
+          "r5": {
+            "length": 369.3,
+            "duration": 467
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 369.12,
+            "duration": 467
+          }
+        },
+        {
+          "route": 46,
+          "from": {
+            "lat": 45.8224475,
+            "lon": -120.8255793
+          },
+          "to": {
+            "lat": 45.8211307,
+            "lon": -120.8224415
+          },
+          "metersFromNetwork": 10.7,
+          "r5": {
+            "length": 367.645,
+            "duration": 481
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 368.97,
+            "duration": 477
+          }
+        },
+        {
+          "route": 47,
+          "from": {
+            "lat": 45.8224475,
+            "lon": -120.8255793
+          },
+          "to": {
+            "lat": 45.821629,
+            "lon": -120.823616
+          },
+          "metersFromNetwork": 10.7,
+          "r5": {
+            "length": 371.234,
+            "duration": 436
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 389.14,
+            "duration": 430
+          }
+        },
+        {
+          "route": 48,
+          "from": {
+            "lat": 45.8224475,
+            "lon": -120.8255793
+          },
+          "to": {
+            "lat": 45.8220192,
+            "lon": -120.8214009
+          },
+          "metersFromNetwork": 10.7,
+          "r5": {
+            "length": 346.788,
+            "duration": 408
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 347.17,
+            "duration": 401
+          }
+        },
+        {
+          "route": 49,
+          "from": {
+            "lat": 45.8224475,
+            "lon": -120.8255793
+          },
+          "to": {
+            "lat": 45.8224439,
+            "lon": -120.8219721
+          },
+          "metersFromNetwork": 12.8,
+          "r5": {
+            "length": 280.278,
+            "duration": 320
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 280.5,
+            "duration": 315
+          }
+        },
+        {
+          "route": 50,
+          "from": {
+            "lat": 45.820537,
+            "lon": -120.8239937
+          },
+          "to": {
+            "lat": 45.8201458,
+            "lon": -120.8217352
+          },
+          "metersFromNetwork": 61.8,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 51,
+          "from": {
+            "lat": 45.820537,
+            "lon": -120.8239937
+          },
+          "to": {
+            "lat": 45.8211514,
+            "lon": -120.8290054
+          },
+          "metersFromNetwork": 28.8,
+          "r5": {
+            "length": 470.878,
+            "duration": 505
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 470.73,
+            "duration": 502
+          }
+        },
+        {
+          "route": 52,
+          "from": {
+            "lat": 45.820537,
+            "lon": -120.8239937
+          },
+          "to": {
+            "lat": 45.8211307,
+            "lon": -120.8224415
+          },
+          "metersFromNetwork": 11.7,
+          "r5": {
+            "length": 174.199,
+            "duration": 220
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 175.84,
+            "duration": 218
+          }
+        },
+        {
+          "route": 53,
+          "from": {
+            "lat": 45.820537,
+            "lon": -120.8239937
+          },
+          "to": {
+            "lat": 45.821629,
+            "lon": -120.823616
+          },
+          "metersFromNetwork": 11.7,
+          "r5": {
+            "length": 224.012,
+            "duration": 258
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 222.85,
+            "duration": 257
+          }
+        },
+        {
+          "route": 54,
+          "from": {
+            "lat": 45.820537,
+            "lon": -120.8239937
+          },
+          "to": {
+            "lat": 45.8220192,
+            "lon": -120.8214009
+          },
+          "metersFromNetwork": 11.7,
+          "r5": {
+            "length": 367.61,
+            "duration": 454
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 367.41,
+            "duration": 445
+          }
+        },
+        {
+          "route": 55,
+          "from": {
+            "lat": 45.820537,
+            "lon": -120.8239937
+          },
+          "to": {
+            "lat": 45.8224439,
+            "lon": -120.8219721
+          },
+          "metersFromNetwork": 12.8,
+          "r5": {
+            "length": 349.9,
+            "duration": 470
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 349.6,
+            "duration": 461
+          }
+        },
+        {
+          "route": 56,
+          "from": {
+            "lat": 45.8148243,
+            "lon": -120.8235854
+          },
+          "to": {
+            "lat": 45.8147042,
+            "lon": -120.827688
+          },
+          "metersFromNetwork": 36.9,
+          "r5": null,
+          "accessMap": {
+            "code": "NoPath",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 57,
+          "from": {
+            "lat": 45.8148243,
+            "lon": -120.8235854
+          },
+          "to": {
+            "lat": 45.8136783,
+            "lon": -120.8189518
+          },
+          "metersFromNetwork": 36.9,
+          "r5": {
+            "length": 458.599,
+            "duration": 527
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 459.04,
+            "duration": 513
+          }
+        },
+        {
+          "route": 58,
+          "from": {
+            "lat": 45.8182886,
+            "lon": -120.8195288
+          },
+          "to": {
+            "lat": 45.8201458,
+            "lon": -120.8217352
+          },
+          "metersFromNetwork": 61.8,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 59,
+          "from": {
+            "lat": 45.8182886,
+            "lon": -120.8195288
+          },
+          "to": {
+            "lat": 45.8211307,
+            "lon": -120.8224415
+          },
+          "metersFromNetwork": 16.3,
+          "r5": null,
+          "accessMap": {
+            "code": "NoPath",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 60,
+          "from": {
+            "lat": 45.8194697,
+            "lon": -120.8128314
+          },
+          "to": {
+            "lat": 45.8176138,
+            "lon": -120.8137822
+          },
+          "metersFromNetwork": 17.5,
+          "r5": {
+            "length": 281.11,
+            "duration": 326
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 280.28,
+            "duration": 320
+          }
+        },
+        {
+          "route": 61,
+          "from": {
+            "lat": 45.8194697,
+            "lon": -120.8128314
+          },
+          "to": {
+            "lat": 45.8225287,
+            "lon": -120.8128802
+          },
+          "metersFromNetwork": 40.7,
+          "r5": {
+            "length": 393.401,
+            "duration": 487
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 395.13,
+            "duration": 476
+          }
+        },
+        {
+          "route": 62,
+          "from": {
+            "lat": 45.8225287,
+            "lon": -120.8128802
+          },
+          "to": {
+            "lat": 45.82476,
+            "lon": -120.815134
+          },
+          "metersFromNetwork": 86.4,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 63,
+          "from": {
+            "lat": 45.8220192,
+            "lon": -120.8214009
+          },
+          "to": {
+            "lat": 45.8201458,
+            "lon": -120.8217352
+          },
+          "metersFromNetwork": 61.8,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 64,
+          "from": {
+            "lat": 45.8220192,
+            "lon": -120.8214009
+          },
+          "to": {
+            "lat": 45.8211307,
+            "lon": -120.8224415
+          },
+          "metersFromNetwork": 8.6,
+          "r5": {
+            "length": 197.011,
+            "duration": 227
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 195.9,
+            "duration": 225
+          }
+        },
+        {
+          "route": 65,
+          "from": {
+            "lat": 45.8220192,
+            "lon": -120.8214009
+          },
+          "to": {
+            "lat": 45.821629,
+            "lon": -120.823616
+          },
+          "metersFromNetwork": 7.7,
+          "r5": {
+            "length": 249.222,
+            "duration": 272
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 248.55,
+            "duration": 265
+          }
+        },
+        {
+          "route": 66,
+          "from": {
+            "lat": 45.8220192,
+            "lon": -120.8214009
+          },
+          "to": {
+            "lat": 45.8224439,
+            "lon": -120.8219721
+          },
+          "metersFromNetwork": 12.8,
+          "r5": {
+            "length": 66.51,
+            "duration": 89
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 66.68,
+            "duration": 89
+          }
+        },
+        {
+          "route": 67,
+          "from": {
+            "lat": 45.8211307,
+            "lon": -120.8224415
+          },
+          "to": {
+            "lat": 45.8201458,
+            "lon": -120.8217352
+          },
+          "metersFromNetwork": 61.8,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 68,
+          "from": {
+            "lat": 45.8211307,
+            "lon": -120.8224415
+          },
+          "to": {
+            "lat": 45.821629,
+            "lon": -120.823616
+          },
+          "metersFromNetwork": 8.6,
+          "r5": {
+            "length": 138.879,
+            "duration": 185
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 139.19,
+            "duration": 177
+          }
+        },
+        {
+          "route": 69,
+          "from": {
+            "lat": 45.8211307,
+            "lon": -120.8224415
+          },
+          "to": {
+            "lat": 45.8224439,
+            "lon": -120.8219721
+          },
+          "metersFromNetwork": 12.8,
+          "r5": {
+            "length": 179.301,
+            "duration": 254
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 178.08,
+            "duration": 246
+          }
+        },
+        {
+          "route": 70,
+          "from": {
+            "lat": 45.8201458,
+            "lon": -120.8217352
+          },
+          "to": {
+            "lat": 45.821629,
+            "lon": -120.823616
+          },
+          "metersFromNetwork": 61.8,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 71,
+          "from": {
+            "lat": 45.8201458,
+            "lon": -120.8217352
+          },
+          "to": {
+            "lat": 45.8224439,
+            "lon": -120.8219721
+          },
+          "metersFromNetwork": 61.8,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 72,
+          "from": {
+            "lat": 45.8258493,
+            "lon": -120.8162803
+          },
+          "to": {
+            "lat": 45.82476,
+            "lon": -120.815134
+          },
+          "metersFromNetwork": 223.2,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 73,
+          "from": {
+            "lat": 45.8224439,
+            "lon": -120.8219721
+          },
+          "to": {
+            "lat": 45.821629,
+            "lon": -120.823616
+          },
+          "metersFromNetwork": 12.8,
+          "r5": {
+            "length": 231.512,
+            "duration": 286
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 230.73,
+            "duration": 280
+          }
+        }
+      ]
+    },
+    {
+      "name": "unconstrained_pedestrian_(sidewalks_only)",
+      "parameters": {
+        "uphill": 0.15,
+        "downhill": 0.15,
+        "avoid_curbs": false,
+        "street_avoidance": 1,
+        "fan_out": false
+      },
+      "routes": [
+        {
+          "route": 0,
+          "from": {
+            "lat": 45.8218772,
+            "lon": -120.822579
+          },
+          "to": {
+            "lat": 45.819631,
+            "lon": -120.8199202
+          },
+          "metersFromNetwork": 35.1,
+          "r5": {
+            "length": 491.632,
+            "duration": 560
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 491.21,
+            "duration": 539
+          }
+        },
+        {
+          "route": 1,
+          "from": {
+            "lat": 45.8218772,
+            "lon": -120.822579
+          },
+          "to": {
+            "lat": 45.8201458,
+            "lon": -120.8217352
+          },
+          "metersFromNetwork": 61.8,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 2,
+          "from": {
+            "lat": 45.8218772,
+            "lon": -120.822579
+          },
+          "to": {
+            "lat": 45.820537,
+            "lon": -120.8239937
+          },
+          "metersFromNetwork": 11.7,
+          "r5": {
+            "length": 254.232,
+            "duration": 331
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 256.31,
+            "duration": 335
+          }
+        },
+        {
+          "route": 3,
+          "from": {
+            "lat": 45.8218772,
+            "lon": -120.822579
+          },
+          "to": {
+            "lat": 45.8210802,
+            "lon": -120.8231188
+          },
+          "metersFromNetwork": 25.5,
+          "r5": {
+            "length": 108.255,
+            "duration": 182
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 107.8,
+            "duration": 181
+          }
+        },
+        {
+          "route": 4,
+          "from": {
+            "lat": 45.8218772,
+            "lon": -120.822579
+          },
+          "to": {
+            "lat": 45.8211307,
+            "lon": -120.8224415
+          },
+          "metersFromNetwork": 8.6,
+          "r5": {
+            "length": 83.633,
+            "duration": 132
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 84.11,
+            "duration": 131
+          }
+        },
+        {
+          "route": 5,
+          "from": {
+            "lat": 45.8218772,
+            "lon": -120.822579
+          },
+          "to": {
+            "lat": 45.821629,
+            "lon": -120.823616
+          },
+          "metersFromNetwork": 1.7,
+          "r5": {
+            "length": 140.844,
+            "duration": 183
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 141.81,
+            "duration": 176
+          }
+        },
+        {
+          "route": 6,
+          "from": {
+            "lat": 45.8218772,
+            "lon": -120.822579
+          },
+          "to": {
+            "lat": 45.8220192,
+            "lon": -120.8214009
+          },
+          "metersFromNetwork": 7.7,
+          "r5": {
+            "length": 113.378,
+            "duration": 100
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 111.78,
+            "duration": 96
+          }
+        },
+        {
+          "route": 7,
+          "from": {
+            "lat": 45.8218772,
+            "lon": -120.822579
+          },
+          "to": {
+            "lat": 45.8224475,
+            "lon": -120.8255793
+          },
+          "metersFromNetwork": 10.7,
+          "r5": {
+            "length": 285.812,
+            "duration": 334
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 286.67,
+            "duration": 340
+          }
+        },
+        {
+          "route": 8,
+          "from": {
+            "lat": 45.8218772,
+            "lon": -120.822579
+          },
+          "to": {
+            "lat": 45.8224439,
+            "lon": -120.8219721
+          },
+          "metersFromNetwork": 12.8,
+          "r5": {
+            "length": 95.668,
+            "duration": 116
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 93.97,
+            "duration": 112
+          }
+        },
+        {
+          "route": 9,
+          "from": {
+            "lat": 45.8386811,
+            "lon": -120.8151415
+          },
+          "to": {
+            "lat": 45.8371549,
+            "lon": -120.8151758
+          },
+          "metersFromNetwork": 128.4,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 10,
+          "from": {
+            "lat": 45.8199787,
+            "lon": -120.8110097
+          },
+          "to": {
+            "lat": 45.8176138,
+            "lon": -120.8137822
+          },
+          "metersFromNetwork": 72.7,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 11,
+          "from": {
+            "lat": 45.8199787,
+            "lon": -120.8110097
+          },
+          "to": {
+            "lat": 45.8183346,
+            "lon": -120.8094109
+          },
+          "metersFromNetwork": 82.1,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 12,
+          "from": {
+            "lat": 45.8199787,
+            "lon": -120.8110097
+          },
+          "to": {
+            "lat": 45.8194697,
+            "lon": -120.8128314
+          },
+          "metersFromNetwork": 72.7,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 13,
+          "from": {
+            "lat": 45.8199787,
+            "lon": -120.8110097
+          },
+          "to": {
+            "lat": 45.8200853,
+            "lon": -120.8102793
+          },
+          "metersFromNetwork": 72.7,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 14,
+          "from": {
+            "lat": 45.8199787,
+            "lon": -120.8110097
+          },
+          "to": {
+            "lat": 45.8225287,
+            "lon": -120.8128802
+          },
+          "metersFromNetwork": 72.7,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 15,
+          "from": {
+            "lat": 45.8200853,
+            "lon": -120.8102793
+          },
+          "to": {
+            "lat": 45.8176138,
+            "lon": -120.8137822
+          },
+          "metersFromNetwork": 31.6,
+          "r5": {
+            "length": 552.921,
+            "duration": 602
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 541.16,
+            "duration": 593
+          }
+        },
+        {
+          "route": 16,
+          "from": {
+            "lat": 45.8200853,
+            "lon": -120.8102793
+          },
+          "to": {
+            "lat": 45.8183346,
+            "lon": -120.8094109
+          },
+          "metersFromNetwork": 82.1,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 17,
+          "from": {
+            "lat": 45.8200853,
+            "lon": -120.8102793
+          },
+          "to": {
+            "lat": 45.8194697,
+            "lon": -120.8128314
+          },
+          "metersFromNetwork": 31.6,
+          "r5": {
+            "length": 276.311,
+            "duration": 280
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 265.32,
+            "duration": 275
+          }
+        },
+        {
+          "route": 18,
+          "from": {
+            "lat": 45.8200853,
+            "lon": -120.8102793
+          },
+          "to": {
+            "lat": 45.8225287,
+            "lon": -120.8128802
+          },
+          "metersFromNetwork": 40.7,
+          "r5": {
+            "length": 612.556,
+            "duration": 717
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 601.49,
+            "duration": 705
+          }
+        },
+        {
+          "route": 19,
+          "from": {
+            "lat": 45.819631,
+            "lon": -120.8199202
+          },
+          "to": {
+            "lat": 45.8182886,
+            "lon": -120.8195288
+          },
+          "metersFromNetwork": 35.1,
+          "r5": null,
+          "accessMap": {
+            "code": "NoPath",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 20,
+          "from": {
+            "lat": 45.819631,
+            "lon": -120.8199202
+          },
+          "to": {
+            "lat": 45.8201458,
+            "lon": -120.8217352
+          },
+          "metersFromNetwork": 61.8,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 21,
+          "from": {
+            "lat": 45.819631,
+            "lon": -120.8199202
+          },
+          "to": {
+            "lat": 45.820537,
+            "lon": -120.8239937
+          },
+          "metersFromNetwork": 35.1,
+          "r5": {
+            "length": 458.966,
+            "duration": 429
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 459.4,
+            "duration": 434
+          }
+        },
+        {
+          "route": 22,
+          "from": {
+            "lat": 45.819631,
+            "lon": -120.8199202
+          },
+          "to": {
+            "lat": 45.8210802,
+            "lon": -120.8231188
+          },
+          "metersFromNetwork": 35.1,
+          "r5": {
+            "length": 414.177,
+            "duration": 431
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 414.13,
+            "duration": 423
+          }
+        },
+        {
+          "route": 23,
+          "from": {
+            "lat": 45.819631,
+            "lon": -120.8199202
+          },
+          "to": {
+            "lat": 45.8211307,
+            "lon": -120.8224415
+          },
+          "metersFromNetwork": 35.1,
+          "r5": {
+            "length": 407.999,
+            "duration": 396
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 407.1,
+            "duration": 389
+          }
+        },
+        {
+          "route": 24,
+          "from": {
+            "lat": 45.819631,
+            "lon": -120.8199202
+          },
+          "to": {
+            "lat": 45.821629,
+            "lon": -120.823616
+          },
+          "metersFromNetwork": 35.1,
+          "r5": {
+            "length": 540.478,
+            "duration": 575
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 539.81,
+            "duration": 561
+          }
+        },
+        {
+          "route": 25,
+          "from": {
+            "lat": 45.819631,
+            "lon": -120.8199202
+          },
+          "to": {
+            "lat": 45.8220192,
+            "lon": -120.8214009
+          },
+          "metersFromNetwork": 35.1,
+          "r5": {
+            "length": 556.19,
+            "duration": 613
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 558.44,
+            "duration": 594
+          }
+        },
+        {
+          "route": 26,
+          "from": {
+            "lat": 45.819631,
+            "lon": -120.8199202
+          },
+          "to": {
+            "lat": 45.8224439,
+            "lon": -120.8219721
+          },
+          "metersFromNetwork": 35.1,
+          "r5": {
+            "length": 587.3,
+            "duration": 650
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 585.18,
+            "duration": 636
+          }
+        },
+        {
+          "route": 27,
+          "from": {
+            "lat": 45.825598,
+            "lon": -120.8181986
+          },
+          "to": {
+            "lat": 45.82476,
+            "lon": -120.815134
+          },
+          "metersFromNetwork": 272.8,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 28,
+          "from": {
+            "lat": 45.825598,
+            "lon": -120.8181986
+          },
+          "to": {
+            "lat": 45.8253723,
+            "lon": -120.8131901
+          },
+          "metersFromNetwork": 272.8,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 29,
+          "from": {
+            "lat": 45.825598,
+            "lon": -120.8181986
+          },
+          "to": {
+            "lat": 45.8258493,
+            "lon": -120.8162803
+          },
+          "metersFromNetwork": 272.8,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 30,
+          "from": {
+            "lat": 45.8253723,
+            "lon": -120.8131901
+          },
+          "to": {
+            "lat": 45.8225287,
+            "lon": -120.8128802
+          },
+          "metersFromNetwork": 87.6,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 31,
+          "from": {
+            "lat": 45.8253723,
+            "lon": -120.8131901
+          },
+          "to": {
+            "lat": 45.82476,
+            "lon": -120.815134
+          },
+          "metersFromNetwork": 87.6,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 32,
+          "from": {
+            "lat": 45.8253723,
+            "lon": -120.8131901
+          },
+          "to": {
+            "lat": 45.8258493,
+            "lon": -120.8162803
+          },
+          "metersFromNetwork": 223.2,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 33,
+          "from": {
+            "lat": 45.8253723,
+            "lon": -120.8131901
+          },
+          "to": {
+            "lat": 45.8271673,
+            "lon": -120.8102718
+          },
+          "metersFromNetwork": 91.6,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 34,
+          "from": {
+            "lat": 45.8183346,
+            "lon": -120.8094109
+          },
+          "to": {
+            "lat": 45.8176138,
+            "lon": -120.8137822
+          },
+          "metersFromNetwork": 82.1,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 35,
+          "from": {
+            "lat": 45.8183346,
+            "lon": -120.8094109
+          },
+          "to": {
+            "lat": 45.8194697,
+            "lon": -120.8128314
+          },
+          "metersFromNetwork": 82.1,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 36,
+          "from": {
+            "lat": 45.8210802,
+            "lon": -120.8231188
+          },
+          "to": {
+            "lat": 45.8201458,
+            "lon": -120.8217352
+          },
+          "metersFromNetwork": 61.8,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 37,
+          "from": {
+            "lat": 45.8210802,
+            "lon": -120.8231188
+          },
+          "to": {
+            "lat": 45.820537,
+            "lon": -120.8239937
+          },
+          "metersFromNetwork": 25.5,
+          "r5": {
+            "length": 145.977,
+            "duration": 149
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 148.51,
+            "duration": 164
+          }
+        },
+        {
+          "route": 38,
+          "from": {
+            "lat": 45.8210802,
+            "lon": -120.8231188
+          },
+          "to": {
+            "lat": 45.8211307,
+            "lon": -120.8224415
+          },
+          "metersFromNetwork": 25.5,
+          "r5": {
+            "length": 77.69,
+            "duration": 100
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 76.6,
+            "duration": 100
+          }
+        },
+        {
+          "route": 39,
+          "from": {
+            "lat": 45.8210802,
+            "lon": -120.8231188
+          },
+          "to": {
+            "lat": 45.821629,
+            "lon": -120.823616
+          },
+          "metersFromNetwork": 25.5,
+          "r5": {
+            "length": 126.301,
+            "duration": 145
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 125.68,
+            "duration": 137
+          }
+        },
+        {
+          "route": 40,
+          "from": {
+            "lat": 45.8210802,
+            "lon": -120.8231188
+          },
+          "to": {
+            "lat": 45.8220192,
+            "lon": -120.8214009
+          },
+          "metersFromNetwork": 25.5,
+          "r5": {
+            "length": 221.633,
+            "duration": 291
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 218.9,
+            "duration": 282
+          }
+        },
+        {
+          "route": 41,
+          "from": {
+            "lat": 45.8210802,
+            "lon": -120.8231188
+          },
+          "to": {
+            "lat": 45.8224475,
+            "lon": -120.8255793
+          },
+          "metersFromNetwork": 25.5,
+          "r5": {
+            "length": 359.067,
+            "duration": 435
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 359.49,
+            "duration": 437
+          }
+        },
+        {
+          "route": 42,
+          "from": {
+            "lat": 45.8210802,
+            "lon": -120.8231188
+          },
+          "to": {
+            "lat": 45.8224439,
+            "lon": -120.8219721
+          },
+          "metersFromNetwork": 25.5,
+          "r5": {
+            "length": 203.323,
+            "duration": 307
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 201.09,
+            "duration": 297
+          }
+        },
+        {
+          "route": 43,
+          "from": {
+            "lat": 45.8224475,
+            "lon": -120.8255793
+          },
+          "to": {
+            "lat": 45.8201458,
+            "lon": -120.8217352
+          },
+          "metersFromNetwork": 61.8,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 44,
+          "from": {
+            "lat": 45.8224475,
+            "lon": -120.8255793
+          },
+          "to": {
+            "lat": 45.820537,
+            "lon": -120.8239937
+          },
+          "metersFromNetwork": 11.7,
+          "r5": {
+            "length": 429.356,
+            "duration": 543
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 426.2,
+            "duration": 536
+          }
+        },
+        {
+          "route": 45,
+          "from": {
+            "lat": 45.8224475,
+            "lon": -120.8255793
+          },
+          "to": {
+            "lat": 45.8211514,
+            "lon": -120.8290054
+          },
+          "metersFromNetwork": 28.8,
+          "r5": {
+            "length": 369.3,
+            "duration": 467
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 369.12,
+            "duration": 467
+          }
+        },
+        {
+          "route": 46,
+          "from": {
+            "lat": 45.8224475,
+            "lon": -120.8255793
+          },
+          "to": {
+            "lat": 45.8211307,
+            "lon": -120.8224415
+          },
+          "metersFromNetwork": 10.7,
+          "r5": {
+            "length": 367.645,
+            "duration": 481
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 368.97,
+            "duration": 477
+          }
+        },
+        {
+          "route": 47,
+          "from": {
+            "lat": 45.8224475,
+            "lon": -120.8255793
+          },
+          "to": {
+            "lat": 45.821629,
+            "lon": -120.823616
+          },
+          "metersFromNetwork": 10.7,
+          "r5": {
+            "length": 371.234,
+            "duration": 436
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 389.14,
+            "duration": 430
+          }
+        },
+        {
+          "route": 48,
+          "from": {
+            "lat": 45.8224475,
+            "lon": -120.8255793
+          },
+          "to": {
+            "lat": 45.8220192,
+            "lon": -120.8214009
+          },
+          "metersFromNetwork": 10.7,
+          "r5": {
+            "length": 346.788,
+            "duration": 408
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 347.17,
+            "duration": 401
+          }
+        },
+        {
+          "route": 49,
+          "from": {
+            "lat": 45.8224475,
+            "lon": -120.8255793
+          },
+          "to": {
+            "lat": 45.8224439,
+            "lon": -120.8219721
+          },
+          "metersFromNetwork": 12.8,
+          "r5": {
+            "length": 280.278,
+            "duration": 320
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 280.5,
+            "duration": 315
+          }
+        },
+        {
+          "route": 50,
+          "from": {
+            "lat": 45.820537,
+            "lon": -120.8239937
+          },
+          "to": {
+            "lat": 45.8201458,
+            "lon": -120.8217352
+          },
+          "metersFromNetwork": 61.8,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 51,
+          "from": {
+            "lat": 45.820537,
+            "lon": -120.8239937
+          },
+          "to": {
+            "lat": 45.8211514,
+            "lon": -120.8290054
+          },
+          "metersFromNetwork": 28.8,
+          "r5": {
+            "length": 470.878,
+            "duration": 505
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 470.73,
+            "duration": 502
+          }
+        },
+        {
+          "route": 52,
+          "from": {
+            "lat": 45.820537,
+            "lon": -120.8239937
+          },
+          "to": {
+            "lat": 45.8211307,
+            "lon": -120.8224415
+          },
+          "metersFromNetwork": 11.7,
+          "r5": {
+            "length": 174.199,
+            "duration": 220
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 175.84,
+            "duration": 218
+          }
+        },
+        {
+          "route": 53,
+          "from": {
+            "lat": 45.820537,
+            "lon": -120.8239937
+          },
+          "to": {
+            "lat": 45.821629,
+            "lon": -120.823616
+          },
+          "metersFromNetwork": 11.7,
+          "r5": {
+            "length": 224.012,
+            "duration": 258
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 222.85,
+            "duration": 257
+          }
+        },
+        {
+          "route": 54,
+          "from": {
+            "lat": 45.820537,
+            "lon": -120.8239937
+          },
+          "to": {
+            "lat": 45.8220192,
+            "lon": -120.8214009
+          },
+          "metersFromNetwork": 11.7,
+          "r5": {
+            "length": 367.61,
+            "duration": 454
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 367.41,
+            "duration": 445
+          }
+        },
+        {
+          "route": 55,
+          "from": {
+            "lat": 45.820537,
+            "lon": -120.8239937
+          },
+          "to": {
+            "lat": 45.8224439,
+            "lon": -120.8219721
+          },
+          "metersFromNetwork": 12.8,
+          "r5": {
+            "length": 349.9,
+            "duration": 470
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 349.6,
+            "duration": 461
+          }
+        },
+        {
+          "route": 56,
+          "from": {
+            "lat": 45.8148243,
+            "lon": -120.8235854
+          },
+          "to": {
+            "lat": 45.8147042,
+            "lon": -120.827688
+          },
+          "metersFromNetwork": 36.9,
+          "r5": null,
+          "accessMap": {
+            "code": "NoPath",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 57,
+          "from": {
+            "lat": 45.8148243,
+            "lon": -120.8235854
+          },
+          "to": {
+            "lat": 45.8136783,
+            "lon": -120.8189518
+          },
+          "metersFromNetwork": 36.9,
+          "r5": {
+            "length": 458.599,
+            "duration": 527
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 459.04,
+            "duration": 513
+          }
+        },
+        {
+          "route": 58,
+          "from": {
+            "lat": 45.8182886,
+            "lon": -120.8195288
+          },
+          "to": {
+            "lat": 45.8201458,
+            "lon": -120.8217352
+          },
+          "metersFromNetwork": 61.8,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 59,
+          "from": {
+            "lat": 45.8182886,
+            "lon": -120.8195288
+          },
+          "to": {
+            "lat": 45.8211307,
+            "lon": -120.8224415
+          },
+          "metersFromNetwork": 16.3,
+          "r5": null,
+          "accessMap": {
+            "code": "NoPath",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 60,
+          "from": {
+            "lat": 45.8194697,
+            "lon": -120.8128314
+          },
+          "to": {
+            "lat": 45.8176138,
+            "lon": -120.8137822
+          },
+          "metersFromNetwork": 17.5,
+          "r5": {
+            "length": 281.11,
+            "duration": 326
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 280.28,
+            "duration": 320
+          }
+        },
+        {
+          "route": 61,
+          "from": {
+            "lat": 45.8194697,
+            "lon": -120.8128314
+          },
+          "to": {
+            "lat": 45.8225287,
+            "lon": -120.8128802
+          },
+          "metersFromNetwork": 40.7,
+          "r5": {
+            "length": 393.401,
+            "duration": 487
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 395.13,
+            "duration": 476
+          }
+        },
+        {
+          "route": 62,
+          "from": {
+            "lat": 45.8225287,
+            "lon": -120.8128802
+          },
+          "to": {
+            "lat": 45.82476,
+            "lon": -120.815134
+          },
+          "metersFromNetwork": 86.4,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 63,
+          "from": {
+            "lat": 45.8220192,
+            "lon": -120.8214009
+          },
+          "to": {
+            "lat": 45.8201458,
+            "lon": -120.8217352
+          },
+          "metersFromNetwork": 61.8,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 64,
+          "from": {
+            "lat": 45.8220192,
+            "lon": -120.8214009
+          },
+          "to": {
+            "lat": 45.8211307,
+            "lon": -120.8224415
+          },
+          "metersFromNetwork": 8.6,
+          "r5": {
+            "length": 197.011,
+            "duration": 227
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 195.9,
+            "duration": 225
+          }
+        },
+        {
+          "route": 65,
+          "from": {
+            "lat": 45.8220192,
+            "lon": -120.8214009
+          },
+          "to": {
+            "lat": 45.821629,
+            "lon": -120.823616
+          },
+          "metersFromNetwork": 7.7,
+          "r5": {
+            "length": 249.222,
+            "duration": 272
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 248.55,
+            "duration": 265
+          }
+        },
+        {
+          "route": 66,
+          "from": {
+            "lat": 45.8220192,
+            "lon": -120.8214009
+          },
+          "to": {
+            "lat": 45.8224439,
+            "lon": -120.8219721
+          },
+          "metersFromNetwork": 12.8,
+          "r5": {
+            "length": 66.51,
+            "duration": 89
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 66.68,
+            "duration": 89
+          }
+        },
+        {
+          "route": 67,
+          "from": {
+            "lat": 45.8211307,
+            "lon": -120.8224415
+          },
+          "to": {
+            "lat": 45.8201458,
+            "lon": -120.8217352
+          },
+          "metersFromNetwork": 61.8,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 68,
+          "from": {
+            "lat": 45.8211307,
+            "lon": -120.8224415
+          },
+          "to": {
+            "lat": 45.821629,
+            "lon": -120.823616
+          },
+          "metersFromNetwork": 8.6,
+          "r5": {
+            "length": 138.879,
+            "duration": 185
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 139.19,
+            "duration": 177
+          }
+        },
+        {
+          "route": 69,
+          "from": {
+            "lat": 45.8211307,
+            "lon": -120.8224415
+          },
+          "to": {
+            "lat": 45.8224439,
+            "lon": -120.8219721
+          },
+          "metersFromNetwork": 12.8,
+          "r5": {
+            "length": 179.301,
+            "duration": 254
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 178.08,
+            "duration": 246
+          }
+        },
+        {
+          "route": 70,
+          "from": {
+            "lat": 45.8201458,
+            "lon": -120.8217352
+          },
+          "to": {
+            "lat": 45.821629,
+            "lon": -120.823616
+          },
+          "metersFromNetwork": 61.8,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 71,
+          "from": {
+            "lat": 45.8201458,
+            "lon": -120.8217352
+          },
+          "to": {
+            "lat": 45.8224439,
+            "lon": -120.8219721
+          },
+          "metersFromNetwork": 61.8,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 72,
+          "from": {
+            "lat": 45.8258493,
+            "lon": -120.8162803
+          },
+          "to": {
+            "lat": 45.82476,
+            "lon": -120.815134
+          },
+          "metersFromNetwork": 223.2,
+          "r5": null,
+          "accessMap": {
+            "code": "InvalidWaypoint",
+            "length": null,
+            "duration": null
+          }
+        },
+        {
+          "route": 73,
+          "from": {
+            "lat": 45.8224439,
+            "lon": -120.8219721
+          },
+          "to": {
+            "lat": 45.821629,
+            "lon": -120.823616
+          },
+          "metersFromNetwork": 12.8,
+          "r5": {
+            "length": 231.512,
+            "duration": 286
+          },
+          "accessMap": {
+            "code": "Ok",
+            "length": 230.73,
+            "duration": 280
+          }
+        }
+      ]
+    }
+  ]
+}

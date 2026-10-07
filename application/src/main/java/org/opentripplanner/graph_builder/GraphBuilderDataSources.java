@@ -29,6 +29,7 @@ import org.opentripplanner.datastore.api.FileType;
 import org.opentripplanner.datastore.api.OtpBaseDirectory;
 import org.opentripplanner.ext.emission.parameters.EmissionFeedParameters;
 import org.opentripplanner.ext.empiricaldelay.parameters.EmpiricalDelayFeedParameters;
+import org.opentripplanner.framework.application.OTPFeature;
 import org.opentripplanner.framework.application.OtpAppException;
 import org.opentripplanner.graph_builder.model.ConfiguredCompositeDataSource;
 import org.opentripplanner.graph_builder.model.ConfiguredDataSource;
@@ -109,6 +110,11 @@ public class GraphBuilderDataSources implements Closeable {
 
   public boolean hasOsm() {
     return has(OSM);
+  }
+
+  /** True if the OpenSidewalks sandbox feature has datasets to build streets from. */
+  public boolean hasOpenSidewalks() {
+    return OTPFeature.OpenSidewalks.isOn() && !buildConfig.openSidewalks.sources().isEmpty();
   }
 
   public boolean hasDem() {
@@ -363,7 +369,7 @@ public class GraphBuilderDataSources implements Closeable {
 
   private void validateCliMatchesInputData(CommandLineParameters cli) {
     if (cli.build) {
-      if (!hasOsm() && !hasTransitOrTaxiData()) {
+      if (!hasOsm() && !hasTransitOrTaxiData() && !hasOpenSidewalks()) {
         throw new OtpAppException("Unable to build graph, no transit nor OSM data available.");
       }
     } else if (cli.buildStreet) {

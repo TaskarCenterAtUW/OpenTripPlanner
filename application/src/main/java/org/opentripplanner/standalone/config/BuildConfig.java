@@ -30,6 +30,7 @@ import org.opentripplanner.ext.emission.parameters.EmissionParameters;
 import org.opentripplanner.ext.empiricaldelay.config.EmpiricalDelayConfig;
 import org.opentripplanner.ext.empiricaldelay.parameters.EmpiricalDelayParameters;
 import org.opentripplanner.ext.fares.FaresConfiguration;
+import org.opentripplanner.ext.opensidewalks.config.OpenSidewalksConfig;
 import org.opentripplanner.ext.vehiclerentalgeofencing.config.VehicleRentalGeofencingConfig;
 import org.opentripplanner.ext.vehiclerentalgeofencing.parameters.VehicleRentalGeofencingParameters;
 import org.opentripplanner.graph_builder.module.cache.GraphBuildCacheParameters;
@@ -170,6 +171,9 @@ public class BuildConfig implements OtpDataStoreConfig {
   public final int maxAreaNodes;
 
   public final DataOverlayConfig dataOverlay;
+
+  /** Config for the OpenSidewalks Sandbox module */
+  public final OpenSidewalksConfig openSidewalks;
   public final double maxStopToShapeSnapDistance;
   public final Set<String> boardingLocationTags;
   public final List<CompoundRefTagGroup> elevatorRefTags;
@@ -643,6 +647,7 @@ public class BuildConfig implements OtpDataStoreConfig {
     this.fareConfig = FaresConfiguration.fromConfig(root, "fares");
     this.edgeNamer = EdgeNamerFactory.fromConfig(root, "osmNaming");
     this.dataOverlay = DataOverlayConfigMapper.map(root, "dataOverlay");
+    this.openSidewalks = OpenSidewalksConfig.fromConfig(root, "openSidewalks");
 
     this.gsConfig = GsConfig.fromConfig(root, "gsConfig");
 
