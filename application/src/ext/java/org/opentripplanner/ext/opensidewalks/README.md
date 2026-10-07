@@ -19,7 +19,7 @@ This page is for those working on the code.
 | `OswModule`                                   | The graph builder module: builds the street edges.                                                |
 | `OswStopLinkModule`, `OswStopLink`            | A graph builder module that links stops to the edges that travellers who can not use all need.    |
 | `OswTravellers`                               | Finds the least able travellers who can use an edge, which says who can use it.                   |
-| `config/OswTransferRequests`                  | Adds transfer requests for the travellers at the ends of the parameter ranges.                    |
+| `OswTransferModule`                           | A graph builder module that finds transfer paths for travellers who can not use the ones OTP found. |
 | `PedestrianCostProfile`, `PedestrianCostSpec` | The profile format, and the cost function for one set of parameter values.                        |
 | `PedestrianCostParameters`                    | The parameter values of a request. Carried by the route request to the street search and linking. |
 | `OswCosting`                                  | The profile of a graph, shared by its edges. Turns the values of a request into a cost function.  |

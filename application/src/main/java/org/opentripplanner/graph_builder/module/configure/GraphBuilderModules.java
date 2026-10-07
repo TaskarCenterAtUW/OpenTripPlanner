@@ -11,7 +11,6 @@ import org.opentripplanner.datastore.api.CompositeDataSource;
 import org.opentripplanner.datastore.api.DataSource;
 import org.opentripplanner.ext.dataoverlay.EdgeUpdaterModule;
 import org.opentripplanner.ext.dataoverlay.configure.DataOverlayFactory;
-import org.opentripplanner.ext.opensidewalks.config.OswTransferRequests;
 import org.opentripplanner.ext.stopconsolidation.StopConsolidationModule;
 import org.opentripplanner.ext.stopconsolidation.StopConsolidationRepository;
 import org.opentripplanner.ext.transferanalyzer.DirectTransferAnalyzer;
@@ -259,19 +258,14 @@ public class GraphBuilderModules {
     Graph graph,
     TransitRepository transitRepository,
     TransferRepository transferRepository,
-    DataImportIssueStore issueStore,
-    GraphBuilderDataSources dataSources
+    DataImportIssueStore issueStore
   ) {
     return new DirectTransferGenerator(
       graph,
       transitRepository,
       transferRepository,
       issueStore,
-      OswTransferRequests.withTravellers(
-        config.regularTransferParameters(),
-        config.openSidewalks,
-        dataSources.getBaseDirectory()
-      )
+      config.regularTransferParameters()
     );
   }
 

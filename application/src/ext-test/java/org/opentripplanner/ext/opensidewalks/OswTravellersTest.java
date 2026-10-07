@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.opentripplanner.test.support.ResourceLoader;
@@ -92,6 +93,45 @@ class OswTravellersTest {
   void anEdgeNobodyCanUseHasNoUsers() {
     var tooSteep = new OswEdgeAttributes(sidewalks, 0.3, 50, CurbRamps.YES, false);
     assertThat(travellers.leastAbleUsers(tooSteep)).isEmpty();
+  }
+
+  @Test
+  void theNextTravellersAreJustShortOfWhatAPathAsksFor() {
+    var steep = new OswEdgeAttributes(sidewalks, 0.1, 50, CurbRamps.YES, false);
+    var noRamps = new OswEdgeAttributes(crossings, Double.NaN, 15, CurbRamps.NO, false);
+    var mostAble = travellers.mostAble();
+    assertEquals("0.15", mostAble.get("uphill"));
+    assertEquals("false", mostAble.get("avoid_curbs"));
+
+    var next = travellers.justShortOf(mostAble, List.of(steep, noRamps));
+
+    // One who can not manage the grade, and one who avoids curbs. In every other respect they
+    // are as able as the traveller before them.
+    assertThat(next).hasSize(2);
+    var weaker = next
+      .stream()
+      .filter(t -> !t.get("uphill").equals("0.15"))
+      .findFirst()
+      .orElseThrow();
+    assertThat(Double.parseDouble(weaker.get("uphill"))).isLessThan(0.1);
+    assertThat(Double.parseDouble(weaker.get("uphill"))).isGreaterThan(0.0999);
+    assertEquals("false", weaker.get("avoid_curbs"));
+    var avoiding = next
+      .stream()
+      .filter(t -> t.get("avoid_curbs").equals("true"))
+      .findFirst()
+      .orElseThrow();
+    assertEquals("0.15", avoiding.get("uphill"));
+
+    assertFalse(travellers.canUse(PedestrianCostParameters.of(weaker), steep));
+    assertTrue(travellers.canUse(PedestrianCostParameters.of(weaker), noRamps));
+    assertFalse(travellers.canUse(PedestrianCostParameters.of(avoiding), noRamps));
+  }
+
+  @Test
+  void aPathThatAsksForNothingHasNoNextTravellers() {
+    var level = new OswEdgeAttributes(sidewalks, 0.0, 50, CurbRamps.YES, true);
+    assertThat(travellers.justShortOf(travellers.mostAble(), List.of(level))).isEmpty();
   }
 
   @Test

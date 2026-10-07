@@ -223,7 +223,7 @@ class OswModuleTest {
 
   @Test
   void aConfigurationWithoutSourcesBuildsNothing() {
-    var config = new OpenSidewalksConfig(List.of(), null, Map.of(), true);
+    var config = new OpenSidewalksConfig(List.of(), null, Map.of());
     assertNull(OswModule.create(config, new Graph(), DATASET));
   }
 
@@ -232,8 +232,7 @@ class OswModuleTest {
     var config = new OpenSidewalksConfig(
       List.of("tiny"),
       "unweaver-dynamic.json",
-      Map.of("avoid_curbs", "false"),
-      true
+      Map.of("avoid_curbs", "false")
     );
     var graph = new Graph();
     var module = OswModule.create(config, graph, DATASET.getParentFile());

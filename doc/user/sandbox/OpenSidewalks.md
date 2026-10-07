@@ -179,7 +179,6 @@ The `openSidewalks` section of `build-config.json` has these parameters:
 | `sources`    | `string[]` | The datasets to load: a zip file or a directory containing `*.nodes.geojson` and `*.edges.geojson`, or an `*.edges.geojson` file.                        |
 | `profile`    | `string`   | The pedestrian cost profile to cost the edges with. Optional.                                                                                            |
 | `parameters` | `object`   | The parameter values a request has when it gives none itself. A parameter that is left out has the default value the profile gives it. Optional.          |
-| `findTransfersForAllTravellers` | `boolean` | Find the paths of transfers between stops for the travellers at the ends of the parameter ranges too. Defaults to `true`. See [below](#transit-stops-and-transfers). |
 
 A relative path is resolved against the OTP base directory, the one holding `build-config.json`.
 
@@ -245,30 +244,20 @@ graph is built. No traveller is known then, so both are done for all of them.
   a stop along the nearest of those they can use.
 - The link between a stop and an OpenSidewalks edge takes the time of walking the distance between
   them at 1.3 m/s. The links OTP makes between stops and other streets take no time.
-- The paths of transfers are found for the requests in `transferRequests` of `build-config.json`,
-  which is one walking request unless it is set, and for the travellers at the ends of the ranges
-  of the parameters that decide whether an edge can be used. With the two limits, two switches and
-  street avoidance of the Walksheds profile those are 32 travellers, and finding transfers takes
-  33 times as long as for one. Set `findTransfersForAllTravellers` to `false` to find them only
-  for the `transferRequests`, and list a request there for each kind of traveller that should have
-  a path of their own:
+- The paths of transfers are found by OTP for the requests in `transferRequests` of
+  `build-config.json`, which is one walking request unless it is set. Then the stops within reach
+  of each stop are searched for again by less and less able travellers, to find the paths of the
+  travellers who can not use the ones found so far:
 
-    ```JSON
-    // build-config.json
-    {
-      "openSidewalks": {
-        "sources": ["goldendale.osw.zip"],
-        "profile": "ws-prod.json",
-        "findTransfersForAllTravellers": false
-      },
-      "transferRequests": [
-        { "modes": "WALK" },
-        { "modes": "WALK", "pedestrianCost": { "uphill": 0.04, "downhill": 0.04, "avoid_curbs": true } }
-      ]
-    }
-    ```
+    1. The most able traveller finds every stop that anyone can transfer to.
+    2. Each path found asks something of a traveller: the most that any of its edges does.
+    3. A traveller just short of that, in one respect, can not walk the path, and searches for
+       another way.
 
-  When a trip is planned, each of the paths between two stops is walked again as the traveller of
+  This goes on until nothing new is found, so the travellers who search are the ones that the
+  streets around the stop make a difference for. Where every path is one that all can use, the
+  first search is the last. A stop is searched from at most 50 times.
+- When a trip is planned, each of the paths between two stops is walked again as the traveller of
   the request. A path with an edge that traveller can not use is dropped, and the quickest of the
   others is the transfer.
 
@@ -321,8 +310,10 @@ graph is built. No traveller is known then, so both are done for all of them.
 - The profile applies to walking only, and not to walking a bicycle or scooter.
 - The parameter values of a request can be set in the GTFS GraphQL API, but not in the Transmodel
   API.
-- A traveller whose values are between the ones transfers were found for is given the quickest
-  of those paths that they can use, which may not be the quickest path there is for them.
+- Every traveller who can transfer between two stops has a path to do so, and it is the quickest
+  path for the traveller it was found for. How fast an edge is walked depends on the limits of the
+  traveller too, so another traveller who can use the same edges may have a slightly quicker path
+  that was not found.
 - A place is linked to the nearest edge the traveller can use within a kilometer, also when that
   is far from the place. R5 and AccessMap give up beyond 50 meters. The walk between the place and
   the edge is not part of the trip.
