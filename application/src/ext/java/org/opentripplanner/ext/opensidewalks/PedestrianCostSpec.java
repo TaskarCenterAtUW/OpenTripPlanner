@@ -24,17 +24,12 @@ public class PedestrianCostSpec {
 
   private final PedestrianCostProfile profile;
   private final Map<String, JsonNode> parameterValues;
-  private final String runSpecId;
+  private volatile String runSpecId;
   private final List<ResolvedLayer> layers;
 
   PedestrianCostSpec(PedestrianCostProfile profile, Map<String, JsonNode> parameterValues) {
     this.profile = profile;
     this.parameterValues = Collections.unmodifiableMap(new LinkedHashMap<>(parameterValues));
-    ObjectNode runSpec = JsonNodeFactory.instance.objectNode();
-    runSpec.put("profileId", profile.profileId());
-    ObjectNode params = runSpec.putObject("parameters");
-    parameterValues.forEach(params::set);
-    this.runSpecId = CanonicalJson.md5OfCanonical(runSpec);
     this.layers = profile
       .layers()
       .stream()
@@ -48,7 +43,16 @@ public class PedestrianCostSpec {
 
   /** Identifies the cost function together with the parameter values. */
   public String runSpecId() {
-    return runSpecId;
+    var id = runSpecId;
+    if (id == null) {
+      ObjectNode runSpec = JsonNodeFactory.instance.objectNode();
+      runSpec.put("profileId", profile.profileId());
+      ObjectNode params = runSpec.putObject("parameters");
+      parameterValues.forEach(params::set);
+      id = CanonicalJson.md5OfCanonical(runSpec);
+      runSpecId = id;
+    }
+    return id;
   }
 
   /** Every parameter's value, with defaults filled in, in the order declared by the profile. */

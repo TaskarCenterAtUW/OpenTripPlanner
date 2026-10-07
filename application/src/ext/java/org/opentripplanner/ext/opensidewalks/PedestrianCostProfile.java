@@ -63,6 +63,13 @@ public class PedestrianCostProfile {
   private final List<Layer> layers;
   private final boolean otherEdgesWalkable;
 
+  /**
+   * For each parameter that decides whether an edge can be used: whether a higher value, or true,
+   * lets a traveller use more edges. A parameter that only changes how long an edge takes is not
+   * in here.
+   */
+  private final Map<String, Boolean> looserWhenHigher = new LinkedHashMap<>();
+
   public PedestrianCostProfile(JsonNode source) {
     if (source == null || !source.isObject()) {
       throw new IllegalArgumentException("A profile must be a JSON object.");
@@ -93,6 +100,30 @@ public class PedestrianCostProfile {
       Set.of("name", "description", "parameters", "layers", "otherEdges", "schemaVersion"),
       "profile"
     );
+    for (Layer layer : layers) {
+      if (layer.inclineSpeed != null) {
+        orient(layer.inclineSpeed.maxUphill, true);
+        orient(layer.inclineSpeed.maxDownhill, true);
+      }
+      orient(layer.requireCurbRamps, false);
+      orient(layer.blocked, false);
+      if (layer.avoidance != null) {
+        orient(layer.avoidance.amount, false);
+        orient(layer.avoidance.unless, true);
+      }
+    }
+  }
+
+  private void orient(@Nullable Value value, boolean higherIsLooser) {
+    if (value == null || value.parameter == null) {
+      return;
+    }
+    Boolean known = looserWhenHigher.putIfAbsent(value.parameter, higherIsLooser);
+    if (known != null && known != higherIsLooser) {
+      throw new IllegalArgumentException(
+        "Parameter %s makes some edges easier to use and others harder.".formatted(value.parameter)
+      );
+    }
   }
 
   public static PedestrianCostProfile fromFile(File file) throws IOException {
@@ -169,11 +200,19 @@ public class PedestrianCostProfile {
     return extremeValues().stream().map(this::resolve).toList();
   }
 
-  /** The parameter values of the travellers at the corners of the ranges of the parameters. */
-  List<Map<String, String>> extremeValues() {
+  /**
+   * The parameter values of the travellers at the corners of the ranges of the parameters. Only
+   * the parameters that decide whether an edge can be used have a value. The others would not
+   * change which edges a traveller can use.
+   */
+  public List<Map<String, String>> extremeValues() {
     List<Map<String, String>> corners = new ArrayList<>();
     corners.add(new LinkedHashMap<>());
-    for (Parameter p : parameters.values()) {
+    for (String name : looserWhenHigher.keySet()) {
+      Parameter p = parameters.get(name);
+      if (p == null) {
+        continue;
+      }
       List<Map<String, String>> next = new ArrayList<>();
       for (var corner : corners) {
         for (Object value : p.extremes()) {
@@ -187,6 +226,26 @@ public class PedestrianCostProfile {
       }
     }
     return corners;
+  }
+
+  /** The parameters that decide whether an edge can be used, in the order they are first used. */
+  List<Parameter> usabilityParameters() {
+    return looserWhenHigher
+      .keySet()
+      .stream()
+      .map(parameters::get)
+      .filter(java.util.Objects::nonNull)
+      .toList();
+  }
+
+  /**
+   * The value of a parameter at the end of its range where a traveller can use the most edges,
+   * or the fewest.
+   */
+  Object extreme(Parameter parameter, boolean loosest) {
+    var ends = parameter.extremes();
+    boolean highest = looserWhenHigher.get(parameter.name) == loosest;
+    return highest ? ends.getLast() : ends.getFirst();
   }
 
   /** The index of the first layer the tags of an edge match, or -1 if they match none. */

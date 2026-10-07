@@ -179,6 +179,7 @@ The `openSidewalks` section of `build-config.json` has these parameters:
 | `sources`    | `string[]` | The datasets to load: a zip file or a directory containing `*.nodes.geojson` and `*.edges.geojson`, or an `*.edges.geojson` file.                        |
 | `profile`    | `string`   | The pedestrian cost profile to cost the edges with. Optional.                                                                                            |
 | `parameters` | `object`   | The parameter values a request has when it gives none itself. A parameter that is left out has the default value the profile gives it. Optional.          |
+| `findTransfersForAllTravellers` | `boolean` | Find the paths of transfers between stops for the travellers at the ends of the parameter ranges too. Defaults to `true`. See [below](#transit-stops-and-transfers). |
 
 A relative path is resolved against the OTP base directory, the one holding `build-config.json`.
 
@@ -236,19 +237,30 @@ Without a profile every edge can be walked, at the cost OTP gives any other stre
 ### Transit stops and transfers
 
 Stops are linked to the streets, and the paths of the transfers between them are found, when the
-graph is built. No traveller is known then, so both are done for several.
+graph is built. No traveller is known then, so both are done for all of them.
 
-- A stop is linked to the nearest edge every traveller can use, as far as the ranges of the
-  parameters go. It is also linked to the nearest edge that the traveller of the build
-  configuration can use, and to the nearest one for each of the travellers at the ends of those
-  ranges, if that is another edge. A traveller walks to and from a stop along a link they can use.
+- A stop is linked to every edge within 100 meters that is the nearest one some traveller can use:
+  the nearest edge at all, and each edge beyond it that is needed by a traveller who can use none
+  of the nearer ones, up to the nearest edge that everyone can use. A traveller walks to and from
+  a stop along the nearest of those they can use.
+- The link between a stop and an OpenSidewalks edge takes the time of walking the distance between
+  them at 1.3 m/s. The links OTP makes between stops and other streets take no time.
 - The paths of transfers are found for the requests in `transferRequests` of `build-config.json`,
-  which is one walking request unless it is set. List a request for each kind of traveller that
-  should have a path of their own:
+  which is one walking request unless it is set, and for the travellers at the ends of the ranges
+  of the parameters that decide whether an edge can be used. With the two limits, two switches and
+  street avoidance of the Walksheds profile those are 32 travellers, and finding transfers takes
+  33 times as long as for one. Set `findTransfersForAllTravellers` to `false` to find them only
+  for the `transferRequests`, and list a request there for each kind of traveller that should have
+  a path of their own:
 
     ```JSON
     // build-config.json
     {
+      "openSidewalks": {
+        "sources": ["goldendale.osw.zip"],
+        "profile": "ws-prod.json",
+        "findTransfersForAllTravellers": false
+      },
       "transferRequests": [
         { "modes": "WALK" },
         { "modes": "WALK", "pedestrianCost": { "uphill": 0.04, "downhill": 0.04, "avoid_curbs": true } }
@@ -256,9 +268,9 @@ graph is built. No traveller is known then, so both are done for several.
     }
     ```
 
-  When a trip is planned, each of those paths is walked again as the traveller of the request. A
-  path with an edge that traveller can not use is dropped, and the quickest of the others is the
-  transfer.
+  When a trip is planned, each of the paths between two stops is walked again as the traveller of
+  the request. A path with an edge that traveller can not use is dropped, and the quickest of the
+  others is the transfer.
 
 ### Profile format
 
@@ -309,12 +321,8 @@ graph is built. No traveller is known then, so both are done for several.
 - The profile applies to walking only, and not to walking a bicycle or scooter.
 - The parameter values of a request can be set in the GTFS GraphQL API, but not in the Transmodel
   API.
-- The walk between a stop and the edge it is linked to is not part of the trip, like the one
-  between a place and its edge. A stop that is linked to several edges lets a traveller start
-  from any of those they can use, also when another is nearer. The edges are all within 100 meters
-  of the stop.
-- A traveller whose values are between the ones transfers were found for is given the best of
-  those paths that they can use, which may not be the best path there is for them.
+- A traveller whose values are between the ones transfers were found for is given the quickest
+  of those paths that they can use, which may not be the quickest path there is for them.
 - A place is linked to the nearest edge the traveller can use within a kilometer, also when that
   is far from the place. R5 and AccessMap give up beyond 50 meters. The walk between the place and
   the edge is not part of the trip.

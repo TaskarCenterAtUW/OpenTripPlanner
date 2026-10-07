@@ -95,16 +95,39 @@ class OswStopLinkModuleTest {
         .toList()
     ).contains(47.65);
     assertEquals(stop.getOutgoing().size(), stop.getIncoming().size());
+    // All of the links take the time of walking them, the one OTP made too
+    for (var link : stop.getOutgoing()) {
+      boolean acrossTheStreet = link.getToVertex().getLat() > 47.6501;
+      // The sidewalk across the street is 22 m away where it passes the stop
+      assertEquals(acrossTheStreet ? 17 : 0, ((OswStopLink) link).walkSeconds(), 1);
+    }
 
     // A traveller who can manage the grade walks half the steep sidewalk up to node 3
     assertThat(secondsFromStopTo("3", strong)).isLessThan(wayRound);
-    // The default traveller can not walk it up, and is not sent a longer way than before
+    // The default traveller can not walk it up, and goes the way round as before. It now takes
+    // the time of walking the 22 m to the level sidewalk as well.
     assertNull(secondsFromStopTo("3", null));
-    assertThat(secondsFromStopTo("2", null)).isAtMost(wayRoundToTheLowerEnd);
+    assertThat(secondsFromStopTo("2", null) - wayRoundToTheLowerEnd)
+      .isWithin(3)
+      .of(20 / SPEED);
     // A traveller who can manage no grade at all still has the link to the level sidewalk
     var noGrades = PedestrianCostParameters.of(Map.of("uphill", "0", "downhill", "0"));
     assertNotNull(secondsFromStopTo("12", noGrades));
     assertNull(secondsFromStopTo("3", noGrades));
+  }
+
+  @Test
+  void aStopIsNotLinkedToEdgesNobodyNeeds() {
+    build();
+    new OswStopLinkModule(graph, linker).buildGraph();
+
+    // The level sidewalk across the street is for everyone who can not use the steep one. Nothing
+    // beyond it is linked: not the crossings, and not the sidewalk west of node 2.
+    for (var link : stop.getOutgoing()) {
+      var place = link.getToVertex();
+      assertThat(place.getLon()).isWithin(0.00002).of(-122.298);
+    }
+    assertThat(stop.getOutgoing().size()).isAtMost(4);
   }
 
   @Test

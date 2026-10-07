@@ -16,11 +16,15 @@ import org.opentripplanner.standalone.config.framework.json.NodeAdapter;
  * @param profile    the file with the pedestrian cost profile to cost the edges with, or
  *                   {@code null} to leave the cost of walking them to OTP
  * @param parameters the values of the parameters of the profile, by name
+ * @param findTransfersForAllTravellers whether to find the paths of transfers between stops for
+ *                   the travellers at the ends of the parameter ranges, besides the transfer
+ *                   requests of the build configuration
  */
 public record OpenSidewalksConfig(
   List<String> sources,
   @Nullable String profile,
-  Map<String, String> parameters
+  Map<String, String> parameters,
+  boolean findTransfersForAllTravellers
 ) {
   public static OpenSidewalksConfig fromConfig(NodeAdapter root, String parameterName) {
     var c = root
@@ -71,7 +75,20 @@ public record OpenSidewalksConfig(
           the default value the profile gives it.
           """
         )
-        .asStringMap()
+        .asStringMap(),
+      c
+        .of("findTransfersForAllTravellers")
+        .since(V2_11)
+        .summary("Find the paths of transfers between stops for every kind of traveller.")
+        .description(
+          """
+          Transfers are then also found for the travellers at the ends of the ranges of the
+          parameters of the profile, so that every traveller who can transfer between two stops
+          has a path to do so. Each of them takes as long as the transfers took to find before.
+          Turn this off to find transfers only for the `transferRequests`.
+          """
+        )
+        .asBoolean(true)
     );
   }
 
