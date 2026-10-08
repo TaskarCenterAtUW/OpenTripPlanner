@@ -236,6 +236,47 @@ then from the defaults of the profile.
 
 Without a profile every edge can be walked, at the cost OTP gives any other street.
 
+### Wheelchair users and trips with transit
+
+OTP has a wheelchair setting of its own, `preferences.accessibility.wheelchair.enabled` of a plan
+query. It and the parameters of the pedestrian cost profile are two separate things, and neither
+sets the other:
+
+| | Decided by `pedestrianCost` | Decided by `wheelchair.enabled` |
+|---|---|---|
+| Sidewalks, crossings and other OpenSidewalks edges: which can be used, and how fast | yes | no |
+| Whether a stop can be used, and what it costs if that is not known | no | yes |
+| Whether a trip, a vehicle, can be boarded | no | yes |
+| Pathways, elevators and escalators of stations | no | yes |
+
+So a trip with transit for a wheelchair user needs both in the query: the limits of the traveller
+on the way to and from the stops, and the wheelchair setting for the stops and the vehicles.
+
+```graphql
+preferences: {
+  accessibility: { wheelchair: { enabled: true } }
+  street: {
+    walk: {
+      pedestrianCost: [
+        { name: "uphill", value: "0.083" }
+        { name: "downhill", value: "0.083" }
+        { name: "avoid_curbs", value: "true" }
+      ]
+    }
+  }
+}
+```
+
+With only one of the two, a part of the trip is planned for another traveller:
+
+- With `pedestrianCost` alone, the walking is right, but the trip may use a stop or a vehicle that
+  a wheelchair can not get on.
+- With `wheelchair.enabled` alone, the stops and vehicles are right, but the walking is planned for
+  the traveller the server is configured with, who may not avoid curbs or steep grades. The slope
+  and stairs settings of OTP's wheelchair routing have no effect on OpenSidewalks edges.
+
+A traveller who is not a wheelchair user, but has limits, sends `pedestrianCost` alone.
+
 ### Inclines
 
 The steepness limits of a traveller, and the slowing down on slopes, come from the `incline`
