@@ -6,8 +6,6 @@ import org.locationtech.jts.geom.Coordinate;
 import org.opentripplanner.core.model.i18n.I18NString;
 import org.opentripplanner.core.model.i18n.LocalizedString;
 import org.opentripplanner.core.model.i18n.NonLocalizedString;
-import org.opentripplanner.ext.opensidewalks.OswLinking;
-import org.opentripplanner.framework.application.OTPFeature;
 import org.opentripplanner.street.linking.LinkingDirection;
 import org.opentripplanner.street.linking.TemporaryVerticesContainer;
 import org.opentripplanner.street.linking.VertexLinker;
@@ -94,9 +92,6 @@ public class VertexCreationService {
     boolean onlyCarAvailable = streetMode == StreetMode.CAR;
     if (onlyCarAvailable || parkAndRideDepart) {
       nonTransitMode = TraverseMode.CAR;
-    } else if (OTPFeature.OpenSidewalks.isOn() && OswLinking.isWithOwnBicycle(streetMode, type)) {
-      // The streets a bicycle is ridden on may not be the ones a location is linked to on foot
-      nonTransitMode = TraverseMode.BICYCLE;
     }
     return nonTransitMode;
   }

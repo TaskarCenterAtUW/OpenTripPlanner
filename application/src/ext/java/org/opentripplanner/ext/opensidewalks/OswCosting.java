@@ -21,7 +21,11 @@ public final class OswCosting implements Serializable {
   private final String profileJson;
   private final TreeMap<String, String> defaults;
 
+  /** Whether the graph has streets from other data that can be walked, too. */
+  private boolean besideOtherStreets = false;
+
   private transient volatile PedestrianCostProfile profile;
+  private transient volatile PedestrianCostSpec mostAble;
 
   /**
    * @param profileJson the definition of the profile
@@ -69,6 +73,49 @@ public final class OswCosting implements Serializable {
       profile = p;
     }
     return p;
+  }
+
+  /**
+   * Whether the graph has streets from other data that can be walked. Travellers the profile
+   * makes no difference for then walk those, and the OpenSidewalks edges are for the others.
+   */
+  public boolean besideOtherStreets() {
+    return besideOtherStreets;
+  }
+
+  void setBesideOtherStreets() {
+    this.besideOtherStreets = true;
+  }
+
+  /**
+   * Whether the traveller of a request walks the OpenSidewalks edges, and not the other streets
+   * of the graph, if it has any. That is so if the values of the request make the profile cost
+   * an edge differently than for the most able traveller: someone it closes nothing for that it
+   * could leave open. A request without values walks the other streets.
+   *
+   * @param parameters the parameter values of the request, or {@code null} if it has none
+   */
+  public boolean walksOpenSidewalks(@Nullable PedestrianCostParameters parameters) {
+    if (!besideOtherStreets) {
+      return true;
+    }
+    if (parameters == null) {
+      return false;
+    }
+    return (
+      parameters.isOnOpenSidewalks() || parameters.differsFrom(mostAble(), profile(), defaults)
+    );
+  }
+
+  private PedestrianCostSpec mostAble() {
+    var spec = mostAble;
+    if (spec == null) {
+      Map<String, String> values = new TreeMap<>(defaults);
+      values.putAll(new OswTravellers(profile()).mostAble());
+      spec = profile().resolve(values);
+      mostAble = spec;
+    }
+    return spec;
   }
 
   /**

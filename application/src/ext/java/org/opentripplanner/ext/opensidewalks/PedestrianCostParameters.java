@@ -21,22 +21,43 @@ import org.opentripplanner.street.model.edge.ExtensionRequestContext;
 public final class PedestrianCostParameters implements ExtensionRequestContext, Serializable {
 
   /** No values: the traveller the graph was built for. */
-  public static final PedestrianCostParameters DEFAULT = new PedestrianCostParameters(Map.of());
+  public static final PedestrianCostParameters DEFAULT = new PedestrianCostParameters(
+    Map.of(),
+    false
+  );
 
   private final SortedMap<String, String> values;
+  private final boolean onOpenSidewalks;
   private final int hashCode;
 
   /** The cost function for these values, remembered for the profile it was last asked for. */
   @Nullable
   private transient volatile Resolved resolved;
 
-  private PedestrianCostParameters(Map<String, String> values) {
+  private PedestrianCostParameters(Map<String, String> values, boolean onOpenSidewalks) {
     this.values = Collections.unmodifiableSortedMap(new TreeMap<>(values));
-    this.hashCode = this.values.hashCode();
+    this.onOpenSidewalks = onOpenSidewalks;
+    this.hashCode = this.values.hashCode() + (onOpenSidewalks ? 1 : 0);
   }
 
   public static PedestrianCostParameters of(@Nullable Map<String, String> values) {
-    return values == null || values.isEmpty() ? DEFAULT : new PedestrianCostParameters(values);
+    return values == null || values.isEmpty()
+      ? DEFAULT
+      : new PedestrianCostParameters(values, false);
+  }
+
+  /**
+   * A traveller who walks the OpenSidewalks edges whatever the values are. In a graph that has
+   * other streets as well, a traveller the profile makes no difference for walks those instead.
+   * This is for finding the links of stops and the paths of transfers on the OpenSidewalks edges
+   * when the graph is built.
+   */
+  public static PedestrianCostParameters onOpenSidewalks(Map<String, String> values) {
+    return new PedestrianCostParameters(values, true);
+  }
+
+  public boolean isOnOpenSidewalks() {
+    return onOpenSidewalks;
   }
 
   public SortedMap<String, String> values() {
@@ -58,10 +79,25 @@ public final class PedestrianCostParameters implements ExtensionRequestContext, 
     return r.spec;
   }
 
+  /**
+   * Whether the profile costs an edge differently for this traveller than for the given one. A
+   * request without values has no limits.
+   */
+  boolean differsFrom(
+    PedestrianCostSpec mostAble,
+    PedestrianCostProfile profile,
+    Map<String, String> defaults
+  ) {
+    return !values.isEmpty() && !resolve(profile, defaults).sameCostAs(mostAble);
+  }
+
   @Override
   public boolean equals(Object o) {
     return (
-      this == o || (o instanceof PedestrianCostParameters other && values.equals(other.values))
+      this == o ||
+      (o instanceof PedestrianCostParameters other &&
+        onOpenSidewalks == other.onOpenSidewalks &&
+        values.equals(other.values))
     );
   }
 
@@ -72,7 +108,7 @@ public final class PedestrianCostParameters implements ExtensionRequestContext, 
 
   @Override
   public String toString() {
-    return "PedestrianCostParameters" + values;
+    return "PedestrianCostParameters" + values + (onOpenSidewalks ? " on OpenSidewalks" : "");
   }
 
   private record Resolved(PedestrianCostProfile profile, PedestrianCostSpec spec) {}

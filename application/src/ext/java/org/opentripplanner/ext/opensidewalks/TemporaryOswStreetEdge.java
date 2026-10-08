@@ -57,6 +57,9 @@ public class TemporaryOswStreetEdge extends TemporaryPartialStreetEdge {
   @Override
   public State[] traverse(State s0) {
     var states = OswWalkCost.traverse(s0, this, costing, attributes, delayShare);
-    return states != null ? states : super.traverse(s0);
+    if (states != null) {
+      return states;
+    }
+    return costing.besideOtherStreets() ? State.empty() : super.traverse(s0);
   }
 }

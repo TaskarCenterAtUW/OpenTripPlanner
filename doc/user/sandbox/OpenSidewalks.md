@@ -182,7 +182,6 @@ The `openSidewalks` section of `build-config.json` has these parameters:
 | `sources`    | `string[]` | The datasets to load: a zip file or a directory containing `*.nodes.geojson` and `*.edges.geojson`, or an `*.edges.geojson` file.                        |
 | `profile`    | `string`   | The pedestrian cost profile to cost the edges with. Optional.                                                                                            |
 | `parameters` | `object`   | The parameter values a request has when it gives none itself. A parameter that is left out has the default value the profile gives it. Optional.          |
-| `walkOnOtherStreets` | `boolean` | Let people on foot walk the streets from other data too. Defaults to `false`. See [With OpenStreetMap data](#with-openstreetmap-data).            |
 
 A relative path is resolved against the OTP base directory, the one holding `build-config.json`.
 
@@ -204,42 +203,48 @@ that requests are planned for, for example `{ "uphill": 0.083, "avoid_curbs": tr
 
 ### With OpenStreetMap data
 
-OpenStreetMap data can be loaded in the same graph, for driving and cycling. The streets from it
-and the OpenSidewalks edges are two networks that are not joined to each other, so each is for
-its own travellers:
+OpenStreetMap data can be loaded in the same graph. The streets from it and the OpenSidewalks
+edges are two networks that are not joined to each other, so each is for its own travellers:
 
-- **People on foot walk the OpenSidewalks edges only.** The places of their trips, and transit
-  stops, are linked to OpenSidewalks edges, and the pedestrian cost profile applies to all of
-  their walking.
-- **Cars use the OpenStreetMap streets.**
-- **Bicycles use the OpenStreetMap streets,** ridden where they may be and walked where they may
-  not, at the cost OTP gives that. A trip with one's own bicycle is linked to the nearest street
-  it can be ridden on. With a rented bicycle, and after parking one, the traveller is on foot.
+- **A traveller the profile makes a difference for walks the OpenSidewalks edges.** That is a
+  request whose `pedestrianCost` values make the profile cost an edge differently than for the
+  most able traveller: someone with a limit on grades, who avoids curbs, or the like. The places
+  of the trip are linked to OpenSidewalks edges, and the profile applies to all of the walking.
+- **Everyone else uses the OpenStreetMap streets, as OTP has them.** That is people on foot
+  without such values, or with values that ask for nothing, as well as cars and bicycles, ridden
+  or walked.
 
-In Seattle, with both loaded, the 338 walks that were found over the OpenSidewalks data alone were
-the same to the meter and the second, and cycling and driving trips were found over the
+So a deployment with both is OTP as it is for most trips, with the OpenSidewalks data as the
+network for travellers with limits. The wheelchair setting of OTP does not choose the network,
+see [Wheelchair users and trips with transit](#wheelchair-users-and-trips-with-transit): a
+request with that setting and no `pedestrianCost` gets the wheelchair routing of OTP on the
 OpenStreetMap streets.
+
+In Seattle, with both loaded, 200 walks, 200 cycling trips and 200 driving trips without values
+came out exactly as on a graph with the OpenStreetMap data alone, and the walks of travellers
+with limits came out as on a graph with the OpenSidewalks data alone.
 
 Things to know:
 
-- There is no walking where there is no OpenSidewalks data. If the OpenStreetMap data covers a
-  larger area, people on foot can not walk in the rest of it.
-- What OpenStreetMap has for people on foot is not used by them: squares and other areas to walk
-  across, stairs, elevators and station entrances. Pathways from GTFS still are.
+- A stop is linked to both networks: by OTP to the OpenStreetMap streets, and to the OpenSidewalks
+  edges as described under [Transit stops and transfers](#transit-stops-and-transfers). Transfers
+  are found on both as well, and a traveller is given the ones on their own network.
+- Bicycle and car parks, and rental stations, are only linked to the OpenStreetMap streets. A
+  traveller with limits can not walk to or from one.
+- Where there is no OpenSidewalks data, a traveller with limits has no route. The trip is not
+  planned on the OpenStreetMap streets instead, which would not have the limits.
+- Changing a value from asking for nothing to asking for something moves the trip from one network
+  to the other, so its path and its duration can change more than the value suggests. A crossing
+  takes 30 seconds longer on the OpenSidewalks edges of the Walksheds profile, for one.
 - Island pruning runs when there is OpenStreetMap data, and removes small disconnected parts of
   the OpenSidewalks network too. A place next to such a part is then linked to the rest of the
-  network instead, so some trips are found that would otherwise have none. Set
-  `islandPruning.islandWithoutStopsMaxSize` and `islandWithStopsMaxSize` to 0 in the build
-  configuration to keep those parts.
-- A bicycle park is linked for walking only, so a trip that parks a bicycle may not reach one
-  from the OpenStreetMap streets.
+  network, if that is near enough, so some trips are found that would otherwise have none: 19 of
+  400 in Seattle. Set `islandPruning.islandWithoutStopsMaxSize` and `islandWithStopsMaxSize` to 0
+  in the build configuration to keep those parts.
+- A profile is needed for this. Without one the OpenSidewalks edges are ordinary streets that
+  everyone walks, on two networks that are not joined.
 - This can not be used together with the Data Overlay sandbox feature. Both use the one extension
   a street edge has.
-
-Set `walkOnOtherStreets` to `true` to let people on foot walk the OpenStreetMap streets as well,
-at the cost OTP gives them and without the limits of the traveller. A walk then stays on the kind
-of street that is nearest to where it starts, and can not change from one to the other. In Seattle
-this lost nearly half of the walks.
 
 ### How a profile is applied
 
@@ -255,7 +260,7 @@ then from the defaults of the profile.
   request. An edge with an `incline` of 0.1 can be walked from its end to its start by a traveller
   with an uphill limit of 0.085, but not the other way.
 - The places a trip starts and ends at are linked to the nearest edge the traveller of the request
-  can use.
+  can use, if there is one within 50 meters.
 - A direction of an edge that no traveller can use, whatever the values of the parameters in their
   ranges, is left out of the graph.
 - The other edges are walked at the walking speed of the request multiplied with the speed factor
@@ -441,7 +446,8 @@ Against AccessMap on the same dataset with the same inclines (its "Seattle, WA (
 | Durations within 5%                     | 132 (89%)         | 172 (95%)                |
 
 The routes only OTP finds are all between places that AccessMap does not link to the network,
-because they are more than 50 m from it. OTP links a place up to a kilometer away.
+because they are more than 50 m from it. OTP linked a place up to a kilometer away when this was
+measured. It now leaves a place farther than 50 m from the OpenSidewalks edges unlinked too.
 
 Against AccessMap's main Seattle region, which reads another dataset and works out inclines of its
 own instead of using the ones in the data, the agreement is lower: 73% of the wheelchair routes
@@ -462,8 +468,8 @@ No transit was compared. None of the routes AccessMap returned used a bus or a t
   path for the traveller it was found for. How fast an edge is walked depends on the limits of the
   traveller too, so another traveller who can use the same edges may have a slightly quicker path
   that was not found.
-- A place is linked to the nearest edge the traveller can use within a kilometer, also when that
-  is far from the place. R5 and AccessMap give up beyond 50 meters. The walk between the place and
-  the edge is not part of the trip.
+- A place is linked to the nearest OpenSidewalks edge the traveller can use within 50 meters, and
+  the walk between the place and the edge is not part of the trip. A place farther than that from
+  such an edge has no route, as in R5, the Walksheds service and AccessMap.
 - A profile should not make any edge faster than the walking speed, with a `speedFactor` above 1.
   Street searches may then miss the best path.

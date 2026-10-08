@@ -123,7 +123,7 @@ public class OswTransferModule implements GraphBuilderModule {
           .get()
           .copyOf()
           .withPreferences(p ->
-            p.withSystem(s -> s.withExtension(PedestrianCostParameters.of(traveller)))
+            p.withSystem(s -> s.withExtension(PedestrianCostParameters.onOpenSidewalks(traveller)))
           )
           .buildDefault();
         for (var nearby : finder.findNearbyStops(

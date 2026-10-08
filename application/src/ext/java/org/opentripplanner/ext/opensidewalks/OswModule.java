@@ -48,7 +48,6 @@ public class OswModule implements GraphBuilderModule {
   private final List<PedestrianCostSpec> extremeTravellers;
 
   private final VertexFactory vertexFactory;
-  private final boolean walkOnOtherStreets;
 
   private int builtEdges = 0;
   private int edgesNotForAll = 0;
@@ -61,20 +60,6 @@ public class OswModule implements GraphBuilderModule {
    *                walking them to OTP
    */
   public OswModule(Graph graph, List<File> sources, @Nullable OswCosting costing) {
-    this(graph, sources, costing, false);
-  }
-
-  /**
-   * @param walkOnOtherStreets whether people on foot can walk the streets already in the graph,
-   *                           which come from other data
-   */
-  public OswModule(
-    Graph graph,
-    List<File> sources,
-    @Nullable OswCosting costing,
-    boolean walkOnOtherStreets
-  ) {
-    this.walkOnOtherStreets = walkOnOtherStreets;
     this.graph = graph;
     this.sources = List.copyOf(sources);
     this.costing = costing;
@@ -100,7 +85,7 @@ public class OswModule implements GraphBuilderModule {
       config.profile() == null
         ? null
         : OswCosting.fromFile(resolve(baseDirectory, config.profile()), config.parameters());
-    return new OswModule(graph, sources, costing, config.walkOnOtherStreets());
+    return new OswModule(graph, sources, costing);
   }
 
   private static File resolve(File baseDirectory, String path) {
@@ -129,8 +114,8 @@ public class OswModule implements GraphBuilderModule {
         spec.runSpecId()
       );
     }
-    if (!walkOnOtherStreets) {
-      keepPeopleOnFootOffOtherStreets();
+    if (costing != null) {
+      shareTheGraphWithOtherStreets(costing);
     }
     for (int i = 0; i < sources.size(); i++) {
       // Node ids are only unique within a dataset
@@ -153,20 +138,23 @@ public class OswModule implements GraphBuilderModule {
   }
 
   /**
-   * The streets that are in the graph before the OpenSidewalks edges are from other data. They
-   * are not joined to the OpenSidewalks edges, so people on foot are kept to the latter.
+   * The streets that are in the graph before the OpenSidewalks edges are from other data, and are
+   * not joined to the OpenSidewalks edges. If people can walk them, each of the two networks is
+   * for its own travellers from here on, see {@link OtherStreet}.
    */
-  private void keepPeopleOnFootOffOtherStreets() {
+  private void shareTheGraphWithOtherStreets(OswCosting costing) {
+    var otherStreet = new OtherStreet(costing);
     int streets = 0;
     for (StreetEdge edge : graph.findEdges(StreetEdge.class)) {
       if (edge.getPermission().allows(TraverseMode.WALK)) {
-        edge.setCostExtension(NotOnFoot.INSTANCE);
+        edge.setCostExtension(otherStreet);
         streets++;
       }
     }
     if (streets > 0) {
+      costing.setBesideOtherStreets();
       LOG.info(
-        "Kept people on foot off {} street edges from other data. They walk the OpenSidewalks edges.",
+        "The graph has {} street edges from other data that can be walked. Travellers the pedestrian cost profile makes a difference for walk the OpenSidewalks edges, and everyone else the other streets.",
         streets
       );
     }

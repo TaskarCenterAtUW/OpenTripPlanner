@@ -96,14 +96,14 @@ public class OswStopLinkModule implements GraphBuilderModule {
       List<OswEdgeAttributes> here = new ArrayList<>();
       for (StreetEdge edge : street) {
         if (!(edge instanceof OswStreetEdge osw)) {
-          // A street from another source, which OTP lets everyone walk
-          forAll = true;
+          // A street from other data. Travellers on OpenSidewalks edges do not walk it, and OTP
+          // has linked the stop to it for the others.
           continue;
         }
         forAll |= osw.isUsableByAll();
         here.add(osw.attributes());
         if (osw.isUsableByAll()) {
-          link(stop, osw, null);
+          link(stop, osw, travellers.leastAbleUsers(osw.attributes()).getFirst());
         } else {
           neededBy(osw.attributes(), nearer, travellers).ifPresent(it -> link(stop, osw, it));
         }
@@ -133,17 +133,14 @@ public class OswStopLinkModule implements GraphBuilderModule {
   }
 
   /**
-   * @param traveller a traveller who can use the edge, or {@code null} if all can. OTP only links
-   *                  to edges that the traveller it links for can use.
+   * @param traveller a traveller who can use the edge. OTP only links to edges that the
+   *                  traveller it links for can use.
    */
   private void link(TransitStopVertex stop, StreetEdge edge, PedestrianCostParameters traveller) {
     Set<StreetVertex> streetVertices;
-    if (traveller == null) {
+    var onOpenSidewalks = PedestrianCostParameters.onOpenSidewalks(traveller.values());
+    try (var ignore = OswLinking.linkAs(onOpenSidewalks)) {
       streetVertices = split(stop, edge);
-    } else {
-      try (var ignore = OswLinking.linkAs(traveller)) {
-        streetVertices = split(stop, edge);
-      }
     }
     for (StreetVertex streetVertex : streetVertices) {
       boolean linked = stop
@@ -201,11 +198,8 @@ public class OswStopLinkModule implements GraphBuilderModule {
     return streets;
   }
 
-  /** Whether anyone can walk the edge. For an OpenSidewalks edge, some traveller can. */
   private static boolean canBeWalked(StreetEdge edge) {
-    return edge instanceof OswStreetEdge
-      ? edge.getPermission().allows(TraverseMode.WALK)
-      : edge.canTraverse(WALK);
+    return edge.getPermission().allows(TraverseMode.WALK);
   }
 
   /**

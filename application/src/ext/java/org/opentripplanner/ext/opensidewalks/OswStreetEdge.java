@@ -76,7 +76,11 @@ public class OswStreetEdge extends StreetEdge {
   @Override
   public State[] traverse(State s0) {
     var states = OswWalkCost.traverse(s0, this, costing, attributes, delayShare);
-    return states != null ? states : super.traverse(s0);
+    if (states != null) {
+      return states;
+    }
+    // With other streets in the graph, those are what a bicycle is walked on
+    return costing.besideOtherStreets() ? State.empty() : super.traverse(s0);
   }
 
   /**
@@ -85,7 +89,7 @@ public class OswStreetEdge extends StreetEdge {
    */
   @Override
   public boolean canTraverse(TraverseModeSet modes) {
-    return super.canTraverse(modes) && OswLinking.isLinkable(costing, attributes);
+    return super.canTraverse(modes) && OswLinking.isLinkable(costing, attributes, this);
   }
 
   @Override

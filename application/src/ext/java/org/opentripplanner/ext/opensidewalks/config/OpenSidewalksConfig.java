@@ -16,14 +16,11 @@ import org.opentripplanner.standalone.config.framework.json.NodeAdapter;
  * @param profile    the file with the pedestrian cost profile to cost the edges with, or
  *                   {@code null} to leave the cost of walking them to OTP
  * @param parameters the values of the parameters of the profile, by name
- * @param walkOnOtherStreets whether people on foot can walk the streets that come from other
- *                   data than OpenSidewalks, such as OpenStreetMap
  */
 public record OpenSidewalksConfig(
   List<String> sources,
   @Nullable String profile,
-  Map<String, String> parameters,
-  boolean walkOnOtherStreets
+  Map<String, String> parameters
 ) {
   public static OpenSidewalksConfig fromConfig(NodeAdapter root, String parameterName) {
     var c = root
@@ -74,21 +71,7 @@ public record OpenSidewalksConfig(
           the default value the profile gives it.
           """
         )
-        .asStringMap(),
-      c
-        .of("walkOnOtherStreets")
-        .since(V2_11)
-        .summary("Let people on foot walk the streets that come from other data, too.")
-        .description(
-          """
-          The streets from OpenStreetMap data and the OpenSidewalks edges are not joined to each
-          other. By default people on foot only walk the OpenSidewalks edges, and the other streets
-          are for driving and for bicycles, ridden or walked. Set this to `true` to let people on
-          foot walk the other streets as well, at the cost OTP gives them. A walk then stays on
-          the kind of street that is nearest to where it starts.
-          """
-        )
-        .asBoolean(false)
+        .asStringMap()
     );
   }
 

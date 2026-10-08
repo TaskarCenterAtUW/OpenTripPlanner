@@ -6,78 +6,90 @@ What is not done, not decided, or not verified, as of October 2026. The user doc
 
 ## 1. Loading OpenStreetMap data alongside OpenSidewalks
 
-**Status: prototyped, not merged, needs a decision on the approach.** The prototype is one commit
-on the local branch `opensidewalks-with-osm`, on top of `opensidewalks-dynamic`.
+**Status: built on the local branch `opensidewalks-with-osm`, not merged.** It is on top of
+`opensidewalks-dynamic`, and has a change in the `street` module that has to be agreed to.
 
 ### The problem
 
-A deployment will probably need both: OpenStreetMap for driving and cycling, OpenSidewalks for
-walking. Loaded together they are two walking networks that share no vertices.
+A deployment will probably need both: OpenStreetMap for driving, cycling and ordinary walking,
+OpenSidewalks for walking with limits. Loaded together they are two walking networks that share
+no vertices.
 
 - A walk can not change from one to the other.
-- Which one a trip uses is up to which edge is nearer to where it starts. Next to a road that is
-  often the OpenStreetMap centerline.
-- On OpenStreetMap streets the pedestrian cost profile does not apply. A wheelchair traveller who
-  is linked to one is routed with no incline or curb limits.
-- Island pruning only runs when there is OpenStreetMap data, and then prunes OpenSidewalks edges
-  too.
+- Left alone, which one a trip uses is up to which edge is nearer to where it starts, and on
+  OpenStreetMap streets the pedestrian cost profile does not apply.
 
-Measured in Seattle, 200 pairs of places and two travellers, a BBBike OpenStreetMap extract plus
-TDEI dataset `54f968ac`:
+### The rule
 
-|                                                | Walks found | Same as OpenSidewalks alone      |
-|------------------------------------------------|-------------|----------------------------------|
-| OpenSidewalks alone                            | 338         |                                  |
-| Both, as the code on `opensidewalks-dynamic`   | 212         | 94 within 2% in length           |
-| Both, prototype, island pruning off            | 338         | 338, to the meter and the second |
-| Both, prototype, island pruning on (default)   | 363         | 338, and 25 more                 |
+- A request whose `pedestrianCost` values make the profile cost an edge differently than for the
+  most able traveller walks the OpenSidewalks edges.
+- Everyone else uses the OpenStreetMap streets as OTP has them: people on foot without values or
+  with values that ask for nothing, cars, and bicycles, ridden or walked.
+- OTP's wheelchair setting does not choose the network.
+- A graph with OpenSidewalks data alone is walked by everyone, as before.
 
-### What does not fix it
+Measured in Seattle, 200 pairs of places, a BBBike OpenStreetMap extract plus TDEI dataset
+`54f968ac`:
+
+|                                                        | Result                                           |
+|--------------------------------------------------------|--------------------------------------------------|
+| Both loaded, before any of this, two travellers        | 212 of 338 walks found, 94 within 2% in length   |
+| Walking, cycling, driving without values, both loaded  | 600 of 600 the same as with OpenStreetMap alone  |
+| Two travellers with limits, both loaded                | all 330 walks the same as with OpenSidewalks alone |
+| The same, against AccessMap on the same data           | no route missed, 19 more found (island pruning)  |
+
+### What does not work
 
 - **Exporting OpenSidewalks as OpenStreetMap and loading that.** OTP joins OpenStreetMap data by
   node id, so the two are still separate, and the edges would be costed by OTP's own rules
   without the profile.
 - **Using the roads of an OpenSidewalks dataset for vehicles.** They are there for people on
-  foot, and do not have what driving and cycling need: one-way streets, turn restrictions, access.
+  foot, and do not have what driving and cycling need.
 - **Taking the walking permission off the OpenStreetMap streets.** OTP links a trip by bicycle to
   the streets through the edges that can be walked, so cycling trips could no longer start.
 - **Replacing the walkable OpenStreetMap edges with a class of our own.** Turn restrictions, the
   level information of stairs, and station platforms hold on to the edges they were made for.
+- **Everyone on foot on the OpenSidewalks edges.** Built first. It works, but there is then no
+  walking where there is no OpenSidewalks data, what OpenStreetMap has for people on foot is lost
+  to all of them, and bicycles have to be linked another way.
 
-### What the prototype does
+### How it is built
 
-People on foot walk the OpenSidewalks edges only. The other streets are for cars and for bicycles,
-ridden or walked. A build setting, `openSidewalks.walkOnOtherStreets`, turns this off.
-
-- `NotOnFoot` is set as the cost extension of every walkable street that is in the graph when the
-  OpenSidewalks data is loaded. It refuses to be linked to and to be walked by people on foot.
+- `OtherStreet` is set as the cost extension of every walkable street that is in the graph when
+  the OpenSidewalks data is loaded. It refuses to be linked to and to be walked by a traveller
+  with limits. The OpenSidewalks edges refuse everyone else.
 - Outside the sandbox, in the `street` module: `StreetEdgeCostExtension` can refuse traversal and
   linking and say which extension the parts of a split edge get, and `StreetEdge` and
   `StreetEdgeBuilder` use that. About 35 lines.
-- `VertexCreationService` links a trip with one's own bicycle through edges that can be ridden,
-  when the feature is on. A request to "ride, or walk to transit" needs its origin on both
-  networks, and OTP otherwise links bicycles through walkable edges.
+- `LinkingContextFactory` says where the place is that it is linking, for the 50 m limit of
+  section 3.
 
 ### To decide and to do
 
 - [ ] Is a change to `StreetEdge` acceptable? It is the hot path of every street search. It was
       not measured with the speed test.
-- [ ] The bicycle linking changes for every graph when the feature is on, also one without
-      OpenSidewalks data. Limit it to graphs that have such edges.
-- [ ] Walking where there is no OpenSidewalks data. If the OpenStreetMap data covers more, people
-      on foot can not walk in the rest. Applying the rule only inside the area of the dataset
-      means joining the two networks along its edge, which nothing does yet.
-- [ ] What OpenStreetMap has for people on foot is lost to them: squares and other areas, stairs,
-      elevators, station entrances, and boarding locations from OpenStreetMap.
-- [ ] Bicycle parks are linked for walking only, so they are probably not reachable from the
-      OpenStreetMap streets. Not tested. The same may hold for rental stations.
-- [ ] Walking a bicycle on real data was not checked. The Seattle trips by bicycle were all ridden.
-- [ ] Island pruning: keep it and have places snapped away from isolated pieces of sidewalk (25
+- [ ] Bicycle and car parks and rental stations are only linked to the OpenStreetMap streets, so
+      a traveller with limits can not use them. They need links to OpenSidewalks edges like the
+      stops have.
+- [ ] Where there is no OpenSidewalks data a traveller with limits has no route. Decided: no
+      falling back to the OpenStreetMap streets. A client should be told why, which it is not.
+- [ ] Changing a value from asking for nothing to asking for something moves the trip to the
+      other network. To be handled in the user interface.
+- [ ] "Asks for nothing" compares the cost function of the request with that of the most able
+      traveller, layer by layer. With the Walksheds profile, a request that only sets the grades
+      and curbs to their loosest still has the default street avoidance of 1, and so walks the
+      OpenSidewalks edges. Only a request with no values, or with every value at its loosest,
+      walks the OpenStreetMap streets. Is that what is wanted?
+- [ ] `routingDefaults.pedestrianCost` in the router configuration with values that ask for
+      something sends every walk to the OpenSidewalks edges.
+- [ ] Island pruning: keep it and have places linked away from isolated pieces of sidewalk (19
       more routes in the sample), or exempt OpenSidewalks edges to match the other engines? Today
       that is `islandPruning.islandWithoutStopsMaxSize` and `islandWithStopsMaxSize` set to 0,
       which turns it off for OpenStreetMap too.
 - [ ] An edge has one extension, so this can not be used with the Data Overlay sandbox feature.
-- [ ] No transit was in the test. Stops, parking and rental with both networks are untested.
+- [ ] No transit was in the Seattle test. Stops and transfers with both networks are untested.
+- [ ] Without a profile the OpenSidewalks edges are ordinary streets, and the two networks are
+      both walked by everyone, with the problem this section starts with.
 
 ## 2. Transit
 
@@ -100,11 +112,12 @@ ridden or walked. A build setting, `openSidewalks.walkOnOtherStreets`, turns thi
 
 ## 3. Linking a place to the network
 
-- [ ] OTP links a place to the nearest usable edge up to a kilometer away, and the walk between
-      the two is not part of the trip. R5, the Walksheds service and AccessMap give up beyond
-      50 m. This is the one difference that shows in every comparison: 8 of 400 trips in Seattle,
-      about 100 of 296 in Goldendale. A limit would have to go into the linker of OTP, or be
-      checked on the itinerary afterwards.
+- [x] OTP linked a place to the nearest usable edge up to a kilometer away, where R5, the
+      Walksheds service and AccessMap give up beyond 50 m. On `opensidewalks-with-osm` a place is
+      only linked to an OpenSidewalks edge within 50 m. In Goldendale OTP then finds a route
+      exactly where R5 does, and `OswRoutingComparisonTest` no longer has exceptions for it.
+- [ ] The 50 m is a constant, `OswLinking.MAX_METERS_FROM_PLACE`. It could be a setting.
+- [ ] The limit is for the places of a request. Stops are linked within 100 m, as OTP does.
 - [ ] Who the traveller is reaches the linker through a thread-local, set in
       `LinkingContextFactory` and read in `OswStreetEdge`. It is explicit about its scope but not
       pretty. Passing a test for edges into the linker would be cleaner and is a larger change.

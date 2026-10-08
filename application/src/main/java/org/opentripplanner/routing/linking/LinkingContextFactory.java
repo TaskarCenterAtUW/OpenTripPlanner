@@ -84,7 +84,7 @@ public class LinkingContextFactory {
     TemporaryVerticesContainer container,
     LinkingContextRequest request
   ) {
-    try (var ignore = OswLinking.linkFor(request.extensions())) {
+    try (var ignore = OswLinking.linkFor(request)) {
       return link(container, request);
     }
   }
@@ -310,15 +310,17 @@ public class LinkingContextFactory {
     // If no vertices found from stop ID lookup and coordinates are available, use coordinates as fallback
     if (results.isEmpty() && location.getCoordinate() != null) {
       // Connect a temporary vertex from coordinate to graph
-      results.add(
-        vertexCreationService.createVertexFromCoordinate(
-          container,
-          location.getCoordinate(),
-          location.label(),
-          modes,
-          type
-        )
-      );
+      try (var ignore = OswLinking.linkAt(location.getCoordinate())) {
+        results.add(
+          vertexCreationService.createVertexFromCoordinate(
+            container,
+            location.getCoordinate(),
+            location.label(),
+            modes,
+            type
+          )
+        );
+      }
     }
 
     return results;

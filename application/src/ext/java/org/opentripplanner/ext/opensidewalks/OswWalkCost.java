@@ -69,9 +69,11 @@ final class OswWalkCost {
     if (backEdge != null && edge.isReverseOf(backEdge)) {
       return State.empty();
     }
-    var spec = costing.spec(
-      s0.getExtensionRequestContext(PedestrianCostParameters.class).orElse(null)
-    );
+    var traveller = s0.getExtensionRequestContext(PedestrianCostParameters.class).orElse(null);
+    if (!costing.walksOpenSidewalks(traveller)) {
+      return State.empty();
+    }
+    var spec = costing.spec(traveller);
     double seconds = durationSeconds(edge, attributes, delayShare, spec, request.walk().speed());
     if (seconds == Double.POSITIVE_INFINITY) {
       return State.empty();
