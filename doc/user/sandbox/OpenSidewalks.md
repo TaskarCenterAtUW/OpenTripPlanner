@@ -250,10 +250,17 @@ Things to know:
 
 The profile is set in the build configuration and is part of the graph. The values of its
 parameters, which say what a traveller can manage, belong to each request. They come from
-`preferences.street.walk.pedestrianCost` of a plan query of the GTFS GraphQL API, then from
+`preferences.street.walk.pedestrianCost` of a plan query of the GTFS GraphQL API or the
+`pedestrianCost` argument of a trip query of the Transmodel API, then from
 `routingDefaults.pedestrianCost` in the router configuration, then from the build configuration,
 then from the defaults of the profile.
 
+- In the Transmodel API of a server whose graph has a profile, the name of a parameter is an
+  enumeration of the parameters of that profile, `PedestrianCostParameterName`, each described
+  with the values it can have. A client can read it from the schema to offer the parameters.
+  Without a profile, and in the GTFS API, the name is text.
+- In the debug client they are under "Pedestrian Cost" in the list of arguments, where each
+  parameter is added by choosing its name and giving its value.
 - A value has to be in the range the profile gives the parameter: from `sliderMin` to `sliderMax`
   if the parameter has those, or else from `min` to `max`. A request with another value fails.
 - A direction of an edge that the traveller of a request can not use is not walked in that
@@ -462,8 +469,6 @@ No transit was compared. None of the routes AccessMap returned used a bus or a t
 ### Limitations
 
 - The profile applies to walking only, and not to walking a bicycle or scooter.
-- The parameter values of a request can be set in the GTFS GraphQL API, but not in the Transmodel
-  API.
 - Every traveller who can transfer between two stops has a path to do so, and it is the quickest
   path for the traveller it was found for. How fast an edge is walked depends on the limits of the
   traveller too, so another traveller who can use the same edges may have a slightly quicker path

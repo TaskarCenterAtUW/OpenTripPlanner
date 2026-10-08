@@ -960,6 +960,8 @@ type QueryType {
     pageCursor: String,
     "The list of points the journey is required to pass through."
     passThroughPoints: [PassThroughPoint!] @deprecated(reason : "Use via instead"),
+    "What the traveller can manage on OpenSidewalks streets, as values of the parameters of the pedestrian cost profile the streets are costed with: the steepest uphill grade, for example. A parameter that is left out has the value the server is configured with. This has no effect unless the server has streets built by the OpenSidewalks sandbox feature."
+    pedestrianCost: [PedestrianCostParameterInput!],
     """
     Relax generalized-cost when comparing trips with a different set of
     transit-group-priorities. The groups are set server side for service-journey and
@@ -2447,6 +2449,14 @@ input PassThroughPoint {
   The journey must pass through at least one of these entities - not all of them.
   """
   placeIds: [String!]
+}
+
+"The value of a parameter of the pedestrian cost profile that OpenSidewalks streets are costed with. This is part of the OpenSidewalks sandbox feature."
+input PedestrianCostParameterInput {
+  "The name the profile gives the parameter, for example `uphill` or `avoid_curbs`."
+  name: String!
+  "The value as text, for example `0.083` or `true`."
+  value: String!
 }
 
 "A combination of street mode and penalty for time and cost."

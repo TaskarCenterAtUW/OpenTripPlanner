@@ -1,5 +1,7 @@
 package org.opentripplanner.ext.opensidewalks.api;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.TreeMap;
 import javax.annotation.Nullable;
 import org.opentripplanner.apis.gtfs.generated.GraphQLTypes;
@@ -23,15 +25,25 @@ public class PedestrianCostParametersMapper {
     if (walk == null || walk.getGraphQLPedestrianCost() == null) {
       return;
     }
+    Map<String, String> values = new LinkedHashMap<>();
+    for (var parameter : walk.getGraphQLPedestrianCost()) {
+      values.put(parameter.getGraphQLName(), parameter.getGraphQLValue());
+    }
+    addPedestrianCost(preferences, values);
+  }
+
+  /** Add the given values of a request to the ones it has from the router configuration. */
+  public static void addPedestrianCost(
+    RoutingPreferencesBuilder preferences,
+    Map<String, String> ofTheRequest
+  ) {
     var values = new TreeMap<String, String>();
     for (var extension : preferences.system().extensions()) {
       if (extension instanceof PedestrianCostParameters configured) {
         values.putAll(configured.values());
       }
     }
-    for (var parameter : walk.getGraphQLPedestrianCost()) {
-      values.put(parameter.getGraphQLName(), parameter.getGraphQLValue());
-    }
+    values.putAll(ofTheRequest);
     preferences.withSystem(system -> system.withExtension(PedestrianCostParameters.of(values)));
   }
 }

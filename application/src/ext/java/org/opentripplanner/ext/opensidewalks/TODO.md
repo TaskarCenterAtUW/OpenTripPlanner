@@ -136,10 +136,16 @@ Measured in Seattle, 200 pairs of places, a BBBike OpenStreetMap extract plus TD
 
 ## 5. APIs and requests
 
-- [ ] The parameters can be set in the GTFS GraphQL API, not in the Transmodel API.
-- [ ] Their values are text in the API, since the names and types come from the profile. A query
-      that lists the parameters of the profile, with their ranges, would let a client build its
-      sliders.
+- [x] The parameters can be set in both GraphQL APIs: `pedestrianCost` of the walk preferences in
+      the GTFS API, and an argument of the trip query in the Transmodel API. The debug client
+      lists the arguments of that query, so they can be set there without a change to it.
+- [ ] Their values are text in the API, since the names and types come from the profile. In the
+      Transmodel API the names are an enumeration made from the profile of the graph when the
+      server starts, with the range and default of each in its description, so the debug client
+      has a list to choose from. That makes the schema of a server depend on its graph: a query
+      written with the name as text in the query itself, not in a variable, works without a
+      profile and is refused with one. The GTFS API has a fixed schema file and still takes any
+      text. Ranges a client can read as numbers, to build sliders, are still missing from both.
 - [ ] Values are checked when a request first meets an OpenSidewalks edge, not when the request
       is read, since the profile is part of the graph. A bad value is still reported as a bad
       request.
@@ -153,8 +159,6 @@ Measured in Seattle, 200 pairs of places, a BBBike OpenStreetMap extract plus TD
       the build or router configuration, used when a request has the setting and no values.
     - Or should a request with wheelchair-like limits and no wheelchair setting get a warning?
       There is no way to tell from the values that the traveller uses a wheelchair.
-    - The Transmodel API has the wheelchair setting and not the parameters, so there a wheelchair
-      trip can only be planned with the walking of the default traveller.
     - Transfers are stored for travellers by what they can manage on the edges. Whether the
       wheelchair setting is on is part of the key transfers are cached under, so that works, but
       a transfer through a station (pathways, elevators) and along a sidewalk is decided by both
