@@ -3,6 +3,7 @@ package org.opentripplanner.ext.opensidewalks;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Objects;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import javax.annotation.Nullable;
@@ -21,22 +22,63 @@ import org.opentripplanner.street.model.edge.ExtensionRequestContext;
 public final class PedestrianCostParameters implements ExtensionRequestContext, Serializable {
 
   /** No values: the traveller the graph was built for. */
-  public static final PedestrianCostParameters DEFAULT = new PedestrianCostParameters(Map.of());
+  public static final PedestrianCostParameters DEFAULT = new PedestrianCostParameters(
+    Map.of(),
+    null
+  );
 
   private final SortedMap<String, String> values;
+
+  @Nullable
+  private final StreetNetwork network;
+
   private final int hashCode;
 
   /** The cost function for these values, remembered for the profile it was last asked for. */
   @Nullable
   private transient volatile Resolved resolved;
 
-  private PedestrianCostParameters(Map<String, String> values) {
+  private PedestrianCostParameters(Map<String, String> values, @Nullable StreetNetwork network) {
     this.values = Collections.unmodifiableSortedMap(new TreeMap<>(values));
-    this.hashCode = this.values.hashCode();
+    this.network = network;
+    this.hashCode = Objects.hash(this.values, network);
   }
 
+  /** Values that say nothing about the network, such as those of the router configuration. */
   public static PedestrianCostParameters of(@Nullable Map<String, String> values) {
-    return values == null || values.isEmpty() ? DEFAULT : new PedestrianCostParameters(values);
+    return of(values, null);
+  }
+
+  /**
+   * @param network the network the request travels on, or {@code null} if it does not say. A
+   *                request that does not say travels on the other streets of the graph, if it
+   *                has any.
+   */
+  public static PedestrianCostParameters of(
+    @Nullable Map<String, String> values,
+    @Nullable StreetNetwork network
+  ) {
+    return (values == null || values.isEmpty()) && network == null
+      ? DEFAULT
+      : new PedestrianCostParameters(values == null ? Map.of() : values, network);
+  }
+
+  /**
+   * A traveller on the OpenSidewalks edges with the given values. This is for finding the links
+   * of stops and the paths of transfers on the OpenSidewalks edges when the graph is built.
+   */
+  public static PedestrianCostParameters onOpenSidewalks(Map<String, String> values) {
+    return new PedestrianCostParameters(values, StreetNetwork.OPEN_SIDEWALKS);
+  }
+
+  public boolean isOnOpenSidewalks() {
+    return network == StreetNetwork.OPEN_SIDEWALKS;
+  }
+
+  /** The network the request travels on, or {@code null} if it does not say. */
+  @Nullable
+  public StreetNetwork network() {
+    return network;
   }
 
   public SortedMap<String, String> values() {
@@ -61,7 +103,10 @@ public final class PedestrianCostParameters implements ExtensionRequestContext, 
   @Override
   public boolean equals(Object o) {
     return (
-      this == o || (o instanceof PedestrianCostParameters other && values.equals(other.values))
+      this == o ||
+      (o instanceof PedestrianCostParameters other &&
+        network == other.network &&
+        values.equals(other.values))
     );
   }
 
@@ -72,7 +117,7 @@ public final class PedestrianCostParameters implements ExtensionRequestContext, 
 
   @Override
   public String toString() {
-    return "PedestrianCostParameters" + values;
+    return "PedestrianCostParameters" + values + (network == null ? "" : " on " + network);
   }
 
   private record Resolved(PedestrianCostProfile profile, PedestrianCostSpec spec) {}

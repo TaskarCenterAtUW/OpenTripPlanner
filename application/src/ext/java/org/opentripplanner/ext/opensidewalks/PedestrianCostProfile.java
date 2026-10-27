@@ -143,6 +143,19 @@ public class PedestrianCostProfile {
     return name;
   }
 
+  /**
+   * What the parameters are, by their names and in the order of the profile: what a user
+   * interface needs to offer them. Each is described by the values it can have, after the
+   * description the profile gives it, if it gives one.
+   */
+  public Map<String, String> parameterDescriptions() {
+    Map<String, String> descriptions = new LinkedHashMap<>();
+    for (Parameter p : parameters.values()) {
+      descriptions.put(p.name, p.describe());
+    }
+    return descriptions;
+  }
+
   List<Layer> layers() {
     return layers;
   }
@@ -292,8 +305,12 @@ public class PedestrianCostProfile {
     final Double min;
     final Double max;
 
+    @Nullable
+    private final String description;
+
     Parameter(String name, JsonNode spec) {
       this.name = name;
+      this.description = text(spec, "description", null);
       String type = text(spec, "type", "number");
       if (!type.equals("number") && !type.equals("boolean")) {
         throw new IllegalArgumentException(
@@ -324,6 +341,30 @@ public class PedestrianCostProfile {
         ),
         "parameter " + name
       );
+    }
+
+    /** What the parameter means, if the profile says, and the values it can have. */
+    String describe() {
+      String values;
+      if (isBoolean) {
+        values = "`true` or `false`";
+      } else if (min != null && max != null) {
+        values = "A number from " + min + " to " + max;
+      } else if (min != null) {
+        values = "A number, at least " + min;
+      } else if (max != null) {
+        values = "A number, at most " + max;
+      } else {
+        values = "A number";
+      }
+      if (defaultValue != null) {
+        values += ", " + defaultValue.asText() + " if it is not set";
+      }
+      if (description == null || description.isBlank()) {
+        return values + ".";
+      }
+      String text = description.strip();
+      return text + (text.endsWith(".") ? " " : ". ") + values + ".";
     }
 
     @Nullable

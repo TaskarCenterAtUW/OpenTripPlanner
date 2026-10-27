@@ -10,6 +10,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.opentripplanner.core.model.id.FeedScopedId;
+import org.opentripplanner.ext.opensidewalks.OswLinking;
+import org.opentripplanner.framework.application.OTPFeature;
 import org.opentripplanner.service.vehicleparking.VehicleParkingRepository;
 import org.opentripplanner.service.vehicleparking.model.VehicleParking;
 import org.opentripplanner.service.vehicleparking.model.VehicleParkingState;
@@ -180,6 +182,19 @@ public class VehicleParkingUpdater extends PollingGraphUpdater<StreetRealTimeUpd
     }
 
     private List<DisposableEdgeCollection> linkVehicleParkingForRealtime(
+      VehicleParkingEntranceVertex vehicleParkingEntranceVertex
+    ) {
+      var disposableEdgeCollections = linkToStreets(vehicleParkingEntranceVertex);
+      if (OTPFeature.OpenSidewalks.isOn()) {
+        // To the OpenSidewalks edges as well, for trips on them
+        try (var ignore = OswLinking.linkForEveryone()) {
+          disposableEdgeCollections.addAll(linkToStreets(vehicleParkingEntranceVertex));
+        }
+      }
+      return disposableEdgeCollections;
+    }
+
+    private List<DisposableEdgeCollection> linkToStreets(
       VehicleParkingEntranceVertex vehicleParkingEntranceVertex
     ) {
       List<DisposableEdgeCollection> disposableEdgeCollections = new ArrayList<>();

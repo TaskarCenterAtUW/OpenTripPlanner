@@ -59,23 +59,10 @@ class OswRoutingComparisonTest {
   private static final Instant TIME = Instant.parse("2026-10-07T12:00:00Z");
 
   /**
-   * R5 and AccessMap do not start or end a route more than this far from the network. OTP links
-   * a place to the nearest edge however far away it is, so it finds routes where they do not.
-   */
-  private static final double MAX_METERS_FROM_NETWORK = 50;
-
-  /**
    * R5 walks 605 m here where a path of 556 m is quicker by its own costs. OTP takes the shorter
    * one, and so does AccessMap.
    */
   private static final Set<String> R5_MISSES_A_SHORTER_PATH = Set.of("manual_wheelchair 25");
-
-  /**
-   * The destination is 21 m from the network, but the edges there are crossings without curb
-   * ramps. The nearest edge the traveller can use is 251 m away. OTP links the destination to
-   * it and finds a route there. R5 and AccessMap find none.
-   */
-  private static final Set<String> LINKED_PAST_AN_UNUSABLE_EDGE = Set.of("manual_wheelchair 56");
 
   /**
    * The engines link a place to slightly different points of an edge, and AccessMap has another
@@ -111,11 +98,7 @@ class OswRoutingComparisonTest {
       JsonNode r5 = route.path("r5");
 
       if (r5.isNull()) {
-        boolean farFromNetwork =
-          route.path("metersFromNetwork").asDouble() > MAX_METERS_FROM_NETWORK;
-        if (!farFromNetwork && !LINKED_PAST_AN_UNUSABLE_EDGE.contains(id)) {
-          assertWithMessage("%s has no route in R5", id).that(walk).isNull();
-        }
+        assertWithMessage("%s has no route in R5", id).that(walk).isNull();
         continue;
       }
       assertWithMessage("%s has a route in R5", id).that(walk).isNotNull();
@@ -315,6 +298,7 @@ class OswRoutingComparisonTest {
         OswCosting.fromFile(RESOURCES.file("ws-prod.json"), Map.of())
       ).buildGraph();
       graph.index();
+      graph.calculateConvexHull();
       return graph;
     }
 

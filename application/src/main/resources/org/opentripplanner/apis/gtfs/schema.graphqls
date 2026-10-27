@@ -980,6 +980,12 @@ type Leg {
     originModesWithParentStation: [TransitMode!]
   ): [Leg!]
   """
+  The OpenSidewalks edges a walking leg goes along, in order. Empty for other legs, and for
+  walking on streets that are not from OpenSidewalks data. This is part of the OpenSidewalks
+  sandbox feature.
+  """
+  pedestrianSegments: [PedestrianSegment!]!
+  """
   Special booking information for the pick up stop of this leg if, for example, it needs
   to be booked in advance. This could be due to a flexible or on-demand service.
   """
@@ -1267,6 +1273,55 @@ type Pattern implements Node {
   tripsOnServiceDate(serviceDate: LocalDate!): [TripOnServiceDate!]!
   "Real-time updated position of vehicles that are serving this pattern."
   vehiclePositions: [VehiclePosition!]
+}
+
+"""
+The part of an OpenSidewalks edge that a walking leg goes along, with the tags of the edge that
+describe it to the traveller, or a pathway of a station it goes through. This is part of the
+OpenSidewalks sandbox feature.
+"""
+type PedestrianSegment {
+  "Whether the edge has curb ramps. Null if this is not known."
+  curbRamps: Boolean
+  "The `description` of the edge."
+  description: String
+  "The length of the part of the edge that is walked, in meters."
+  distance: Float!
+  "Whether the edge is an elevator."
+  elevator: Boolean!
+  "The `footway` of the edge, for example `sidewalk` or `crossing`."
+  footway: String
+  "The name of the level of the station a pathway starts on, for example `Mezzanine`, if known."
+  fromLevel: String
+  "The part of the edge that is walked, in the direction it is walked."
+  geometry: Geometry
+  "The `highway` of the edge, for example `footway` or `steps`."
+  highway: String
+  """
+  The grade of the edge in the direction it is walked, for example 0.05 for 5% uphill and -0.05
+  for 5% downhill. Null if the edge has no `incline`.
+  """
+  incline: Float
+  "Whether the edge is indoors."
+  indoor: Boolean!
+  """
+  How many levels of the station a pathway goes up, negative if it goes down, if the levels it
+  starts and ends on are known.
+  """
+  levelChange: Float
+  "The `name` of the edge, or the sign a pathway is signposted with. Null if it has none."
+  name: String
+  """
+  The kind of station pathway, the `pathway_mode` of GTFS: `WALKWAY`, `STAIRS`,
+  `MOVING_SIDEWALK`, `ESCALATOR`, `ELEVATOR`, `FARE_GATE`, `EXIT_GATE` or `UNKNOWN`. Null for an
+  OpenSidewalks edge. The `description` of a pathway is the name of the station entrance it
+  starts or ends at, if it does.
+  """
+  pathwayMode: String
+  "The `surface` of the edge, for example `concrete`."
+  surface: String
+  "The name of the level of the station a pathway ends on, for example `Platform`, if known."
+  toLevel: String
 }
 
 type Place {
@@ -4312,6 +4367,17 @@ enum StopType {
 }
 
 """
+The street networks of a graph that has OpenSidewalks data and other street data. This is part
+of the OpenSidewalks sandbox feature.
+"""
+enum StreetNetwork {
+  "The OpenSidewalks data."
+  OPEN_SIDEWALKS
+  "The other street data, such as OpenStreetMap."
+  STREETS
+}
+
+"""
 Transit modes include modes that are used within organized transportation networks
 run by public transportation authorities, taxi companies etc.
 Equivalent to GTFS route_type or to NeTEx TransportMode.
@@ -5215,6 +5281,16 @@ input PlanStreetPreferencesInput {
   taxi travel.
   """
   car: CarPreferencesInput
+  """
+  Which street network the whole trip is on, in a graph that has OpenSidewalks data and other
+  street data, such as OpenStreetMap, that are not joined to each other. On `OPEN_SIDEWALKS`
+  walking is costed with the pedestrian cost profile, and cycling and driving use the roads of
+  the OpenSidewalks data, if it has any. If this is left out, a trip with `pedestrianCost` values
+  is on `OPEN_SIDEWALKS` and one without on `STREETS`. `STREETS` with `pedestrianCost` values is
+  rejected. This has no effect unless the server has streets built by the OpenSidewalks sandbox
+  feature.
+  """
+  network: StreetNetwork
   "Scooter (kick or electrical) related preferences."
   scooter: ScooterPreferencesInput
   """

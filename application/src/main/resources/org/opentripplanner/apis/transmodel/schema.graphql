@@ -960,6 +960,8 @@ type QueryType {
     pageCursor: String,
     "The list of points the journey is required to pass through."
     passThroughPoints: [PassThroughPoint!] @deprecated(reason : "Use via instead"),
+    "What the traveller can manage on OpenSidewalks streets, as values of the parameters of the pedestrian cost profile the streets are costed with: the steepest uphill grade, for example. A parameter that is left out has the value the server is configured with. This has no effect unless the server has streets built by the OpenSidewalks sandbox feature."
+    pedestrianCost: [PedestrianCostParameterInput!],
     """
     Relax generalized-cost when comparing trips with a different set of
     transit-group-priorities. The groups are set server side for service-journey and
@@ -1013,6 +1015,8 @@ type QueryType {
     Maximum value: 1440 minutes (24h)
     """
     searchWindow: Int,
+    "Which street network the whole trip is on, in a graph that has OpenSidewalks data and other street data, such as OpenStreetMap, that are not joined to each other. On `OPEN_SIDEWALKS` walking is costed with the pedestrian cost profile, and cycling and driving use the roads of the OpenSidewalks data, if it has any. If this is left out, a trip with `pedestrianCost` values is on `OPEN_SIDEWALKS` and one without on `STREETS`. `STREETS` with `pedestrianCost` values is rejected. This has no effect unless the server has streets built by the OpenSidewalks sandbox feature."
+    streetNetwork: StreetNetwork,
     """
     Search for the best trip options within a time window. If `true` two TripPatterns are considered optimal if one is better on arrival time(earliest wins) and the other is better on departure time (latest wins).In combination with `arriveBy` this parameter cover the following 3 use cases:
     
@@ -2095,6 +2099,14 @@ enum StreetMode {
   taxi @deprecated(reason : "This value is experimental.")
 }
 
+"The street networks of a graph that has OpenSidewalks data and other street data. This is part of the OpenSidewalks sandbox feature."
+enum StreetNetwork {
+  "The OpenSidewalks data."
+  OPEN_SIDEWALKS
+  "The other street data, such as OpenStreetMap."
+  STREETS
+}
+
 enum TransportMode {
   air
   bus
@@ -2447,6 +2459,14 @@ input PassThroughPoint {
   The journey must pass through at least one of these entities - not all of them.
   """
   placeIds: [String!]
+}
+
+"The value of a parameter of the pedestrian cost profile that OpenSidewalks streets are costed with. This is part of the OpenSidewalks sandbox feature."
+input PedestrianCostParameterInput {
+  "The name the profile gives the parameter, for example `uphill` or `avoid_curbs`."
+  name: String!
+  "The value as text, for example `0.083` or `true`."
+  value: String!
 }
 
 "A combination of street mode and penalty for time and cost."

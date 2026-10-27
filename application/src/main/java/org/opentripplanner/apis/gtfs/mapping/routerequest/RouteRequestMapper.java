@@ -149,7 +149,11 @@ public class RouteRequestMapper {
     preferences.withCar(car -> setCarPreferences(car, args.getGraphQLCar(), environment));
     preferences.withScooter(scooter -> setScooterPreferences(scooter, args.getGraphQLScooter()));
     preferences.withWalk(walk -> setWalkPreferences(walk, args.getGraphQLWalk()));
-    PedestrianCostParametersMapper.setPedestrianCost(preferences, args.getGraphQLWalk());
+    PedestrianCostParametersMapper.setPedestrianCost(
+      preferences,
+      args.getGraphQLWalk(),
+      args.getGraphQLNetwork()
+    );
   }
 
   private static void setRentalAvailabilityPreferences(

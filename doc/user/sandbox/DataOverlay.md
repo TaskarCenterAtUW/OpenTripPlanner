@@ -39,6 +39,10 @@ which describes the contents of the data file. Please refer to the diagram for m
 
 It is a sandbox feature.
 
+It can not be used together with the [OpenSidewalks](OpenSidewalks.md) sandbox feature. Both set
+the cost extension of street edges, and an edge has only one; Data Overlay runs last in the graph
+build and replaces the one OpenSidewalks set.
+
 Please see the configuration part for setup instructions and examples.
 
 ### Configuration

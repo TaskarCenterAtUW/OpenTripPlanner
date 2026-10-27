@@ -10,6 +10,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import org.opentripplanner.core.model.id.FeedScopedId;
+import org.opentripplanner.ext.opensidewalks.OswLinking;
+import org.opentripplanner.framework.application.OTPFeature;
 import org.opentripplanner.framework.retry.OtpRetry;
 import org.opentripplanner.framework.retry.OtpRetryBuilder;
 import org.opentripplanner.framework.retry.OtpRetryException;
@@ -195,6 +197,20 @@ public class VehicleRentalUpdater extends PollingGraphUpdater<StreetRealTimeUpda
             LinkingDirection.BIDIRECTIONAL,
             StreetVehicleRentalLink::createBidirectionalLinks
           );
+          if (OTPFeature.OpenSidewalks.isOn()) {
+            // To the OpenSidewalks edges as well, for trips on them
+            try (var ignore = OswLinking.linkForEveryone()) {
+              linker
+                .linkVertexForRealTime(
+                  vehicleRentalVertex,
+                  new TraverseModeSet(TraverseMode.WALK),
+                  LinkingDirection.BIDIRECTIONAL,
+                  StreetVehicleRentalLink::createBidirectionalLinks
+                )
+                .listEdges()
+                .forEach(tempEdges::addEdge);
+            }
+          }
           if (vehicleRentalVertex.getOutgoing().isEmpty()) {
             // Copy reference to pass into lambda
             var vrv = vehicleRentalVertex;

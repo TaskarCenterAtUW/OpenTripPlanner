@@ -8,6 +8,7 @@ import org.opentripplanner.street.model.edge.SplitStreetEdge;
 import org.opentripplanner.street.model.edge.StreetEdge;
 import org.opentripplanner.street.model.vertex.SplitterVertex;
 import org.opentripplanner.street.model.vertex.StreetVertex;
+import org.opentripplanner.street.model.vertex.Vertex;
 import org.opentripplanner.street.search.TraverseModeSet;
 import org.opentripplanner.street.search.state.State;
 
@@ -36,6 +37,19 @@ public class OswStreetEdge extends StreetEdge {
 
   static OswStreetEdge createAndConnect(OswStreetEdgeBuilder builder) {
     return connectToGraph(new OswStreetEdge(builder));
+  }
+
+  /** Whether the vertex is the end of an OpenSidewalks edge, or a place along one. */
+  public static boolean isOnOpenSidewalksEdge(Vertex vertex) {
+    return (
+      vertex.getOutgoing().stream().anyMatch(OswStreetEdge::isOpenSidewalksEdge) ||
+      vertex.getIncoming().stream().anyMatch(OswStreetEdge::isOpenSidewalksEdge)
+    );
+  }
+
+  /** Whether the edge is from OpenSidewalks data, or a temporary part of one. */
+  private static boolean isOpenSidewalksEdge(Edge edge) {
+    return edge instanceof OswStreetEdge || edge instanceof TemporaryOswStreetEdge;
   }
 
   /**
@@ -76,7 +90,18 @@ public class OswStreetEdge extends StreetEdge {
   @Override
   public State[] traverse(State s0) {
     var states = OswWalkCost.traverse(s0, this, costing, attributes, delayShare);
-    return states != null ? states : super.traverse(s0);
+    if (states != null) {
+      return states;
+    }
+    // Cycling and driving on roads, and walking with a vehicle, as OTP has them
+    return OswWalkCost.withoutWalksTheTravellerCanNotMake(
+      s0,
+      super.traverse(s0),
+      this,
+      costing,
+      attributes,
+      delayShare
+    );
   }
 
   /**
@@ -85,7 +110,8 @@ public class OswStreetEdge extends StreetEdge {
    */
   @Override
   public boolean canTraverse(TraverseModeSet modes) {
-    return super.canTraverse(modes) && OswLinking.isLinkable(costing, attributes);
+    // First, so that a request that can not use the edge for its modes at all is told why
+    return OswLinking.isLinkable(costing, attributes, this, modes) && super.canTraverse(modes);
   }
 
   @Override

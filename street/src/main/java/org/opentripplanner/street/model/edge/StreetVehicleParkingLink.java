@@ -18,12 +18,12 @@ public class StreetVehicleParkingLink extends Edge {
 
   private final VehicleParkingEntranceVertex vehicleParkingEntranceVertex;
 
-  private StreetVehicleParkingLink(StreetVertex fromv, VehicleParkingEntranceVertex tov) {
+  protected StreetVehicleParkingLink(StreetVertex fromv, VehicleParkingEntranceVertex tov) {
     super(fromv, tov);
     vehicleParkingEntranceVertex = tov;
   }
 
-  private StreetVehicleParkingLink(VehicleParkingEntranceVertex fromv, StreetVertex tov) {
+  protected StreetVehicleParkingLink(VehicleParkingEntranceVertex fromv, StreetVertex tov) {
     super(fromv, tov);
     vehicleParkingEntranceVertex = fromv;
   }
@@ -68,7 +68,9 @@ public class StreetVehicleParkingLink extends Edge {
 
     StateEditor s1 = s0.edit(this);
 
-    s1.incrementWeight(1);
+    int streetToEntranceTime = getStreetToEntranceTime();
+    s1.incrementTimeInSeconds(streetToEntranceTime);
+    s1.incrementWeight(1 + streetToEntranceTime);
     s1.setBackMode(null);
     return s1.makeStateArray();
   }
@@ -78,6 +80,14 @@ public class StreetVehicleParkingLink extends Edge {
     VehicleParking vehicleParking
   ) {
     return !parkingPreferences.filter().matches(vehicleParking);
+  }
+
+  /**
+   * The time it takes to get between the street and the entrance, in seconds. The link is taken
+   * to be instant, unless a subclass says otherwise.
+   */
+  protected int getStreetToEntranceTime() {
+    return 0;
   }
 
   @Override

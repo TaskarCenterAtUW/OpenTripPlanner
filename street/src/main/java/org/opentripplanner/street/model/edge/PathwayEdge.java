@@ -1,5 +1,6 @@
 package org.opentripplanner.street.model.edge;
 
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.Optional;
 import javax.annotation.Nullable;
@@ -20,6 +21,27 @@ public class PathwayEdge extends Edge implements BikeWalkableEdge, WheelchairTra
 
   public static final I18NString DEFAULT_NAME = new NonLocalizedString("pathway");
 
+  /**
+   * The kind of pathway, as the {@code pathway_mode} of GTFS gives it. Elevators are not pathway
+   * edges, see {@link ElevatorHopEdge}.
+   */
+  public enum Mode {
+    WALKWAY,
+    STAIRS,
+    MOVING_SIDEWALK,
+    ESCALATOR,
+    FARE_GATE,
+    EXIT_GATE,
+    UNKNOWN,
+  }
+
+  /**
+   * A level of a station, as {@code levels.txt} of GTFS describes it.
+   *
+   * @param index the position of the level: 0 at the ground, higher ones above it
+   */
+  public record Level(double index, String name) implements Serializable {}
+
   @Nullable
   private final I18NString signpostedAs;
 
@@ -29,6 +51,13 @@ public class PathwayEdge extends Edge implements BikeWalkableEdge, WheelchairTra
   private final double slope;
 
   private final boolean wheelchairAccessible;
+  private final Mode mode;
+
+  @Nullable
+  private final Level fromLevel;
+
+  @Nullable
+  private final Level toLevel;
 
   private PathwayEdge(
     Vertex fromv,
@@ -38,7 +67,10 @@ public class PathwayEdge extends Edge implements BikeWalkableEdge, WheelchairTra
     double distance,
     int stairCount,
     double slope,
-    boolean wheelchairAccessible
+    boolean wheelchairAccessible,
+    Mode mode,
+    @Nullable Level fromLevel,
+    @Nullable Level toLevel
   ) {
     super(fromv, tov);
     this.signpostedAs = signpostedAs;
@@ -47,6 +79,9 @@ public class PathwayEdge extends Edge implements BikeWalkableEdge, WheelchairTra
     this.slope = slope;
     this.wheelchairAccessible = wheelchairAccessible;
     this.distance = distance;
+    this.mode = Objects.requireNonNull(mode);
+    this.fromLevel = fromLevel;
+    this.toLevel = toLevel;
   }
 
   /**
@@ -72,6 +107,34 @@ public class PathwayEdge extends Edge implements BikeWalkableEdge, WheelchairTra
     double slope,
     boolean wheelchairAccessible
   ) {
+    return createPathwayEdge(
+      fromv,
+      tov,
+      signpostedAs,
+      traversalTime,
+      distance,
+      stairCount,
+      slope,
+      wheelchairAccessible,
+      Mode.UNKNOWN,
+      null,
+      null
+    );
+  }
+
+  public static PathwayEdge createPathwayEdge(
+    Vertex fromv,
+    Vertex tov,
+    I18NString signpostedAs,
+    int traversalTime,
+    double distance,
+    int stairCount,
+    double slope,
+    boolean wheelchairAccessible,
+    Mode mode,
+    @Nullable Level fromLevel,
+    @Nullable Level toLevel
+  ) {
     return connectToGraph(
       new PathwayEdge(
         fromv,
@@ -81,7 +144,10 @@ public class PathwayEdge extends Edge implements BikeWalkableEdge, WheelchairTra
         distance,
         stairCount,
         slope,
-        wheelchairAccessible
+        wheelchairAccessible,
+        mode,
+        fromLevel,
+        toLevel
       )
     );
   }
@@ -172,6 +238,20 @@ public class PathwayEdge extends Edge implements BikeWalkableEdge, WheelchairTra
     } else {
       return distance;
     }
+  }
+
+  public Mode mode() {
+    return mode;
+  }
+
+  /** The level the pathway starts on, if the station says. */
+  public Optional<Level> fromLevel() {
+    return Optional.ofNullable(fromLevel);
+  }
+
+  /** The level the pathway ends on, if the station says. */
+  public Optional<Level> toLevel() {
+    return Optional.ofNullable(toLevel);
   }
 
   public int getStairCount() {

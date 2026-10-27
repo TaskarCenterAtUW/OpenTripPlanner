@@ -2652,6 +2652,7 @@ public class GraphQLTypes {
 
     private GraphQLBicyclePreferencesInput bicycle;
     private GraphQLCarPreferencesInput car;
+    private GraphQLStreetNetwork network;
     private GraphQLScooterPreferencesInput scooter;
     private GraphQLWalkPreferencesInput walk;
 
@@ -2661,6 +2662,11 @@ public class GraphQLTypes {
           (Map<String, Object>) args.get("bicycle")
         );
         this.car = new GraphQLCarPreferencesInput((Map<String, Object>) args.get("car"));
+        if (args.get("network") instanceof GraphQLStreetNetwork) {
+          this.network = (GraphQLStreetNetwork) args.get("network");
+        } else if (args.get("network") != null) {
+          this.network = GraphQLStreetNetwork.valueOf((String) args.get("network"));
+        }
         this.scooter = new GraphQLScooterPreferencesInput(
           (Map<String, Object>) args.get("scooter")
         );
@@ -2674,6 +2680,10 @@ public class GraphQLTypes {
 
     public GraphQLCarPreferencesInput getGraphQLCar() {
       return this.car;
+    }
+
+    public GraphQLStreetNetwork getGraphQLNetwork() {
+      return this.network;
     }
 
     public GraphQLScooterPreferencesInput getGraphQLScooter() {
@@ -2690,6 +2700,10 @@ public class GraphQLTypes {
 
     public void setGraphQLCar(GraphQLCarPreferencesInput car) {
       this.car = car;
+    }
+
+    public void setGraphQLNetwork(GraphQLStreetNetwork network) {
+      this.network = network;
     }
 
     public void setGraphQLScooter(GraphQLScooterPreferencesInput scooter) {
@@ -5865,6 +5879,15 @@ public class GraphQLTypes {
     public void setGraphQLLanguage(String language) {
       this.language = language;
     }
+  }
+
+  /**
+   * The street networks of a graph that has OpenSidewalks data and other street data. This is part
+   * of the OpenSidewalks sandbox feature.
+   */
+  public enum GraphQLStreetNetwork {
+    OPEN_SIDEWALKS,
+    STREETS,
   }
 
   public static class GraphQLTimetablePreferencesInput {

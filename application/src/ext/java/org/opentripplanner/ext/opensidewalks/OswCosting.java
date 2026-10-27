@@ -21,6 +21,12 @@ public final class OswCosting implements Serializable {
   private final String profileJson;
   private final TreeMap<String, String> defaults;
 
+  /** Whether the graph has streets from other data that can be walked, too. */
+  private boolean besideOtherStreets = false;
+
+  /** Whether the OpenSidewalks data has roads, which bicycles and cars can use. */
+  private boolean hasRoads = false;
+
   private transient volatile PedestrianCostProfile profile;
 
   /**
@@ -69,6 +75,41 @@ public final class OswCosting implements Serializable {
       profile = p;
     }
     return p;
+  }
+
+  /**
+   * Whether the graph has streets from other data that can be walked. A request then travels on
+   * one of the two, see {@link #usesOpenSidewalks}.
+   */
+  public boolean besideOtherStreets() {
+    return besideOtherStreets;
+  }
+
+  void setBesideOtherStreets() {
+    this.besideOtherStreets = true;
+  }
+
+  /** Whether the OpenSidewalks data has roads, which bicycles and cars can use. */
+  public boolean hasRoads() {
+    return hasRoads;
+  }
+
+  void setHasRoads() {
+    this.hasRoads = true;
+  }
+
+  /**
+   * Whether a request travels on the OpenSidewalks edges, and not on the other streets of the
+   * graph, if it has any. That is so if the request says it does, see {@link StreetNetwork}. A
+   * request that does not say travels on the other streets.
+   *
+   * @param parameters the parameter values of the request, or {@code null} if it has none
+   */
+  public boolean usesOpenSidewalks(@Nullable PedestrianCostParameters parameters) {
+    if (!besideOtherStreets) {
+      return true;
+    }
+    return parameters != null && parameters.isOnOpenSidewalks();
   }
 
   /**

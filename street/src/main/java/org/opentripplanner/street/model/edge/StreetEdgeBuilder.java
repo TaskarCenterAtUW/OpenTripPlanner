@@ -12,6 +12,7 @@ import static org.opentripplanner.street.model.edge.StreetEdge.STAIRS_FLAG_INDEX
 import static org.opentripplanner.street.model.edge.StreetEdge.WALK_NOTHRUTRAFFIC;
 import static org.opentripplanner.street.model.edge.StreetEdge.WHEELCHAIR_ACCESSIBLE_FLAG_INDEX;
 
+import javax.annotation.Nullable;
 import org.locationtech.jts.geom.LineString;
 import org.opentripplanner.core.model.i18n.I18NString;
 import org.opentripplanner.core.model.i18n.NonLocalizedString;
@@ -39,6 +40,7 @@ public class StreetEdgeBuilder<B extends StreetEdgeBuilder<B>> {
   private float bicycleSafetyFactor;
   private short flags;
   private StreetElevationExtension streetElevationExtension;
+  private StreetEdgeCostExtension costExtension;
 
   public StreetEdgeBuilder() {
     this.defaultLength = true;
@@ -252,6 +254,16 @@ public class StreetEdgeBuilder<B extends StreetEdgeBuilder<B>> {
 
   public StreetElevationExtension streetElevationExtension() {
     return streetElevationExtension;
+  }
+
+  public B withCostExtension(@Nullable StreetEdgeCostExtension costExtension) {
+    this.costExtension = costExtension;
+    return instance();
+  }
+
+  @Nullable
+  public StreetEdgeCostExtension costExtension() {
+    return costExtension;
   }
 
   @SuppressWarnings("unchecked")

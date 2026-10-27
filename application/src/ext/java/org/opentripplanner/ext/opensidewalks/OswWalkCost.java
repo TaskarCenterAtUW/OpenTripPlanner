@@ -1,5 +1,6 @@
 package org.opentripplanner.ext.opensidewalks;
 
+import java.util.Arrays;
 import javax.annotation.Nullable;
 import org.opentripplanner.street.model.edge.StreetEdge;
 import org.opentripplanner.street.search.TraverseMode;
@@ -44,10 +45,48 @@ final class OswWalkCost {
   }
 
   /**
+   * The states OTP made traversing the edge, without those that walk it if the traveller of the
+   * request can not walk it. That is for where OTP does the walking itself: where a car drops the
+   * traveller off or may pick them up, and in geofencing zones. Walking a bicycle is left as it is.
+   */
+  static State[] withoutWalksTheTravellerCanNotMake(
+    State s0,
+    State[] states,
+    StreetEdge edge,
+    OswCosting costing,
+    OswEdgeAttributes attributes,
+    float delayShare
+  ) {
+    if (Arrays.stream(states).noneMatch(OswWalkCost::walks)) {
+      return states;
+    }
+    var traveller = s0.getExtensionRequestContext(PedestrianCostParameters.class).orElse(null);
+    var spec = costing.spec(traveller);
+    double seconds = durationSeconds(
+      edge,
+      attributes,
+      delayShare,
+      spec,
+      s0.getRequest().walk().speed()
+    );
+    if (seconds != Double.POSITIVE_INFINITY) {
+      return states;
+    }
+    return Arrays.stream(states)
+      .filter(s -> !walks(s))
+      .toArray(State[]::new);
+  }
+
+  /** Whether the state got where it is on foot, without a vehicle. */
+  private static boolean walks(State state) {
+    return state.getBackMode() == TraverseMode.WALK && !state.isBackWalkingBike();
+  }
+
+  /**
    * @return the states after walking the edge, or {@code null} if the traversal is not a plain
    * walk and should be left to OTP. Walking is the only thing the profile has a cost for, so
-   * that includes walking with a vehicle, and the searches that may get into or out of a car
-   * along the way.
+   * that includes walking with a vehicle, and walking where a car may pick the walker up or drop
+   * them off.
    */
   @Nullable
   static State[] traverse(
@@ -57,11 +96,25 @@ final class OswWalkCost {
     OswEdgeAttributes attributes,
     float delayShare
   ) {
+    var traveller = s0.getExtensionRequestContext(PedestrianCostParameters.class).orElse(null);
+    if (!costing.usesOpenSidewalks(traveller)) {
+      return State.empty();
+    }
     var request = s0.getRequest();
+    if (s0.currentMode() != TraverseMode.WALK) {
+      return null;
+    }
+    // Where a car can go, OTP decides whether a walker who is to be picked up gets into the car
+    if (request.mode().includesPickup() && edge.getPermission().allows(TraverseMode.CAR)) {
+      return null;
+    }
+    // The geofencing zones of vehicles for rent can act on a walker at their boundaries, and in
+    // an arrive-by search on a walker who has just left a vehicle
     if (
-      s0.currentMode() != TraverseMode.WALK ||
-      request.mode().includesRenting() ||
-      request.mode().includesPickup()
+      request.mode().includesRenting() &&
+      (request.arriveBy() ||
+        !edge.getFromVertex().listGeofencingBoundaries().isEmpty() ||
+        !edge.getToVertex().listGeofencingBoundaries().isEmpty())
     ) {
       return null;
     }
@@ -69,9 +122,7 @@ final class OswWalkCost {
     if (backEdge != null && edge.isReverseOf(backEdge)) {
       return State.empty();
     }
-    var spec = costing.spec(
-      s0.getExtensionRequestContext(PedestrianCostParameters.class).orElse(null)
-    );
+    var spec = costing.spec(traveller);
     double seconds = durationSeconds(edge, attributes, delayShare, spec, request.walk().speed());
     if (seconds == Double.POSITIVE_INFINITY) {
       return State.empty();

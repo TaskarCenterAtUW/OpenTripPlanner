@@ -10,14 +10,26 @@ import java.io.Serializable;
  * @param incline      the grade in the direction of the street edge, NaN if unknown
  * @param lengthMeters the length of the whole OpenSidewalks edge
  * @param usableByAll  whether every traveller the parameters of the profile allow can use the edge
+ * @param tags         the tags of the edge that are shown to the traveller
  */
 record OswEdgeAttributes(
   int layer,
   double incline,
   double lengthMeters,
   CurbRamps curbRamps,
-  boolean usableByAll
+  boolean usableByAll,
+  OswEdgeTags tags
 ) implements Serializable {
+  OswEdgeAttributes(
+    int layer,
+    double incline,
+    double lengthMeters,
+    CurbRamps curbRamps,
+    boolean usableByAll
+  ) {
+    this(layer, incline, lengthMeters, curbRamps, usableByAll, OswEdgeTags.NONE);
+  }
+
   double speedFactor(PedestrianCostSpec spec) {
     return spec.speedFactor(layer, incline, lengthMeters, curbRamps);
   }

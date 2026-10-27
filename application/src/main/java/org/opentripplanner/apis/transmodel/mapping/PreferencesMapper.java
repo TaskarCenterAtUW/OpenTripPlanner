@@ -12,6 +12,7 @@ import static org.opentripplanner.apis.transmodel.mapping.preferences.WalkPrefer
 import graphql.schema.DataFetchingEnvironment;
 import java.util.Locale;
 import org.opentripplanner.apis.transmodel.support.DataFetcherDecorator;
+import org.opentripplanner.ext.opensidewalks.api.TransmodelPedestrianCost;
 import org.opentripplanner.routing.api.request.preference.RoutingPreferencesBuilder;
 
 class PreferencesMapper {
@@ -25,6 +26,7 @@ class PreferencesMapper {
       mapStreetPreferences(street, environment, preferences.street())
     );
     preferences.withWalk(walk -> mapWalkPreferences(walk, callWith));
+    TransmodelPedestrianCost.map(environment, preferences);
     preferences.withBike(bike -> mapBikePreferences(bike, callWith));
     preferences.withCar(car -> mapCarPreferences(car, callWith));
     preferences.withScooter(scooter -> mapScooterPreferences(scooter, callWith));

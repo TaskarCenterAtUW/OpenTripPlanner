@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import org.opentripplanner.graph_builder.issue.api.DataImportIssueStore;
@@ -40,6 +41,10 @@ import org.slf4j.LoggerFactory;
  * thru edges break connectivity of the graph, creating islands. The quality of the graph can be
  * improved by converting such islands to nothru state so that routing can start / end from such an
  * island.
+ * <p>
+ * Street vertices can be left out of the pruning, for a network that is not joined to the rest of
+ * the streets and is not to be pruned. Their edges are not changed, and they do not count as
+ * streets near an island.
  */
 public class IslandPruningModule implements GraphBuilderModule {
 
@@ -53,6 +58,10 @@ public class IslandPruningModule implements GraphBuilderModule {
   private final StreetLinkerModule streetLinkerModule;
 
   private final IslandPruningParameters parameters;
+  private final Predicate<Vertex> isLeftOut;
+
+  /** The vertices that are left out, found when the pruning starts. */
+  private Set<Vertex> leftOut = Set.of();
 
   public IslandPruningModule(
     Graph graph,
@@ -61,11 +70,26 @@ public class IslandPruningModule implements GraphBuilderModule {
     @Nullable StreetLinkerModule streetLinkerModule,
     IslandPruningParameters parameters
   ) {
+    this(graph, transitRepository, issueStore, streetLinkerModule, parameters, v -> false);
+  }
+
+  /**
+   * @param isLeftOut whether a street vertex is left out of the pruning
+   */
+  public IslandPruningModule(
+    Graph graph,
+    TransitRepository transitRepository,
+    DataImportIssueStore issueStore,
+    @Nullable StreetLinkerModule streetLinkerModule,
+    IslandPruningParameters parameters,
+    Predicate<Vertex> isLeftOut
+  ) {
     this.graph = graph;
     this.transitRepository = transitRepository;
     this.issueStore = issueStore;
     this.streetLinkerModule = streetLinkerModule;
     this.parameters = parameters;
+    this.isLeftOut = isLeftOut;
   }
 
   @Override
@@ -79,6 +103,15 @@ public class IslandPruningModule implements GraphBuilderModule {
       parameters.adaptivePruningFactor(),
       parameters.adaptivePruningDistance()
     );
+
+    leftOut = graph
+      .getVerticesOfType(StreetVertex.class)
+      .stream()
+      .filter(isLeftOut)
+      .collect(Collectors.toSet());
+    if (!leftOut.isEmpty()) {
+      LOG.info("Leaving {} street vertices out of the pruning", leftOut.size());
+    }
 
     pruneIslands(TraverseMode.BICYCLE);
     pruneIslands(TraverseMode.WALK);
@@ -208,7 +241,7 @@ public class IslandPruningModule implements GraphBuilderModule {
         if (!onlyFerry && island.streetSize() < pruningThresholdWithStops * adaptivePruningFactor) {
           double sizeCoeff =
             adaptivePruningFactor > 1.0
-              ? island.distanceFromOtherGraph(graph, adaptivePruningDistance) /
+              ? island.distanceFromOtherGraph(graph, adaptivePruningDistance, leftOut::contains) /
                 adaptivePruningDistance
               : 1.0;
 
@@ -225,7 +258,7 @@ public class IslandPruningModule implements GraphBuilderModule {
         if (island.streetSize() < pruningThresholdWithoutStops * adaptivePruningFactor) {
           double sizeCoeff =
             adaptivePruningFactor > 1.0
-              ? island.distanceFromOtherGraph(graph, adaptivePruningDistance) /
+              ? island.distanceFromOtherGraph(graph, adaptivePruningDistance, leftOut::contains) /
                 adaptivePruningDistance
               : 1.0;
           if (island.streetSize() * sizeCoeff < pruningThresholdWithoutStops) {
@@ -274,11 +307,14 @@ public class IslandPruningModule implements GraphBuilderModule {
     StreetSearchRequest request = StreetSearchRequest.of().withMode(streetMode).build();
 
     for (Vertex gv : graph.getVertices()) {
-      if (!(gv instanceof StreetVertex)) {
+      if (!(gv instanceof StreetVertex) || leftOut.contains(gv)) {
         continue;
       }
       State s0 = null;
       for (Edge e : gv.getOutgoing()) {
+        if (leftOut.contains(e.getToVertex())) {
+          continue;
+        }
         if (e instanceof StreetEdge se) {
           if (shouldMatchNoThruType != se.isNoThruTraffic(traverseMode)) {
             continue;

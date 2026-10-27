@@ -11,6 +11,7 @@ import javax.annotation.Nullable;
 import org.locationtech.jts.geom.LineString;
 import org.opentripplanner.core.model.accessibility.Accessibility;
 import org.opentripplanner.core.model.i18n.I18NString;
+import org.opentripplanner.ext.opensidewalks.PedestrianSegment;
 import org.opentripplanner.model.PickDrop;
 import org.opentripplanner.model.fare.FareOffer;
 import org.opentripplanner.model.plan.leg.LegCallTime;
@@ -440,6 +441,15 @@ public interface Leg {
   @Sandbox
   default Float accessibilityScore() {
     return null;
+  }
+
+  /**
+   * The OpenSidewalks edges a walking leg goes along, in order. Empty for other legs, and where
+   * the OpenSidewalks sandbox feature is not used.
+   */
+  @Sandbox
+  default List<PedestrianSegment> pedestrianSegments() {
+    return List.of();
   }
 
   @Nullable

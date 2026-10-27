@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 import org.glassfish.grizzly.http.server.Request;
 import org.opentripplanner.apis.support.TileJson;
+import org.opentripplanner.ext.opensidewalks.OswEdgeLayerBuilder;
 import org.opentripplanner.ext.vectortiles.layers.areastops.AreaStopsLayerBuilder;
 import org.opentripplanner.ext.vectortiles.layers.stations.StationsLayerBuilder;
 import org.opentripplanner.ext.vectortiles.layers.stops.StopsLayerBuilder;
@@ -36,6 +37,7 @@ import org.opentripplanner.service.vehicleparking.VehicleParkingService;
 import org.opentripplanner.service.vehiclerental.VehicleRentalService;
 import org.opentripplanner.service.worldenvelope.WorldEnvelopeService;
 import org.opentripplanner.standalone.config.routerconfig.VectorTileConfig;
+import org.opentripplanner.street.graph.Graph;
 import org.opentripplanner.transit.service.TransitService;
 
 @Path("/routers/{ignoreRouterId}/vectorTiles")
@@ -47,6 +49,7 @@ public class VectorTilesResource {
   private final VehicleRentalService vehicleRentalService;
   private final VehicleParkingService vehicleParkingService;
   private final TransitAlertService transitAlertService;
+  private final Graph graph;
   private final String ignoreRouterId;
   private final Locale locale;
 
@@ -57,6 +60,7 @@ public class VectorTilesResource {
     @Context VehicleRentalService vehicleRentalService,
     @Context VehicleParkingService vehicleParkingService,
     @Context TransitAlertService transitAlertService,
+    @Context Graph graph,
     @Context Request grizzlyRequest,
     /**
      * @deprecated The support for multiple routers are removed from OTP2.
@@ -71,6 +75,7 @@ public class VectorTilesResource {
     this.vehicleRentalService = vehicleRentalService;
     this.vehicleParkingService = vehicleParkingService;
     this.transitAlertService = transitAlertService;
+    this.graph = graph;
     this.ignoreRouterId = ignoreRouterId;
   }
 
@@ -95,7 +100,8 @@ public class VectorTilesResource {
         transitService,
         vehicleRentalService,
         vehicleParkingService,
-        transitAlertService
+        transitAlertService,
+        graph
       )
     );
   }
@@ -180,6 +186,11 @@ public class VectorTilesResource {
         layerParameters,
         locale
       );
+      case OpenSidewalks -> new OswEdgeLayerBuilder(
+        context.graph(),
+        layerParameters.name(),
+        layerParameters.expansionFactor()
+      );
     };
   }
 
@@ -192,6 +203,7 @@ public class VectorTilesResource {
     VehicleRentalStation,
     VehicleParking,
     VehicleParkingGroup,
+    OpenSidewalks,
   }
 
   public interface LayersParameters<T extends Enum<T>> {
@@ -204,6 +216,7 @@ public class VectorTilesResource {
     TransitService transitService,
     VehicleRentalService vehicleRentalService,
     VehicleParkingService vehicleParkingService,
-    TransitAlertService transitAlertService
+    TransitAlertService transitAlertService,
+    Graph graph
   ) {}
 }

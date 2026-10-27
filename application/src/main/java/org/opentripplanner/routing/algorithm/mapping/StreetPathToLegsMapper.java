@@ -13,6 +13,7 @@ import javax.annotation.Nullable;
 import org.opentripplanner.core.model.i18n.I18NString;
 import org.opentripplanner.ext.flex.FlexibleTransitLeg;
 import org.opentripplanner.ext.flex.edgetype.FlexTripEdge;
+import org.opentripplanner.ext.opensidewalks.PedestrianSegments;
 import org.opentripplanner.framework.application.OTPFeature;
 import org.opentripplanner.framework.time.ZoneIdFallback;
 import org.opentripplanner.model.plan.Leg;
@@ -343,6 +344,10 @@ public class StreetPathToLegsMapper {
       .withWalkSteps(walkSteps)
       .withRentedVehicle(firstState.isRentingVehicle())
       .withWalkingBike(false);
+
+    if (OTPFeature.OpenSidewalks.isOn()) {
+      leg.withPedestrianSegments(PedestrianSegments.of(states, streetDetailsService));
+    }
 
     if (firstState.isRentingVehicle()) {
       String vehicleRentalNetwork = firstState.getVehicleRentalNetwork();

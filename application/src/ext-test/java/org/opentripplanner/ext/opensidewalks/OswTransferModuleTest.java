@@ -14,6 +14,7 @@ import org.opentripplanner.framework.application.OTPFeature;
 import org.opentripplanner.graph_builder.module.transfer.api.RegularTransferParameters;
 import org.opentripplanner.routing.algorithm.GraphRoutingTest;
 import org.opentripplanner.routing.api.request.RouteRequest;
+import org.opentripplanner.routing.api.request.request.StreetRequest;
 import org.opentripplanner.street.model.StreetMode;
 import org.opentripplanner.street.model.vertex.StreetVertex;
 import org.opentripplanner.street.model.vertex.TransitStopVertex;
@@ -38,6 +39,14 @@ class OswTransferModuleTest extends GraphRoutingTest {
   private TransitStopVertex stopB;
 
   private TransferRepository findTransfers() {
+    return findTransfers(List.of(RouteRequest.defaultValue()), false);
+  }
+
+  /**
+   * @param withStopC whether there is a stop C as well, at node 61, at the other end of the road
+   *                  that starts at node 3
+   */
+  private TransferRepository findTransfers(List<RouteRequest> requests, boolean withStopC) {
     var model = modelOf(
       new Builder() {
         @Override
@@ -51,6 +60,9 @@ class OswTransferModuleTest extends GraphRoutingTest {
           stopB = stop("B", 47.65, -122.297333);
           biLink(node("2"), stopA);
           biLink(node("3"), stopB);
+          if (withStopC) {
+            biLink(node("61"), stop("C", 47.65, -122.2965329));
+          }
         }
 
         private StreetVertex node(String id) {
@@ -61,7 +73,7 @@ class OswTransferModuleTest extends GraphRoutingTest {
     var transfers = TransferServiceTestFactory.defaultTransferRepository();
     var parameters = RegularTransferParameters.of()
       .withMaxDuration(Duration.ofMinutes(30))
-      .withRequests(List.of(RouteRequest.defaultValue()))
+      .withRequests(requests)
       .build();
     // The stops of this test have no trips, which would leave nothing to transfer to
     OTPFeature.ConsiderPatternsForDirectTransfers.testOff(() ->
@@ -119,6 +131,38 @@ class OswTransferModuleTest extends GraphRoutingTest {
     var transfers = findTransfers();
     // Each of the four paths is found once, however many travellers searched
     assertThat(transfers.listPathTransfers()).hasSize(4);
+  }
+
+  @Test
+  void aBicycleTakenAlongIsRiddenOnTheRoads() {
+    var bike = RouteRequest.of()
+      .withJourney(j -> j.withTransfer(new StreetRequest(StreetMode.BIKE)))
+      .buildDefault();
+
+    var transfers = findTransfers(List.of(RouteRequest.defaultValue(), bike), true);
+
+    var byBike = transfers
+      .findTransfersByMode(StreetMode.BIKE)
+      .stream()
+      .filter(t -> t.from.getId().getId().equals("B") && t.to.getId().getId().equals("C"))
+      .toList();
+    assertThat(byBike).hasSize(1);
+    var onOpenSidewalks = StreetSearchRequest.of()
+      .withMode(StreetMode.BIKE)
+      .withStartTime(Instant.EPOCH)
+      .withExtensionRequestContexts(
+        List.of(PedestrianCostParameters.of(Map.of(), StreetNetwork.OPEN_SIDEWALKS))
+      )
+      .build();
+    assertThat(byBike.getFirst().asRaptorTransfer(onOpenSidewalks)).isPresent();
+    // Nobody walks that road in this profile
+    assertThat(
+      transfers
+        .listPathTransfers()
+        .stream()
+        .filter(t -> t.allowsMode(StreetMode.WALK) && t.to.getId().getId().equals("C"))
+        .toList()
+    ).isEmpty();
   }
 
   private static List<PathTransfer> fromAToB(TransferRepository transfers) {

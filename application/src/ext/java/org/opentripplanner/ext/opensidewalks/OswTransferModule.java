@@ -15,6 +15,7 @@ import org.opentripplanner.graph_builder.module.transfer.api.RegularTransferPara
 import org.opentripplanner.place.NearbyStopFinder;
 import org.opentripplanner.place.nearbystopfinder.PatternConsideringNearbyStopFinder;
 import org.opentripplanner.place.nearbystopfinder.StreetNearbyStopFinder;
+import org.opentripplanner.routing.api.request.RouteRequest;
 import org.opentripplanner.street.graph.Graph;
 import org.opentripplanner.street.model.StreetMode;
 import org.opentripplanner.street.model.edge.Edge;
@@ -45,6 +46,10 @@ import org.slf4j.LoggerFactory;
  * This goes on until nothing new is found. The travellers who search are the ones that the
  * streets around the stop make a difference for, and where every path is one that all can use,
  * the first search is the last.
+ * <p>
+ * Transfers with a vehicle, such as a bicycle taken along, are found on the OpenSidewalks data
+ * too, for each such transfer request of the build configuration, if the data has roads. The
+ * profile only costs walking, so one search from each stop finds them.
  */
 public class OswTransferModule implements GraphBuilderModule {
 
@@ -83,12 +88,69 @@ public class OswTransferModule implements GraphBuilderModule {
       .stream()
       .filter(it -> it.journey().transfer().mode() == StreetMode.WALK)
       .findFirst();
-    if (costing.isEmpty() || walk.isEmpty()) {
+    if (costing.isEmpty()) {
       return;
     }
-    var travellers = new OswTravellers(costing.get().profile());
     var finder = createNearbyStopFinder();
-    var durationLimit = durationLimit();
+    if (walk.isPresent()) {
+      findWalkingTransfers(costing.get(), walk.get(), finder);
+    }
+    if (costing.get().hasRoads()) {
+      for (var request : parameters.requests()) {
+        if (request.journey().transfer().mode() != StreetMode.WALK) {
+          findTransfersWithAVehicle(request, finder);
+        }
+      }
+    }
+  }
+
+  /**
+   * One search from each stop on the OpenSidewalks data, as the given transfer request, for the
+   * transfers with its mode.
+   */
+  private void findTransfersWithAVehicle(RouteRequest transferRequest, NearbyStopFinder finder) {
+    var mode = transferRequest.journey().transfer().mode();
+    var request = transferRequest
+      .copyOf()
+      .withPreferences(p ->
+        p.withSystem(s -> s.withExtension(PedestrianCostParameters.onOpenSidewalks(Map.of())))
+      )
+      .buildDefault();
+    var sites = transitRepository.getSiteRepository();
+    Multimap<StopLocation, PathTransfer> added = HashMultimap.create();
+    for (TransitStopVertex stopVertex : graph.getVerticesOfType(TransitStopVertex.class)) {
+      var stop = sites.getRegularStop(stopVertex.getId());
+      if (stop == null || stop.transfersNotAllowed()) {
+        continue;
+      }
+      for (var nearby : finder.findNearbyStops(
+        stopVertex,
+        request,
+        mode,
+        false,
+        durationLimit(mode),
+        0
+      )) {
+        var to = sites.getStopLocation(nearby.stopId);
+        if (!to.equals(stop)) {
+          added.put(
+            stop,
+            new PathTransfer(stop, to, nearby.distance, nearby.edges, EnumSet.of(mode))
+          );
+        }
+      }
+    }
+    transferRepository.addAllTransfersByStops(added);
+    LOG.info("Found {} {} transfers on OpenSidewalks edges.", added.size(), mode);
+  }
+
+  private void findWalkingTransfers(
+    OswCosting costing,
+    RouteRequest walk,
+    NearbyStopFinder finder
+  ) {
+    var travellers = new OswTravellers(costing.profile());
+    var durationLimit = durationLimit(StreetMode.WALK);
     var sites = transitRepository.getSiteRepository();
 
     Multimap<StopLocation, PathTransfer> added = HashMultimap.create();
@@ -120,10 +182,9 @@ public class OswTransferModule implements GraphBuilderModule {
         }
         searches++;
         var request = walk
-          .get()
           .copyOf()
           .withPreferences(p ->
-            p.withSystem(s -> s.withExtension(PedestrianCostParameters.of(traveller)))
+            p.withSystem(s -> s.withExtension(PedestrianCostParameters.onOpenSidewalks(traveller)))
           )
           .buildDefault();
         for (var nearby : finder.findNearbyStops(
@@ -188,10 +249,10 @@ public class OswTransferModule implements GraphBuilderModule {
     return finder;
   }
 
-  private Duration durationLimit() {
-    var forWalking = parameters.parametersForMode().get(StreetMode.WALK);
-    return forWalking != null && forWalking.maxDuration() != null
-      ? forWalking.maxDuration()
+  private Duration durationLimit(StreetMode mode) {
+    var forMode = parameters.parametersForMode().get(mode);
+    return forMode != null && forMode.maxDuration() != null
+      ? forMode.maxDuration()
       : parameters.maxDuration();
   }
 

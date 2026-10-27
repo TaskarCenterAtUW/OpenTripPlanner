@@ -2,9 +2,13 @@ package org.opentripplanner.ext.flex.flexpathcalculator;
 
 import java.time.Duration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.opentripplanner.astar.model.ShortestPathTree;
 import org.opentripplanner.astar.strategy.DurationSkipEdgeStrategy;
+import org.opentripplanner.ext.opensidewalks.OswStreetEdge;
+import org.opentripplanner.ext.opensidewalks.PedestrianCostParameters;
+import org.opentripplanner.framework.application.OTPFeature;
 import org.opentripplanner.framework.application.OTPRequestTimeoutException;
 import org.opentripplanner.street.model.StreetMode;
 import org.opentripplanner.street.model.edge.Edge;
@@ -71,14 +75,19 @@ public class StreetFlexPathCalculator implements FlexPathCalculator {
     // TODO: This is incorrect, the configured defaults are not used.
     var streetRequest = StreetSearchRequest.of()
       .withMode(StreetMode.CAR)
-      .withArriveBy(reverseDirection)
-      .build();
+      .withArriveBy(reverseDirection);
+    if (OTPFeature.OpenSidewalks.isOn() && OswStreetEdge.isOnOpenSidewalksEdge(vertex)) {
+      // A vehicle that starts on the OpenSidewalks data drives on its roads
+      streetRequest.withExtensionRequestContexts(
+        List.of(PedestrianCostParameters.onOpenSidewalks(Map.of()))
+      );
+    }
 
     return StreetSearchBuilder.of()
       .withPreStartHook(OTPRequestTimeoutException::checkForTimeout)
       .withSkipEdgeStrategy(new DurationSkipEdgeStrategy<>(maxFlexTripDuration))
       .withDominanceFunction(new DominanceFunctions.EarliestArrival())
-      .withRequest(streetRequest)
+      .withRequest(streetRequest.build())
       .withFrom(reverseDirection ? null : vertex)
       .withTo(reverseDirection ? vertex : null)
       .getShortestPathTree();

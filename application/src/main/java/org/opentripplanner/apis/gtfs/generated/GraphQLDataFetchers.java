@@ -40,6 +40,7 @@ import org.opentripplanner.apis.gtfs.model.StopCallOnTripOnServiceDate;
 import org.opentripplanner.apis.gtfs.model.StopPosition;
 import org.opentripplanner.apis.gtfs.model.TripOccupancy;
 import org.opentripplanner.ext.fares.model.FareRuleSet;
+import org.opentripplanner.ext.opensidewalks.PedestrianSegment;
 import org.opentripplanner.ext.ridehailing.model.RideEstimate;
 import org.opentripplanner.framework.graphql.CountedConnection;
 import org.opentripplanner.model.StopTimesInPattern;
@@ -488,6 +489,7 @@ public class GraphQLDataFetchers {
     public DataFetcher<Geometry> legGeometry();
     public DataFetcher<String> mode();
     public DataFetcher<Iterable<Leg>> nextLegs();
+    public DataFetcher<Iterable<PedestrianSegment>> pedestrianSegments();
     public DataFetcher<BookingInfo> pickupBookingInfo();
     public DataFetcher<GraphQLPickupDropoffType> pickupType();
     public DataFetcher<Iterable<Leg>> previousLegs();
@@ -628,6 +630,29 @@ public class GraphQLDataFetchers {
     public DataFetcher<Iterable<Trip>> tripsForDate();
     public DataFetcher<Iterable<TripOnServiceDate>> tripsOnServiceDate();
     public DataFetcher<Iterable<RealtimeVehicle>> vehiclePositions();
+  }
+
+  /**
+   * The part of an OpenSidewalks edge that a walking leg goes along, with the tags of the edge that
+   * describe it to the traveller, or a pathway of a station it goes through. This is part of the
+   * OpenSidewalks sandbox feature.
+   */
+  public interface GraphQLPedestrianSegment {
+    public DataFetcher<Boolean> curbRamps();
+    public DataFetcher<String> description();
+    public DataFetcher<Double> distance();
+    public DataFetcher<Boolean> elevator();
+    public DataFetcher<String> footway();
+    public DataFetcher<String> fromLevel();
+    public DataFetcher<Geometry> geometry();
+    public DataFetcher<String> highway();
+    public DataFetcher<Double> incline();
+    public DataFetcher<Boolean> indoor();
+    public DataFetcher<Double> levelChange();
+    public DataFetcher<String> name();
+    public DataFetcher<String> pathwayMode();
+    public DataFetcher<String> surface();
+    public DataFetcher<String> toLevel();
   }
 
   public interface GraphQLPlace {

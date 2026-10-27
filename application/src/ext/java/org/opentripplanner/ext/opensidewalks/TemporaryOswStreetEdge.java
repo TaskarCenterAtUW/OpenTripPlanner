@@ -49,6 +49,10 @@ public class TemporaryOswStreetEdge extends TemporaryPartialStreetEdge {
     return connectToGraph(new TemporaryOswStreetEdge(builder, costing, attributes, delayShare));
   }
 
+  OswEdgeAttributes attributes() {
+    return attributes;
+  }
+
   /** The share of the delay of the whole OpenSidewalks edge that this edge has. */
   public float delayShare() {
     return delayShare;
@@ -57,6 +61,17 @@ public class TemporaryOswStreetEdge extends TemporaryPartialStreetEdge {
   @Override
   public State[] traverse(State s0) {
     var states = OswWalkCost.traverse(s0, this, costing, attributes, delayShare);
-    return states != null ? states : super.traverse(s0);
+    if (states != null) {
+      return states;
+    }
+    // Cycling and driving on roads, and walking with a vehicle, as OTP has them
+    return OswWalkCost.withoutWalksTheTravellerCanNotMake(
+      s0,
+      super.traverse(s0),
+      this,
+      costing,
+      attributes,
+      delayShare
+    );
   }
 }

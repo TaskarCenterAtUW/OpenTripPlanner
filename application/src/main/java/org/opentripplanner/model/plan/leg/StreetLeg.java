@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.Set;
 import javax.annotation.Nullable;
 import org.locationtech.jts.geom.LineString;
+import org.opentripplanner.ext.opensidewalks.PedestrianSegment;
 import org.opentripplanner.model.fare.FareOffer;
 import org.opentripplanner.model.plan.Emission;
 import org.opentripplanner.model.plan.Leg;
@@ -41,6 +42,7 @@ public class StreetLeg implements Leg {
   private final String vehicleRentalNetwork;
   private final Float accessibilityScore;
   private final Emission emissionPerPerson;
+  private final List<PedestrianSegment> pedestrianSegments;
 
   protected StreetLeg(StreetLegBuilder builder) {
     this.mode = Objects.requireNonNull(builder.getMode());
@@ -58,6 +60,7 @@ public class StreetLeg implements Leg {
     this.vehicleRentalNetwork = builder.getVehicleRentalNetwork();
     this.accessibilityScore = builder.getAccessibilityScore();
     this.emissionPerPerson = builder.emissionPerPerson();
+    this.pedestrianSegments = Objects.requireNonNull(builder.pedestrianSegments());
   }
 
   public static StreetLegBuilder of() {
@@ -144,6 +147,11 @@ public class StreetLeg implements Leg {
   @Nullable
   public Float accessibilityScore() {
     return accessibilityScore;
+  }
+
+  @Override
+  public List<PedestrianSegment> pedestrianSegments() {
+    return pedestrianSegments;
   }
 
   @Override
