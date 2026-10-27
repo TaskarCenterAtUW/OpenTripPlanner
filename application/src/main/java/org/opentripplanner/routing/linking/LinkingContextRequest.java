@@ -5,6 +5,7 @@ import java.util.Objects;
 import javax.annotation.Nullable;
 import org.opentripplanner.model.GenericLocation;
 import org.opentripplanner.street.model.StreetMode;
+import org.opentripplanner.street.model.edge.ExtensionRequestContext;
 import org.opentripplanner.utils.tostring.ToStringBuilder;
 
 public class LinkingContextRequest {
@@ -18,6 +19,7 @@ public class LinkingContextRequest {
   private final StreetMode egressMode;
   private final StreetMode directMode;
   private final StreetMode transferMode;
+  private final List<ExtensionRequestContext> extensions;
 
   private LinkingContextRequest() {
     this.from = null;
@@ -27,6 +29,7 @@ public class LinkingContextRequest {
     this.egressMode = StreetMode.NOT_SET;
     this.directMode = StreetMode.NOT_SET;
     this.transferMode = StreetMode.NOT_SET;
+    this.extensions = List.of();
   }
 
   public LinkingContextRequest(LinkingContextRequestBuilder builder) {
@@ -37,6 +40,7 @@ public class LinkingContextRequest {
     this.egressMode = builder.egressMode();
     this.directMode = builder.directMode();
     this.transferMode = builder.transferMode();
+    this.extensions = List.copyOf(builder.extensions());
   }
 
   public static LinkingContextRequestBuilder of() {
@@ -76,6 +80,14 @@ public class LinkingContextRequest {
     return transferMode;
   }
 
+  /**
+   * What sandbox extensions need to know about the request the locations are linked for. See
+   * {@link org.opentripplanner.routing.api.request.preference.SystemPreferences#extensions()}.
+   */
+  public List<ExtensionRequestContext> extensions() {
+    return extensions;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (o == null || getClass() != o.getClass()) {
@@ -89,7 +101,8 @@ public class LinkingContextRequest {
       accessMode == other.accessMode &&
       egressMode == other.egressMode &&
       directMode == other.directMode &&
-      transferMode == other.transferMode
+      transferMode == other.transferMode &&
+      extensions.equals(other.extensions)
     );
   }
 
@@ -102,7 +115,8 @@ public class LinkingContextRequest {
       accessMode,
       egressMode,
       directMode,
-      transferMode
+      transferMode,
+      extensions
     );
   }
 
@@ -116,6 +130,7 @@ public class LinkingContextRequest {
       .addEnum("egressMode", egressMode, DEFAULT.egressMode)
       .addEnum("directMode", directMode, DEFAULT.directMode)
       .addEnum("transferMode", transferMode, DEFAULT.transferMode)
+      .addCol("extensions", extensions, DEFAULT.extensions)
       .toString();
   }
 }

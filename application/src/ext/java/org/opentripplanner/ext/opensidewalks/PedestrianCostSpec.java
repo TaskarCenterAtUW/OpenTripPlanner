@@ -24,17 +24,12 @@ public class PedestrianCostSpec {
 
   private final PedestrianCostProfile profile;
   private final Map<String, JsonNode> parameterValues;
-  private final String runSpecId;
+  private volatile String runSpecId;
   private final List<ResolvedLayer> layers;
 
   PedestrianCostSpec(PedestrianCostProfile profile, Map<String, JsonNode> parameterValues) {
     this.profile = profile;
     this.parameterValues = Collections.unmodifiableMap(new LinkedHashMap<>(parameterValues));
-    ObjectNode runSpec = JsonNodeFactory.instance.objectNode();
-    runSpec.put("profileId", profile.profileId());
-    ObjectNode params = runSpec.putObject("parameters");
-    parameterValues.forEach(params::set);
-    this.runSpecId = CanonicalJson.md5OfCanonical(runSpec);
     this.layers = profile
       .layers()
       .stream()
@@ -48,7 +43,16 @@ public class PedestrianCostSpec {
 
   /** Identifies the cost function together with the parameter values. */
   public String runSpecId() {
-    return runSpecId;
+    var id = runSpecId;
+    if (id == null) {
+      ObjectNode runSpec = JsonNodeFactory.instance.objectNode();
+      runSpec.put("profileId", profile.profileId());
+      ObjectNode params = runSpec.putObject("parameters");
+      parameterValues.forEach(params::set);
+      id = CanonicalJson.md5OfCanonical(runSpec);
+      runSpecId = id;
+    }
+    return id;
   }
 
   /** Every parameter's value, with defaults filled in, in the order declared by the profile. */
@@ -72,45 +76,53 @@ public class PedestrianCostSpec {
     double lengthMeters,
     CurbRamps curbRamps
   ) {
-    ResolvedLayer layer = findLayer(tags);
-    if (layer == null) {
-      return profile.otherEdgesWalkable() ? EdgeCost.WALK : EdgeCost.IMPASSABLE;
+    int layer = profile.layerIndex(tags);
+    double speedFactor = speedFactor(layer, incline, lengthMeters, curbRamps);
+    return speedFactor > 0
+      ? new EdgeCost(speedFactor, layer < 0 ? 0 : layers.get(layer).costedDelaySeconds)
+      : EdgeCost.IMPASSABLE;
+  }
+
+  /**
+   * What the walking speed is multiplied with on an edge, or 0 if the edge is impassable.
+   *
+   * @param layer the index of the layer of the edge, see
+   *              {@link PedestrianCostProfile#layerIndex(Map)}
+   */
+  double speedFactor(int layer, double incline, double lengthMeters, CurbRamps curbRamps) {
+    if (layer < 0) {
+      return profile.otherEdgesWalkable() ? 1 : 0;
     }
-    if (layer.blocked) {
-      return EdgeCost.IMPASSABLE;
+    ResolvedLayer l = layers.get(layer);
+    if (l.blocked) {
+      return 0;
     }
-    double factor = layer.speedFactor;
-    if (layer.hasIncline && !Double.isNaN(incline)) {
+    double factor = l.speedFactor;
+    if (l.hasIncline && !Double.isNaN(incline)) {
       if (
-        lengthMeters > layer.minLengthForLimits &&
-        (incline > layer.maxUphill || incline < -layer.maxDownhill)
+        lengthMeters > l.minLengthForLimits && (incline > l.maxUphill || incline < -l.maxDownhill)
       ) {
-        return EdgeCost.IMPASSABLE;
+        return 0;
       }
-      double k = incline > layer.ideal ? layer.kUp : layer.kDown;
-      factor *= Math.exp(-k * Math.abs(incline - layer.ideal));
+      double k = incline > l.ideal ? l.kUp : l.kDown;
+      factor *= Math.exp(-k * Math.abs(incline - l.ideal));
     }
-    if (layer.requireCurbRamps && curbRamps != CurbRamps.YES) {
-      return EdgeCost.IMPASSABLE;
+    if (l.requireCurbRamps && curbRamps != CurbRamps.YES) {
+      return 0;
     }
-    return new EdgeCost(factor / layer.costFactor, layer.delaySeconds * layer.costFactor);
+    return factor / l.costFactor;
+  }
+
+  /** The time added to the time it takes to walk an edge of the layer. */
+  double delaySeconds(int layer) {
+    return layer < 0 ? 0 : layers.get(layer).costedDelaySeconds;
   }
 
   /** The name of the layer the given tags fall into, or null if they match no layer. */
   @Nullable
   public String layerName(Map<String, String> tags) {
-    ResolvedLayer layer = findLayer(tags);
-    return layer == null ? null : layer.name;
-  }
-
-  @Nullable
-  private ResolvedLayer findLayer(Map<String, String> tags) {
-    for (ResolvedLayer l : layers) {
-      if (l.match.matches(tags)) {
-        return l;
-      }
-    }
-    return null;
+    int layer = profile.layerIndex(tags);
+    return layer < 0 ? null : layers.get(layer).name;
   }
 
   /**
@@ -150,6 +162,8 @@ public class PedestrianCostSpec {
     final boolean blocked;
     /** What the whole cost, delay included, is multiplied by. 1 unless the layer is avoided. */
     final double costFactor;
+    /** The delay of the layer, multiplied like the rest of the cost if the layer is avoided. */
+    final double costedDelaySeconds;
 
     ResolvedLayer(PedestrianCostProfile.Layer layer, Map<String, JsonNode> params) {
       this.name = layer.name;
@@ -189,6 +203,7 @@ public class PedestrianCostSpec {
       }
       this.blocked = closed;
       this.costFactor = factor;
+      this.costedDelaySeconds = delaySeconds * factor;
     }
   }
 }

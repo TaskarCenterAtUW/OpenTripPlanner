@@ -11,16 +11,38 @@ This page is for those working on the code.
 
 ## How the code is organised
 
-| Class                                           | What it does                                                                               |
-|-------------------------------------------------|--------------------------------------------------------------------------------------------|
-| `config/OpenSidewalksConfig`                    | The `openSidewalks` section of `build-config.json`.                                        |
-| `OswDataset`                                    | Reads the nodes and edges of a dataset.                                                    |
-| `OswModule`                                     | The graph builder module: builds the street edges, and evaluates the profile for each.     |
-| `PedestrianCostProfile`, `PedestrianCostSpec`   | The profile format, and the cost function for one set of parameter values.                 |
-| `CurbRamps`                                     | Whether an edge has curb ramps, from its kerb nodes.                                       |
-| `OswStreetEdge`, `TemporaryOswStreetEdge`       | Street edges that are walked at the cost the profile gave them, and the parts they split into. |
-| `OswWalkCost`                                   | The walking time and cost of those edges.                                                  |
-| `CanonicalJson`                                 | The profile id and run spec id, which are the same as the ones R5 reports.                 |
+| Class                                         | What it does                                                                                      |
+|-----------------------------------------------|---------------------------------------------------------------------------------------------------|
+| `config/OpenSidewalksConfig`                  | The `openSidewalks` section of `build-config.json`, and `pedestrianCost` of the routing defaults. |
+| `api/PedestrianCostParametersMapper`          | Maps `pedestrianCost` of the walk preferences of a GTFS GraphQL plan query to the request.        |
+| `OswDataset`                                  | Reads the nodes and edges of a dataset.                                                           |
+| `OswModule`                                   | The graph builder module: builds the street edges.                                                |
+| `OswStopLinkModule`, `OswStopLink`            | A graph builder module that links stops to the edges that travellers who can not use all need.    |
+| `OswTravellers`                               | Finds the least able travellers who can use an edge, which says who can use it.                   |
+| `OswTransferModule`                           | A graph builder module that finds transfer paths for travellers who can not use the ones OTP found. |
+| `PedestrianCostProfile`, `PedestrianCostSpec` | The profile format, and the cost function for one set of parameter values.                        |
+| `PedestrianCostParameters`                    | The parameter values of a request. Carried by the route request to the street search and linking. |
+| `OswCosting`                                  | The profile of a graph, shared by its edges. Turns the values of a request into a cost function.  |
+| `OswEdgeAttributes`, `CurbRamps`              | What the profile needs to know about an edge: its layer, incline, length and curb ramps.          |
+| `OswStreetEdge`, `TemporaryOswStreetEdge`     | Street edges that are walked at the cost the profile gives them, and the parts they split into.   |
+| `OswWalkCost`                                 | The walking time and cost of those edges for the traveller of a request.                          |
+| `OswLinking`                                  | Which edges a place can be linked to: those the traveller of the request can use.                 |
+| `CanonicalJson`                               | The profile id and run spec id, which are the same as the ones R5 reports.                        |
+
+## How a request reaches an edge
+
+`PedestrianCostParameters` is an extension request context: OTP carries it for the feature without
+knowing what it is. A route request has a list of such contexts, in `SystemPreferences.extensions`,
+and passes them on along two paths:
+
+- `StreetSearchRequestMapper` gives them to every street search of the request, where
+  `OswWalkCost` finds the parameters by their type. They are also part of the key transfers are
+  cached under.
+- `LinkingContextRequestMapper` copies them to the linking request, and `LinkingContextFactory`
+  tells `OswLinking` who the traveller is while it links the places of the request.
+
+Another sandbox feature that needs something from the request in its edges can add a context of
+its own type to the same list.
 
 ## Tests
 

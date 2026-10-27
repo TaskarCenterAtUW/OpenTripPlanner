@@ -11,6 +11,8 @@ import org.opentripplanner.core.model.deduplicator.DeduplicatorService;
 import org.opentripplanner.ext.emission.EmissionRepository;
 import org.opentripplanner.ext.empiricaldelay.EmpiricalDelayRepository;
 import org.opentripplanner.ext.opensidewalks.OswModule;
+import org.opentripplanner.ext.opensidewalks.OswStopLinkModule;
+import org.opentripplanner.ext.opensidewalks.OswTransferModule;
 import org.opentripplanner.ext.stopconsolidation.StopConsolidationRepository;
 import org.opentripplanner.ext.taxi.TaxiRepository;
 import org.opentripplanner.framework.application.OTPFeature;
@@ -157,6 +159,10 @@ public class GraphBuilder implements Runnable {
     // This module is outside the hasGTFS conditional block because it also links things like parking
     // which need to be handled even when there's no transit.
     graphBuilder.addModule(factory.streetLinkerModule());
+    graphBuilder.addModuleOptional(
+      new OswStopLinkModule(graph, factory.vertexLinker()),
+      OTPFeature.OpenSidewalks
+    );
 
     // Avoid applying turn restrictions twice if doing separate street graph and graph builds.
     if (dataSources.hasOsm()) {
@@ -182,6 +188,15 @@ public class GraphBuilder implements Runnable {
 
       // This module will use streets or straight line distance depending on whether OSM data is found in the graph.
       graphBuilder.addModule(factory.directTransferGenerator());
+      graphBuilder.addModuleOptional(
+        new OswTransferModule(
+          graph,
+          transitRepository,
+          transferRepository,
+          config.regularTransferParameters()
+        ),
+        OTPFeature.OpenSidewalks
+      );
 
       // Analyze routing between stops to generate report
       graphBuilder.addModuleOptional(factory.directTransferAnalyzer(), OTPFeature.TransferAnalyzer);

@@ -135,6 +135,7 @@ The RouteRequest is the type for the
 |       [costLimitFunction](#rd_if_transitGeneralizedCostLimit_costLimitFunction)                              | `cost-linear-function` | The base function used by the filter.                                                                                                                    | *Optional* | `"15m + 1.5 t"`  |  2.2  |
 |       [intervalRelaxFactor](#rd_if_transitGeneralizedCostLimit_intervalRelaxFactor)                          |        `double`        | How much the filter should be relaxed for itineraries that do not overlap in time.                                                                       | *Optional* | `0.4`            |  2.2  |
 | [maxDirectStreetDurationForMode](#rd_maxDirectStreetDurationForMode)                                         | `enum map of duration` | Limit direct route duration per street mode.                                                                                                             | *Optional* |                  |  2.2  |
+| [pedestrianCost](#rd_pedestrianCost)                                                                         |     `map of string`    | The values of the parameters of the OpenSidewalks pedestrian cost profile.                                                                               | *Optional* |                  |  2.11 |
 | scooter                                                                                                      |        `object`        | Scooter preferences.                                                                                                                                     | *Optional* |                  |  2.5  |
 |    [optimization](#rd_scooter_optimization)                                                                  |         `enum`         | The set of characteristics that the user wants to optimize for.                                                                                          | *Optional* | `"safe-streets"` |  2.0  |
 |    reluctance                                                                                                |        `double`        | A multiplier for how bad scooter travel is, compared to being in transit for equal lengths of time.                                                      | *Optional* | `2.0`            |  2.0  |
@@ -1009,6 +1010,18 @@ Limit direct route duration per street mode.
 
 Override the settings in `maxDirectStreetDuration` for specific street modes. This is
 done because some street modes searches are much more resource intensive than others.
+
+
+<h3 id="rd_pedestrianCost">pedestrianCost</h3>
+
+**Since version:** `2.11` ∙ **Type:** `map of string` ∙ **Cardinality:** `Optional`   
+**Path:** /routingDefaults 
+
+The values of the parameters of the OpenSidewalks pedestrian cost profile.
+
+What the traveller can manage, for example `{ "uphill": 0.083, "avoid_curbs": true }`.
+A parameter that is left out has the value of the build configuration. See the
+[OpenSidewalks sandbox documentation](sandbox/OpenSidewalks.md).
 
 
 <h3 id="rd_scooter_optimization">optimization</h3>

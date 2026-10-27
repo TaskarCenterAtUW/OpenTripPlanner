@@ -273,17 +273,21 @@ class OswRoutingComparisonTest {
     );
   }
 
-  /** Plans walks over the dataset as a traveller with one of the profiles of the reports. */
+  /**
+   * Plans walks over the dataset as a traveller with one of the profiles of the reports. The
+   * travellers share one graph: who is walking is up to each request.
+   */
   private static class Planner {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
-
-    private final Graph graph = new Graph();
-    private final JsonNode routes;
-    private final TransitService transitService = TestServerContext.createTransitService(
+    private static final Graph GRAPH = buildGraph();
+    private static final TransitService TRANSIT_SERVICE = TestServerContext.createTransitService(
       new TransitRepository(),
       TransferServiceTestFactory.defaultTransferRepository()
     );
+
+    private final JsonNode routes;
+    private final PedestrianCostParameters traveller;
 
     Planner(String profileName) throws IOException {
       JsonNode profile = null;
@@ -300,13 +304,18 @@ class OswRoutingComparisonTest {
         .path("parameters")
         .fields()
         .forEachRemaining(e -> parameters.put(e.getKey(), e.getValue().asText()));
-      var spec = PedestrianCostProfile.fromFile(RESOURCES.file("ws-prod.json")).resolve(parameters);
+      this.traveller = PedestrianCostParameters.of(parameters);
+    }
+
+    private static Graph buildGraph() {
+      var graph = new Graph();
       new OswModule(
         graph,
         List.of(RESOURCES.file("goldendale/goldendale.osw.zip")),
-        spec
+        OswCosting.fromFile(RESOURCES.file("ws-prod.json"), Map.of())
       ).buildGraph();
       graph.index();
+      return graph;
     }
 
     /** The walk between the two places of the route, or null if there is none. */
@@ -316,17 +325,19 @@ class OswRoutingComparisonTest {
         .withDateTime(TIME)
         .withFrom(location(route.path("from")))
         .withTo(location(route.path("to")))
-        .withPreferences(p -> p.withWalk(w -> w.withSpeed(WALK_SPEED)))
+        .withPreferences(p ->
+          p.withWalk(w -> w.withSpeed(WALK_SPEED)).withSystem(s -> s.withExtension(traveller))
+        )
         .buildRequest();
       try (var temporaryVerticesContainer = new TemporaryVerticesContainer()) {
-        var vertexCreationService = new VertexCreationService(VertexLinkerTestFactory.of(graph));
-        var linkingContext = new LinkingContextFactory(graph, vertexCreationService).create(
+        var vertexCreationService = new VertexCreationService(VertexLinkerTestFactory.of(GRAPH));
+        var linkingContext = new LinkingContextFactory(GRAPH, vertexCreationService).create(
           temporaryVerticesContainer,
           LinkingContextRequestMapper.map(request)
         );
         var itineraries = DirectStreetRouter.route(
-          graph,
-          transitService,
+          GRAPH,
+          TRANSIT_SERVICE,
           TestServerContext.createStreetLimitationParametersService(),
           TestServerContext.createVehicleRentalService(),
           TestServerContext.createStreetDetailsService(),

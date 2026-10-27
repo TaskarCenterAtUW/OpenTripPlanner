@@ -71,7 +71,8 @@ public class StreetSearchRequestMapper {
           street.drivingDirection()
         )
       )
-      .withTimeout(street.routingTimeout());
+      .withTimeout(street.routingTimeout())
+      .withExtensionRequestContexts(preferences.system().extensions());
 
     var rentalDuration = request.journey().direct().rentalDuration();
     if (rentalDuration != null) {

@@ -18,6 +18,7 @@ import javax.annotation.Nullable;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.opentripplanner.core.model.id.FeedScopedId;
+import org.opentripplanner.ext.opensidewalks.OswLinking;
 import org.opentripplanner.model.GenericLocation;
 import org.opentripplanner.routing.api.response.InputField;
 import org.opentripplanner.routing.api.response.RoutingError;
@@ -83,6 +84,12 @@ public class LinkingContextFactory {
     TemporaryVerticesContainer container,
     LinkingContextRequest request
   ) {
+    try (var ignore = OswLinking.linkFor(request.extensions())) {
+      return link(container, request);
+    }
+  }
+
+  private LinkingContext link(TemporaryVerticesContainer container, LinkingContextRequest request) {
     var from = request.from();
     var fromVertices = getFromVertices(container, request);
     var fromStopVertices = getStopVertices(request.from());

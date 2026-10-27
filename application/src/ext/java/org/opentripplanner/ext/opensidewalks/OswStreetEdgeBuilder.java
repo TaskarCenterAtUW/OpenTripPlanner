@@ -5,8 +5,9 @@ import org.opentripplanner.street.model.edge.StreetEdgeBuilder;
 
 class OswStreetEdgeBuilder extends StreetEdgeBuilder<OswStreetEdgeBuilder> {
 
-  private float speedFactor = 1;
-  private float delaySeconds = 0;
+  private OswCosting costing;
+  private OswEdgeAttributes attributes;
+  private float delayShare = 1;
 
   OswStreetEdgeBuilder() {
     super();
@@ -22,24 +23,26 @@ class OswStreetEdgeBuilder extends StreetEdgeBuilder<OswStreetEdgeBuilder> {
     return OswStreetEdge.createAndConnect(this);
   }
 
-  float speedFactor() {
-    return speedFactor;
+  OswCosting costing() {
+    return costing;
   }
 
-  OswStreetEdgeBuilder withSpeedFactor(float speedFactor) {
-    if (!(speedFactor > 0) || !Float.isFinite(speedFactor)) {
-      throw new IllegalArgumentException("Invalid speed factor: " + speedFactor);
-    }
-    this.speedFactor = speedFactor;
+  OswEdgeAttributes attributes() {
+    return attributes;
+  }
+
+  OswStreetEdgeBuilder withCosting(OswCosting costing, OswEdgeAttributes attributes) {
+    this.costing = costing;
+    this.attributes = attributes;
     return this;
   }
 
-  float delaySeconds() {
-    return delaySeconds;
+  float delayShare() {
+    return delayShare;
   }
 
-  OswStreetEdgeBuilder withDelaySeconds(float delaySeconds) {
-    this.delaySeconds = delaySeconds;
+  OswStreetEdgeBuilder withDelayShare(float delayShare) {
+    this.delayShare = delayShare;
     return this;
   }
 }

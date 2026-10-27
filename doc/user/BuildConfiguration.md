@@ -1032,8 +1032,7 @@ case where this is not the case.
 Build the pedestrian street network from OpenSidewalks datasets.
 
 Each edge of the datasets becomes a street that can only be walked. With a `profile`, the
-edges are costed by that pedestrian cost profile, and edges the profile makes impassable
-are left out. See the [OpenSidewalks sandbox documentation](sandbox/OpenSidewalks.md).
+edges are costed by that pedestrian cost profile for the traveller of each request. See the [OpenSidewalks sandbox documentation](sandbox/OpenSidewalks.md).
 
 
 <h3 id="osm">osm</h3>

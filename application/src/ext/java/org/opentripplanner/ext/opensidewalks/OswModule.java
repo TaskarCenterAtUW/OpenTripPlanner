@@ -1,7 +1,6 @@
 package org.opentripplanner.ext.opensidewalks;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,7 +9,6 @@ import javax.annotation.Nullable;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineString;
 import org.opentripplanner.core.model.i18n.I18NString;
-import org.opentripplanner.ext.opensidewalks.PedestrianCostSpec.EdgeCost;
 import org.opentripplanner.ext.opensidewalks.config.OpenSidewalksConfig;
 import org.opentripplanner.graph_builder.model.GraphBuilderModule;
 import org.opentripplanner.street.geometry.GeometryUtils;
@@ -27,10 +25,9 @@ import org.slf4j.LoggerFactory;
  * Builds pedestrian street edges from OpenSidewalks datasets. Each edge of a dataset becomes a
  * pair of street edges, one in each direction, that can only be walked.
  * <p>
- * If there is a pedestrian cost profile, it is evaluated for each direction of each edge here,
- * while the graph is built. A direction the profile makes impassable is left out of the graph, so
- * nothing is linked to it and no trip uses it. The others become {@link OswStreetEdge}s, which
- * are walked at the cost the profile gave them.
+ * If there is a pedestrian cost profile, the edges become {@link OswStreetEdge}s, which are walked
+ * at the cost the profile gives them for the traveller of each request. A direction of an edge
+ * that no traveller the parameters of the profile allow can use is left out of the graph.
  */
 public class OswModule implements GraphBuilderModule {
 
@@ -43,19 +40,28 @@ public class OswModule implements GraphBuilderModule {
   private final List<File> sources;
 
   @Nullable
-  private final PedestrianCostSpec spec;
+  private final OswCosting costing;
+
+  /** The travellers at the corners of the ranges of the parameters of the profile. */
+  private final List<PedestrianCostSpec> extremeTravellers;
 
   private final VertexFactory vertexFactory;
 
   private int builtEdges = 0;
+  private int edgesNotForAll = 0;
   private int impassableEdges = 0;
   private int unusableEdges = 0;
   private boolean fasterThanWalking = false;
 
-  public OswModule(Graph graph, List<File> sources, @Nullable PedestrianCostSpec spec) {
+  /**
+   * @param costing the profile to cost the edges with, or {@code null} to leave the cost of
+   *                walking them to OTP
+   */
+  public OswModule(Graph graph, List<File> sources, @Nullable OswCosting costing) {
     this.graph = graph;
     this.sources = List.copyOf(sources);
-    this.spec = spec;
+    this.costing = costing;
+    this.extremeTravellers = costing == null ? List.of() : costing.profile().extremes();
     this.vertexFactory = new VertexFactory(graph);
   }
 
@@ -73,19 +79,11 @@ public class OswModule implements GraphBuilderModule {
       .stream()
       .map(it -> resolve(baseDirectory, it))
       .toList();
-    PedestrianCostSpec spec = null;
-    if (config.profile() != null) {
-      File file = resolve(baseDirectory, config.profile());
-      try {
-        spec = PedestrianCostProfile.fromFile(file).resolve(config.parameters());
-      } catch (IOException | IllegalArgumentException e) {
-        throw new IllegalArgumentException(
-          "Unable to use the pedestrian cost profile %s: %s".formatted(file, e.getMessage()),
-          e
-        );
-      }
-    }
-    return new OswModule(graph, sources, spec);
+    OswCosting costing =
+      config.profile() == null
+        ? null
+        : OswCosting.fromFile(resolve(baseDirectory, config.profile()), config.parameters());
+    return new OswModule(graph, sources, costing);
   }
 
   private static File resolve(File baseDirectory, String path) {
@@ -104,13 +102,14 @@ public class OswModule implements GraphBuilderModule {
 
   @Override
   public void buildGraph() {
-    if (spec != null) {
+    if (costing != null) {
+      var spec = costing.spec(null);
       LOG.info(
-        "Costing OpenSidewalks edges with pedestrian cost profile {} (profileId {}, runSpecId {}, parameters {})",
+        "Costing OpenSidewalks edges with pedestrian cost profile {} (profileId {}). A request without parameter values has {} (runSpecId {})",
         spec.profile().name(),
         spec.profile().profileId(),
-        spec.runSpecId(),
-        spec.parameterValues()
+        spec.parameterValues(),
+        spec.runSpecId()
       );
     }
     for (int i = 0; i < sources.size(); i++) {
@@ -120,8 +119,9 @@ public class OswModule implements GraphBuilderModule {
     }
     graph.hasStreets = true;
     LOG.info(
-      "Built {} street edges from OpenSidewalks data. Left out {} the profile makes impassable and {} that are not usable ways.",
+      "Built {} street edges from OpenSidewalks data, {} of which only some travellers can use. Left out {} that no traveller can use and {} that are not usable ways.",
       builtEdges,
+      edgesNotForAll,
       impassableEdges,
       unusableEdges
     );
@@ -178,18 +178,30 @@ public class OswModule implements GraphBuilderModule {
     boolean back
   ) {
     StreetEdgeBuilder<?> builder;
-    if (spec == null) {
+    if (costing == null) {
       builder = new StreetEdgeBuilder<>();
     } else {
-      EdgeCost cost = spec.evaluate(edge.tags(), incline, length, curbRamps);
-      if (cost.isImpassable()) {
+      int layer = costing.profile().layerIndex(edge.tags());
+      int usableBy = 0;
+      for (var traveller : extremeTravellers) {
+        double speedFactor = traveller.speedFactor(layer, incline, length, curbRamps);
+        if (speedFactor > 0) {
+          usableBy++;
+        }
+        fasterThanWalking |= speedFactor > 1;
+      }
+      if (usableBy == 0) {
         impassableEdges++;
         return;
       }
-      fasterThanWalking |= cost.speedFactor() > 1;
-      builder = new OswStreetEdgeBuilder()
-        .withSpeedFactor((float) cost.speedFactor())
-        .withDelaySeconds((float) cost.delaySeconds());
+      boolean usableByAll = usableBy == extremeTravellers.size();
+      if (!usableByAll) {
+        edgesNotForAll++;
+      }
+      builder = new OswStreetEdgeBuilder().withCosting(
+        costing,
+        new OswEdgeAttributes(layer, incline, length, curbRamps, usableByAll)
+      );
     }
     String name = edge.tags().get("name");
     builder

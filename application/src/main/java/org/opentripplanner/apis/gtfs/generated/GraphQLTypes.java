@@ -2235,6 +2235,35 @@ public class GraphQLTypes {
     TRIPS,
   }
 
+  public static class GraphQLPedestrianCostParameterInput {
+
+    private String name;
+    private String value;
+
+    public GraphQLPedestrianCostParameterInput(Map<String, Object> args) {
+      if (args != null) {
+        this.name = (String) args.get("name");
+        this.value = (String) args.get("value");
+      }
+    }
+
+    public String getGraphQLName() {
+      return this.name;
+    }
+
+    public String getGraphQLValue() {
+      return this.value;
+    }
+
+    public void setGraphQLName(String name) {
+      this.name = name;
+    }
+
+    public void setGraphQLValue(String value) {
+      this.value = value;
+    }
+  }
+
   public enum GraphQLPickupDropoffType {
     CALL_AGENCY,
     COORDINATE_WITH_DRIVER,
@@ -6495,6 +6524,7 @@ public class GraphQLTypes {
   public static class GraphQLWalkPreferencesInput {
 
     private Cost boardCost;
+    private List<GraphQLPedestrianCostParameterInput> pedestrianCost;
     private Double reluctance;
     private Double safetyFactor;
     private Double speed;
@@ -6502,6 +6532,12 @@ public class GraphQLTypes {
     public GraphQLWalkPreferencesInput(Map<String, Object> args) {
       if (args != null) {
         this.boardCost = (Cost) args.get("boardCost");
+        if (args.get("pedestrianCost") != null) {
+          this.pedestrianCost = ((List<Map<String, Object>>) args.get("pedestrianCost"))
+            .stream()
+            .map(o -> o == null ? null : new GraphQLPedestrianCostParameterInput(o))
+            .collect(Collectors.toList());
+        }
         this.reluctance = (Double) args.get("reluctance");
         this.safetyFactor = (Double) args.get("safetyFactor");
         this.speed = (Double) args.get("speed");
@@ -6510,6 +6546,10 @@ public class GraphQLTypes {
 
     public Cost getGraphQLBoardCost() {
       return this.boardCost;
+    }
+
+    public List<GraphQLPedestrianCostParameterInput> getGraphQLPedestrianCost() {
+      return this.pedestrianCost;
     }
 
     public Double getGraphQLReluctance() {
@@ -6526,6 +6566,10 @@ public class GraphQLTypes {
 
     public void setGraphQLBoardCost(Cost boardCost) {
       this.boardCost = boardCost;
+    }
+
+    public void setGraphQLPedestrianCost(List<GraphQLPedestrianCostParameterInput> pedestrianCost) {
+      this.pedestrianCost = pedestrianCost;
     }
 
     public void setGraphQLReluctance(Double reluctance) {

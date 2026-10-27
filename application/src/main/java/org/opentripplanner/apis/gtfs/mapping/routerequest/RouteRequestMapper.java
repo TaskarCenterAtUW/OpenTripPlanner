@@ -15,6 +15,7 @@ import javax.annotation.Nullable;
 import org.opentripplanner.apis.gtfs.GtfsGraphQLRequestContext;
 import org.opentripplanner.apis.gtfs.generated.GraphQLTypes;
 import org.opentripplanner.core.model.id.FeedScopedId;
+import org.opentripplanner.ext.opensidewalks.api.PedestrianCostParametersMapper;
 import org.opentripplanner.framework.graphql.GraphQLUtils;
 import org.opentripplanner.model.GenericLocation;
 import org.opentripplanner.routing.api.request.RouteRequest;
@@ -148,6 +149,7 @@ public class RouteRequestMapper {
     preferences.withCar(car -> setCarPreferences(car, args.getGraphQLCar(), environment));
     preferences.withScooter(scooter -> setScooterPreferences(scooter, args.getGraphQLScooter()));
     preferences.withWalk(walk -> setWalkPreferences(walk, args.getGraphQLWalk()));
+    PedestrianCostParametersMapper.setPedestrianCost(preferences, args.getGraphQLWalk());
   }
 
   private static void setRentalAvailabilityPreferences(

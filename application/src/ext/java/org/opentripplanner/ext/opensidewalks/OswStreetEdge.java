@@ -8,11 +8,13 @@ import org.opentripplanner.street.model.edge.SplitStreetEdge;
 import org.opentripplanner.street.model.edge.StreetEdge;
 import org.opentripplanner.street.model.vertex.SplitterVertex;
 import org.opentripplanner.street.model.vertex.StreetVertex;
+import org.opentripplanner.street.search.TraverseModeSet;
 import org.opentripplanner.street.search.state.State;
 
 /**
  * A street edge built from an OpenSidewalks edge, which is walked at the cost a
- * {@link PedestrianCostProfile} gives it. See {@link OswWalkCost}.
+ * {@link PedestrianCostProfile} gives it for the traveller of the request, and not at all if
+ * that traveller can not use it. See {@link OswWalkCost}.
  * <p>
  * The parts this edge is split into, permanently where a stop is linked to it and temporarily
  * where a trip starts or ends partway along it, are costed like this edge. Each part gets the
@@ -21,38 +23,69 @@ import org.opentripplanner.street.search.state.State;
  */
 public class OswStreetEdge extends StreetEdge {
 
-  private final float speedFactor;
-  private final float delaySeconds;
+  private final OswCosting costing;
+  private final OswEdgeAttributes attributes;
+  private final float delayShare;
 
   OswStreetEdge(OswStreetEdgeBuilder builder) {
     super(builder);
-    this.speedFactor = builder.speedFactor();
-    this.delaySeconds = builder.delaySeconds();
+    this.costing = builder.costing();
+    this.attributes = builder.attributes();
+    this.delayShare = builder.delayShare();
   }
 
   static OswStreetEdge createAndConnect(OswStreetEdgeBuilder builder) {
     return connectToGraph(new OswStreetEdge(builder));
   }
 
-  /** What the walking speed of the request is multiplied with on this edge. */
-  public float speedFactor() {
-    return speedFactor;
+  /**
+   * The time it takes the traveller with the given parameter values to walk this edge at the
+   * given speed in meters per second, or infinity if that traveller can not use it.
+   *
+   * @param parameters the parameter values of a request, or {@code null} for the traveller the
+   *                   graph was built for
+   */
+  public double walkDurationSeconds(@Nullable PedestrianCostParameters parameters, double speed) {
+    return OswWalkCost.durationSeconds(
+      this,
+      attributes,
+      delayShare,
+      costing.spec(parameters),
+      speed
+    );
   }
 
-  /** The time added to the time it takes to walk this edge, such as waiting to cross. */
-  public float delaySeconds() {
-    return delaySeconds;
+  OswCosting costing() {
+    return costing;
   }
 
-  /** The time it takes to walk this edge at the given speed in meters per second. */
-  public double walkDurationSeconds(double walkSpeed) {
-    return OswWalkCost.durationSeconds(this, speedFactor, delaySeconds, walkSpeed);
+  OswEdgeAttributes attributes() {
+    return attributes;
+  }
+
+  /** The share of the delay of the whole OpenSidewalks edge that this edge has. */
+  public float delayShare() {
+    return delayShare;
+  }
+
+  /** Whether every traveller the parameters of the profile allow can use this edge. */
+  public boolean isUsableByAll() {
+    return attributes.usableByAll();
   }
 
   @Override
   public State[] traverse(State s0) {
-    var states = OswWalkCost.traverse(s0, this, speedFactor, delaySeconds);
+    var states = OswWalkCost.traverse(s0, this, costing, attributes, delayShare);
     return states != null ? states : super.traverse(s0);
+  }
+
+  /**
+   * This is what OTP asks to find the edges a place can be linked to. Walking it is up to
+   * {@link #traverse(State)}.
+   */
+  @Override
+  public boolean canTraverse(TraverseModeSet modes) {
+    return super.canTraverse(modes) && OswLinking.isLinkable(costing, attributes);
   }
 
   @Override
@@ -75,8 +108,8 @@ public class OswStreetEdge extends StreetEdge {
   private OswStreetEdge part(StreetEdge plainPart) {
     plainPart.remove();
     return new OswStreetEdgeBuilder(plainPart)
-      .withSpeedFactor(speedFactor)
-      .withDelaySeconds(delayOfPart(plainPart))
+      .withCosting(costing, attributes)
+      .withDelayShare(delayShareOfPart(plainPart))
       .buildAndConnect();
   }
 
@@ -89,12 +122,13 @@ public class OswStreetEdge extends StreetEdge {
     return TemporaryOswStreetEdge.createAndConnect(
       this,
       plainPart,
-      speedFactor,
-      delayOfPart(plainPart)
+      costing,
+      attributes,
+      delayShareOfPart(plainPart)
     );
   }
 
-  private float delayOfPart(StreetEdge part) {
-    return (float) ((delaySeconds * part.getDistanceMeters()) / getDistanceMeters());
+  private float delayShareOfPart(StreetEdge part) {
+    return (float) ((delayShare * part.getDistanceMeters()) / getDistanceMeters());
   }
 }

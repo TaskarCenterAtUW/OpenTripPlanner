@@ -5040,6 +5040,17 @@ input ParkingFilterOperation {
   tags: [String]
 }
 
+"""
+The value of a parameter of the pedestrian cost profile that OpenSidewalks streets are costed
+with. This is part of the OpenSidewalks sandbox feature.
+"""
+input PedestrianCostParameterInput {
+  "The name the profile gives the parameter, for example `uphill` or `avoid_curbs`."
+  name: String!
+  "The value as text, for example `0.083` or `true`."
+  value: String!
+}
+
 "A coordinate used for a location in a plan query."
 input PlanCoordinateInput {
   "Latitude as a WGS84 format number."
@@ -5599,6 +5610,14 @@ input VehicleParkingInput {
 input WalkPreferencesInput {
   "The cost of boarding a vehicle while walking."
   boardCost: Cost
+  """
+  What the traveller can manage on OpenSidewalks streets, as values of the parameters of the
+  pedestrian cost profile the streets are costed with: the steepest uphill grade, for example.
+  A parameter that is left out has the value the server is configured with. A value outside the
+  range the profile gives the parameter is rejected. This has no effect unless the server has
+  streets built by the OpenSidewalks sandbox feature.
+  """
+  pedestrianCost: [PedestrianCostParameterInput!]
   "A multiplier for how bad walking is compared to being in transit for equal lengths of time."
   reluctance: Reluctance
   """
