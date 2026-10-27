@@ -8,6 +8,7 @@ import org.mockito.Mockito;
 import org.opentripplanner.routing.impl.TransitAlertServiceImpl;
 import org.opentripplanner.standalone.api.TestServerContext;
 import org.opentripplanner.standalone.config.RouterConfig;
+import org.opentripplanner.street.graph.Graph;
 import org.opentripplanner.test.support.HttpForTest;
 import org.opentripplanner.transfer.regular.TransferServiceTestFactory;
 import org.opentripplanner.transit.service.TransitRepository;
@@ -29,6 +30,7 @@ class VectorTilesResourceTest {
       TestServerContext.createVehicleRentalService(),
       TestServerContext.createVehicleParkingService(),
       new TransitAlertServiceImpl(),
+      new Graph(),
       grizzlyRequest,
       "default"
     );

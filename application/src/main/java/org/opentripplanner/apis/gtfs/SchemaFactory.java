@@ -43,6 +43,7 @@ import org.opentripplanner.apis.gtfs.datafetchers.NodeTypeResolver;
 import org.opentripplanner.apis.gtfs.datafetchers.NoticeImpl;
 import org.opentripplanner.apis.gtfs.datafetchers.OpeningHoursImpl;
 import org.opentripplanner.apis.gtfs.datafetchers.PatternImpl;
+import org.opentripplanner.apis.gtfs.datafetchers.PedestrianSegmentImpl;
 import org.opentripplanner.apis.gtfs.datafetchers.PlaceImpl;
 import org.opentripplanner.apis.gtfs.datafetchers.PlaceInterfaceTypeResolver;
 import org.opentripplanner.apis.gtfs.datafetchers.PlanConnectionImpl;
@@ -166,6 +167,7 @@ public class SchemaFactory {
         .type(typeWiring.build(ItineraryImpl.class))
         .type(typeWiring.build(LegImpl.class))
         .type(typeWiring.build(PatternImpl.class))
+        .type(typeWiring.build(PedestrianSegmentImpl.class))
         .type(typeWiring.build(PlaceImpl.class))
         .type(typeWiring.build(placeAtDistanceImpl.class))
         .type(typeWiring.build(PlanConnectionImpl.class))

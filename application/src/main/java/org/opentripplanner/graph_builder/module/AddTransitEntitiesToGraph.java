@@ -189,6 +189,8 @@ public class AddTransitEntitiesToGraph {
           double distance = Optional.of(pathway.getLength())
             .filter(l -> l > 0)
             .orElseGet(() -> distance(fromVertex.getCoordinate(), toVertex.getCoordinate()));
+          var fromLevel = edgeLevel(stopLevel(pathway.getFromStop()));
+          var toLevel = edgeLevel(stopLevel(pathway.getToStop()));
 
           PathwayEdge.createPathwayEdge(
             fromVertex,
@@ -198,7 +200,10 @@ public class AddTransitEntitiesToGraph {
             distance,
             pathway.getStairCount(),
             pathway.getSlope(),
-            pathway.isPathwayModeWheelchairAccessible()
+            pathway.isPathwayModeWheelchairAccessible(),
+            edgeMode(pathway.getPathwayMode()),
+            fromLevel,
+            toLevel
           );
           if (pathway.isBidirectional()) {
             PathwayEdge.createPathwayEdge(
@@ -209,7 +214,10 @@ public class AddTransitEntitiesToGraph {
               distance,
               -1 * pathway.getStairCount(),
               -1 * pathway.getSlope(),
-              pathway.isPathwayModeWheelchairAccessible()
+              pathway.isPathwayModeWheelchairAccessible(),
+              edgeMode(pathway.getPathwayMode()),
+              toLevel,
+              fromLevel
             );
           }
         }
@@ -224,6 +232,23 @@ public class AddTransitEntitiesToGraph {
     }
   }
 
+  @Nullable
+  private static PathwayEdge.Level edgeLevel(@Nullable StopLevel level) {
+    return level == null ? null : new PathwayEdge.Level(level.index(), level.name());
+  }
+
+  private static PathwayEdge.Mode edgeMode(PathwayMode mode) {
+    return switch (mode) {
+      case WALKWAY -> PathwayEdge.Mode.WALKWAY;
+      case STAIRS -> PathwayEdge.Mode.STAIRS;
+      case MOVING_SIDEWALK -> PathwayEdge.Mode.MOVING_SIDEWALK;
+      case ESCALATOR -> PathwayEdge.Mode.ESCALATOR;
+      case FARE_GATE -> PathwayEdge.Mode.FARE_GATE;
+      case EXIT_GATE -> PathwayEdge.Mode.EXIT_GATE;
+      case ELEVATOR, UNKNOWN -> PathwayEdge.Mode.UNKNOWN;
+    };
+  }
+
   /**
    * Create elevator edges from pathways. As pathway based elevators are not vertices, but edges in
    * the pathway model, we have to model each possible movement as an ElevatorHopVertex-StationElementVertex pair,
@@ -236,8 +261,8 @@ public class AddTransitEntitiesToGraph {
   ) {
     StreetTraversalPermission permission = StreetTraversalPermission.PEDESTRIAN_AND_BICYCLE;
     int traversalTime = pathway.getTraversalTime();
-    StopLevel fromLevel = findStopLevel(fromVertex);
-    StopLevel toLevel = findStopLevel(toVertex);
+    StopLevel fromLevel = stopLevel(pathway.getFromStop());
+    StopLevel toLevel = stopLevel(pathway.getToStop());
     double levels = 1;
     if (fromLevel != null && toLevel != null && fromLevel.index() != toLevel.index()) {
       levels = Math.abs(fromLevel.index() - toLevel.index());
@@ -323,6 +348,23 @@ public class AddTransitEntitiesToGraph {
 
   private static String getElevatorLabel(StationElementVertex vertex, Pathway pathway) {
     return "%s_%s".formatted(vertex.getLabel(), pathway.getId());
+  }
+
+  /**
+   * The level of any element of a station: a platform, an entrance, a boarding area or a node a
+   * pathway starts or ends at. Pathways mostly join nodes, which {@link #findStopLevel} does not
+   * find the level of.
+   */
+  @Nullable
+  private static StopLevel stopLevel(StationElement<?, ?> element) {
+    var level = element.level();
+    if (level == null) {
+      return null;
+    }
+    return new StopLevel(
+      Objects.requireNonNullElse(level.name(), String.valueOf(level.index())),
+      level.index()
+    );
   }
 
   /**

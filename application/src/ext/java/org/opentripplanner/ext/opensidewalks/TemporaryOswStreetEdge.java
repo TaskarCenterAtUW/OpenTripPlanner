@@ -49,6 +49,10 @@ public class TemporaryOswStreetEdge extends TemporaryPartialStreetEdge {
     return connectToGraph(new TemporaryOswStreetEdge(builder, costing, attributes, delayShare));
   }
 
+  OswEdgeAttributes attributes() {
+    return attributes;
+  }
+
   /** The share of the delay of the whole OpenSidewalks edge that this edge has. */
   public float delayShare() {
     return delayShare;

@@ -4,6 +4,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Objects;
 import org.locationtech.jts.geom.LineString;
+import org.opentripplanner.ext.opensidewalks.PedestrianSegment;
 import org.opentripplanner.model.plan.Emission;
 import org.opentripplanner.model.plan.Place;
 import org.opentripplanner.model.plan.walkstep.WalkStep;
@@ -27,6 +28,7 @@ public class StreetLegBuilder {
   private String vehicleRentalNetwork;
   private Float accessibilityScore;
   private Emission emissionPerPerson;
+  private List<PedestrianSegment> pedestrianSegments = List.of();
 
   protected StreetLegBuilder() {}
 
@@ -46,6 +48,7 @@ public class StreetLegBuilder {
     this.vehicleRentalNetwork = leg.vehicleRentalNetwork();
     this.accessibilityScore = leg.accessibilityScore();
     this.emissionPerPerson = leg.emissionPerPerson();
+    this.pedestrianSegments = leg.pedestrianSegments();
   }
 
   public StreetLeg build() {
@@ -110,6 +113,10 @@ public class StreetLegBuilder {
 
   public Emission emissionPerPerson() {
     return emissionPerPerson;
+  }
+
+  public List<PedestrianSegment> pedestrianSegments() {
+    return pedestrianSegments;
   }
 
   public StreetLegBuilder withMode(TraverseMode mode) {
@@ -184,6 +191,11 @@ public class StreetLegBuilder {
 
   public StreetLegBuilder withEmissionPerPerson(Emission emissionPerPerson) {
     this.emissionPerPerson = emissionPerPerson;
+    return this;
+  }
+
+  public StreetLegBuilder withPedestrianSegments(List<PedestrianSegment> pedestrianSegments) {
+    this.pedestrianSegments = Objects.requireNonNull(pedestrianSegments);
     return this;
   }
 }

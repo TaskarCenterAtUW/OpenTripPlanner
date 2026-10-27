@@ -173,6 +173,77 @@ range of its parameter, or a name the profile does not have, gives a `BadRequest
 A `NO_DIRECT_MODE_CONNECTION` error means that there is no path the traveller of the profile can
 use between the two places.
 
+#### 6. Show what the walk goes along
+
+`pedestrianSegments` of a leg of the GTFS GraphQL API lists the OpenSidewalks edges a walking leg
+goes along, in order, with what a trip planner shows the traveller about each: its `highway` and
+`footway`, for example a sidewalk, a crossing or steps, its `incline` in the direction it is walked,
+whether it has `curbRamps`, its `name`, `description` and `surface`, and the `geometry` and
+`distance` of the part that is walked. A client can say "cross the street" or draw an elevation
+profile from these.
+
+```graphql
+legs {
+  mode
+  pedestrianSegments { footway highway incline curbRamps distance geometry { points } }
+}
+```
+
+The parts an edge is split into, where a stop is linked to it or a trip starts or ends partway
+along it, are one segment. The list is empty for transit legs, for walking on OpenStreetMap
+streets, and on a graph built without a profile.
+
+Where the walk goes through a station that has GTFS pathways, each pathway is a segment too, with
+its `pathwayMode` (`WALKWAY`, `STAIRS`, `ESCALATOR`, `ELEVATOR` and so on), the sign it is
+signposted with as its `name`, and the name of the station entrance it starts or ends at, if it
+does, as its `description`. A ride in an elevator, from boarding to leaving it, is one segment.
+Where the station has levels, `fromLevel` and `toLevel` are the names of the levels a pathway
+starts and ends on, and `levelChange` is how many levels it goes up, negative if it goes down, so
+that a client can say "Use the escalator: down from Surface to Mezzanine".
+
+#### 7. Show the network on a map
+
+With the [vector tiles API](MapboxVectorTilesApi.md) turned on as well, a layer of type
+`OpenSidewalks` has the OpenSidewalks edges of the graph, with the properties the
+[AccessMap](https://github.com/accessmap/accessmap-webapp) web app styles sidewalks and crossings by:
+
+```JSON
+// otp-config.json
+{
+  "otpFeatures": {
+    "OpenSidewalks": true,
+    "SandboxAPIMapboxVectorTilesApi": true
+  }
+}
+```
+
+```JSON
+// router-config.json
+{
+  "vectorTiles": {
+    "layers": [
+      {
+        "name": "transportation",
+        "type": "OpenSidewalks",
+        "mapper": "AccessMap",
+        "minZoom": 13,
+        "maxZoom": 20,
+        "cacheMaxSeconds": 600
+      }
+    ]
+  }
+}
+```
+
+The tiles are at `/otp/routers/default/vectorTiles/transportation/{z}/{x}/{y}.pbf`. Each edge
+is one feature, in the direction it is mapped in the dataset, with `footway`, `subclass` (the
+`highway` of the edge), `incline`, `curbramps` (1 or 0), `crossing` (`marked` or `unmarked`, from
+`crossing:markings`), `elevator` and `indoor` (1 or 0), `name`, `description`, `surface` and
+`length`.
+
+The map shows the network as it is in the graph, so an edge that no traveller can use in either
+direction is not on it, and the layer is empty on a graph built without a profile.
+
 ### Configuration
 
 The `openSidewalks` section of `build-config.json` has these parameters:

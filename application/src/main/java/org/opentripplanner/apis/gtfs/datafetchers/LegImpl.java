@@ -20,6 +20,7 @@ import org.opentripplanner.apis.gtfs.service.ApiTransitService;
 import org.opentripplanner.apis.gtfs.support.filter.StopArrivalByTypeFilter;
 import org.opentripplanner.ext.carpooling.model.CarpoolLeg;
 import org.opentripplanner.ext.fares.ItineraryFareDataLoader;
+import org.opentripplanner.ext.opensidewalks.PedestrianSegment;
 import org.opentripplanner.ext.ridehailing.model.RideEstimate;
 import org.opentripplanner.ext.ridehailing.model.RideHailingLeg;
 import org.opentripplanner.ext.taxi.model.TaxiLeg;
@@ -227,6 +228,11 @@ public class LegImpl implements GraphQLDataFetchers.GraphQLLeg {
       }
       throw new IllegalStateException("Unhandled leg type: " + leg);
     };
+  }
+
+  @Override
+  public DataFetcher<Iterable<PedestrianSegment>> pedestrianSegments() {
+    return environment -> getSource(environment).pedestrianSegments();
   }
 
   @Override

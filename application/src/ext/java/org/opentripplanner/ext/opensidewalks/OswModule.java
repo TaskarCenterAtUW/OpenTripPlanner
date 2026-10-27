@@ -184,10 +184,11 @@ public class OswModule implements GraphBuilderModule {
         edge.from().kerb(),
         edge.to().kerb()
       );
+      var tags = costing == null ? null : OswEdgeTags.of(edge.tags());
       // The incline of an edge describes it in the direction it is mapped. Walked the other way,
       // uphill is downhill.
-      buildEdge(edge, from, to, geometry, length, incline, curbRamps, false);
-      buildEdge(edge, to, from, geometry.reverse(), length, -incline, curbRamps, true);
+      buildEdge(edge, from, to, geometry, length, incline, curbRamps, tags, false);
+      buildEdge(edge, to, from, geometry.reverse(), length, -incline, curbRamps, tags, true);
     }
   }
 
@@ -203,6 +204,7 @@ public class OswModule implements GraphBuilderModule {
     double length,
     double incline,
     CurbRamps curbRamps,
+    @Nullable OswEdgeTags tags,
     boolean back
   ) {
     StreetEdgeBuilder<?> builder;
@@ -228,7 +230,7 @@ public class OswModule implements GraphBuilderModule {
       }
       builder = new OswStreetEdgeBuilder().withCosting(
         costing,
-        new OswEdgeAttributes(layer, incline, length, curbRamps, usableByAll)
+        new OswEdgeAttributes(layer, incline, length, curbRamps, usableByAll, tags)
       );
     }
     String name = edge.tags().get("name");

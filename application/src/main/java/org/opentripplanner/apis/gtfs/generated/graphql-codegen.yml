@@ -84,6 +84,7 @@ config:
     TransitMode: org.opentripplanner.apis.gtfs.generated.GraphQLTypes.GraphQLTransitMode#GraphQLTransitMode
     PageInfo: Object
     Pattern: org.opentripplanner.transit.model.network.TripPattern#TripPattern
+    PedestrianSegment: org.opentripplanner.ext.opensidewalks.PedestrianSegment#PedestrianSegment
     PickupDropoffType: org.opentripplanner.apis.gtfs.generated.GraphQLTypes.GraphQLPickupDropoffType#GraphQLPickupDropoffType
     Place: org.opentripplanner.model.plan.leg.StopArrival#StopArrival
     placeAtDistance: org.opentripplanner.place.api.PlaceAtDistance#PlaceAtDistance
