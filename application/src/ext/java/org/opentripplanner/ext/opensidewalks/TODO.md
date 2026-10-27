@@ -21,10 +21,11 @@ no vertices.
 
 ### The rule
 
-- A request whose `pedestrianCost` values make the profile cost an edge differently than for the
-  most able traveller walks the OpenSidewalks edges.
-- Everyone else uses the OpenStreetMap streets as OTP has them: people on foot without values or
-  with values that ask for nothing, cars, and bicycles, ridden or walked.
+- A request says which network it is on, `OPEN_SIDEWALKS` or `STREETS`, for the whole trip:
+  walking, cycling and driving. If it does not say, one with `pedestrianCost` values is on
+  `OPEN_SIDEWALKS` and one without on `STREETS`. `STREETS` with values is rejected.
+- On `OPEN_SIDEWALKS`, cycling and driving use the roads of the dataset. A dataset without roads
+  rejects a request on it that includes cycling or driving.
 - OTP's wheelchair setting does not choose the network.
 - A graph with OpenSidewalks data alone is walked by everyone, as before.
 
@@ -37,6 +38,10 @@ Measured in Seattle, 200 pairs of places, a BBBike OpenStreetMap extract plus TD
 | Walking, cycling, driving without values, both loaded  | 600 of 600 the same as with OpenStreetMap alone  |
 | Two travellers with limits, both loaded                | all 330 walks the same as with OpenSidewalks alone |
 | The same, against AccessMap on the same data           | no route missed, 19 more found (island pruning)  |
+
+The 19 were found because island pruning removed isolated parts of the OpenSidewalks network and
+places were linked past them. Pruning now leaves that network alone, so they should be gone; not
+measured again.
 
 ### What does not work
 
@@ -66,40 +71,79 @@ Measured in Seattle, 200 pairs of places, a BBBike OpenStreetMap extract plus TD
 
 ### To decide and to do
 
-- [ ] Is a change to `StreetEdge` acceptable? It is the hot path of every street search. It was
-      not measured with the speed test.
-- [ ] Bicycle and car parks and rental stations are only linked to the OpenStreetMap streets, so
-      a traveller with limits can not use them. They need links to OpenSidewalks edges like the
-      stops have.
+- [x] Is a change to `StreetEdge` acceptable? It is the hot path of every street search.
+      Decided: it is measured by the performance test of the project, which runs on `dev-2.x` of
+      the upstream repository once it is merged there. See section 6.
+- [x] Car parks are linked to the OpenSidewalks edges like the stops are, by `OswLinkModule`.
+      Bicycle parks and rental stations are left linked to the OpenStreetMap streets only:
+      decided that bicycles, and renting them, are for trips without limits.
+- [x] Car parks added by a vehicle parking updater are linked to the OpenSidewalks edges as well,
+      for walking and driving, in `OswLinking.linkForEveryone()`.
+- [ ] Park and ride for a traveller with limits has not been planned on real data.
+- [x] Station entrances were only linked to the OpenStreetMap streets, so a traveller with limits
+      could not use a station with GTFS pathways: in Seattle, U District to Westlake by Link became
+      a bus trip of twice the time. `OswLinkModule` links them like stops now, and the trip takes
+      Link, along sidewalks with curb ramps and through the elevators of both stations.
+- [x] Rental on `OPEN_SIDEWALKS`: the vehicle rental updater links stations and vehicles to the
+      nearest OpenSidewalks edge as well (`OswLinking.linkForEveryone()`, in OTP's updater behind
+      the feature flag). The vehicle is walked to a road and used on the roads.
+- [x] Park and ride on `OPEN_SIDEWALKS`: `OswLinkModule` links car parks to the nearest road for
+      cars. Car pickup needs no links: OTP switches between car and foot where a road meets an
+      edge that can only be walked, which on OpenSidewalks data is where crossings meet roads.
+- [x] Walking in a trip that rents or is picked up is costed with the profile. Where OTP walks
+      itself (where a car drops off or may pick up, at geofencing boundaries, in an arrive-by
+      rental search) its states are kept only on edges the traveller can walk, at OTP's time.
+- [x] Transfers that are not walking, such as with a bicycle taken along, were found by OTP on the
+      other streets only, so a trip on `OPEN_SIDEWALKS` had none. `OswTransferModule` finds them on
+      the roads of the data as well, one search per stop for each such transfer request.
+- [x] Bicycle parks and station centroids are linked to the OpenSidewalks edges too, by
+      `OswLinkModule`, and a flex vehicle path that starts on the OpenSidewalks data is driven on
+      its roads (`StreetFlexPathCalculator`, in the flex sandbox). Everything a trip can start,
+      end or change at is now on both networks.
+- [ ] Flex on `OPEN_SIDEWALKS` has not been tried with a GTFS-Flex feed.
+- [ ] None of rental, park and ride or pickup on `OPEN_SIDEWALKS` has been planned on a server
+      with real data: there is no GBFS feed for the Microsoft campus, and Seattle `05776f25` has no
+      roads. Covered by unit tests on the small synthetic dataset.
 - [ ] Where there is no OpenSidewalks data a traveller with limits has no route. Decided: no
       falling back to the OpenStreetMap streets. A client should be told why, which it is not.
-- [ ] Changing a value from asking for nothing to asking for something moves the trip to the
-      other network. To be handled in the user interface.
-- [ ] "Asks for nothing" compares the cost function of the request with that of the most able
-      traveller, layer by layer. With the Walksheds profile, a request that only sets the grades
-      and curbs to their loosest still has the default street avoidance of 1, and so walks the
-      OpenSidewalks edges. Only a request with no values, or with every value at its loosest,
-      walks the OpenStreetMap streets. Is that what is wanted?
-- [ ] `routingDefaults.pedestrianCost` in the router configuration with values that ask for
-      something sends every walk to the OpenSidewalks edges.
-- [ ] Island pruning: keep it and have places linked away from isolated pieces of sidewalk (19
-      more routes in the sample), or exempt OpenSidewalks edges to match the other engines? Today
-      that is `islandPruning.islandWithoutStopsMaxSize` and `islandWithStopsMaxSize` set to 0,
-      which turns it off for OpenStreetMap too.
-- [ ] An edge has one extension, so this can not be used with the Data Overlay sandbox feature.
-- [ ] No transit was in the Seattle test. Stops and transfers with both networks are untested.
+- [x] Which network a request is on is a request-time choice, `preferences.street.network` in the
+      GTFS API and `streetNetwork` in the Transmodel API. It replaced comparing the values of the
+      request with those of the most able traveller, which sent a request with only grades and
+      curbs at their loosest to the OpenSidewalks edges, moved a trip between networks when one
+      value changed, and sent every walk there if `routingDefaults.pedestrianCost` had values.
+      Roads of a dataset are used by bicycles and cars (`OswRoads`); tested on the Microsoft
+      campus dataset, a fixture now. Seattle `05776f25` has no roads, so a request on it with a
+      vehicle is rejected. Not tried on a running server yet.
+- [ ] OpenSidewalks roads have no `oneway`, turn restrictions or `access` in the datasets seen
+      (Microsoft campus in Redmond, `770f769f` in Renton), and few have a speed. Cars and
+      bicycles on them would ignore one-way streets.
+- [x] Island pruning leaves the OpenSidewalks network alone, as the other engines do, and keeps
+      pruning the OpenStreetMap streets. `OswLinkModule` now runs after it, since pruning would
+      otherwise unlink stops from the OpenSidewalks edges.
+- [x] An edge has one extension, so this can not be used with the Data Overlay sandbox feature.
+      Accepted as a limitation and documented in the user documentation of both features. Nothing
+      enforces it: Data Overlay runs last and silently replaces the extensions set here.
+- [ ] Transit with both networks was checked by hand in Seattle, on a few trips only (King County
+      Metro, and Sound Transit with pathways). See section 2.
 - [ ] Without a profile the OpenSidewalks edges are ordinary streets, and the two networks are
       both walked by everyone, with the problem this section starts with.
 
 ## 2. Transit
 
-**Status: built, covered by unit tests on the small synthetic dataset, not verified on real data.**
+**Status: built, covered by unit tests on the small synthetic dataset, checked by hand on a few Seattle trips.**
 
-- [ ] Build a graph from a real GTFS feed and an OpenSidewalks dataset, and check trips by hand.
-      So far there is a three-stop feed made up for Goldendale.
-- [ ] An itinerary that rides, transfers and rides again has never been planned.
+- [x] Build a graph from a real GTFS feed and an OpenSidewalks dataset, and check trips by hand.
+      Seattle, October 2026: BBBike OpenStreetMap extract, TDEI dataset `05776f25`, King County
+      Metro, and Sound Transit with pathways and levels. U District to Westlake and Capitol Hill
+      to Columbia City, each for a traveller without values, with the wheelchair setting, with
+      limits, and with both. More trips, and a written-down sample, are still to do.
+- [x] An itinerary that rides, transfers and rides again: Capitol Hill to Columbia City with
+      limits rides past Columbia City to Othello, crosses to the other platform on sidewalks with
+      curb ramps, and rides back. The traveller has no way from the southbound platform at
+      Columbia City to the destination, which the traveller without values walks in two minutes.
+      Probably the crossings of Martin Luther King Jr Way in the data; not checked one by one.
 - [ ] No stop in a real feed has needed the links to more than one edge. That path only runs in
-      `OswStopLinkModuleTest`.
+      `OswLinkModuleTest`.
 - [ ] The transfer search is limited to 50 searches from a stop. How many it needs on a real
       network, and what it does to the time a graph takes to build, is not known.
 - [ ] The link between a stop and an OpenSidewalks edge takes the time of walking it at a fixed
@@ -182,7 +226,8 @@ Measured in Seattle, 200 pairs of places, a BBBike OpenStreetMap extract plus TD
 - [ ] The performance test of the project only runs on `dev-2.x` of the upstream repository. The
       Helsinki speed test was run locally on `d3df68b4e5` and showed no change (118.5 to 121 ms a
       search on both). The transfer cache test was not run, and nothing was measured after the
-      prototype of section 1.
+      prototype of section 1. Decided: the change to `StreetEdge` is measured by that test after
+      it is merged upstream, at https://otp-performance.leonard.io/.
 
 ## 7. Before proposing this upstream
 

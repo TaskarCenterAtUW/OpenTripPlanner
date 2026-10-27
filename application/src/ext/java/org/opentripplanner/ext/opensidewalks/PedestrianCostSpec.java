@@ -113,22 +113,6 @@ public class PedestrianCostSpec {
     return factor / l.costFactor;
   }
 
-  /**
-   * Whether this costs every edge the same as the other does: the two are for travellers that
-   * the profile makes no difference between.
-   */
-  boolean sameCostAs(PedestrianCostSpec other) {
-    if (layers.size() != other.layers.size()) {
-      return false;
-    }
-    for (int i = 0; i < layers.size(); i++) {
-      if (!layers.get(i).sameCostAs(other.layers.get(i))) {
-        return false;
-      }
-    }
-    return true;
-  }
-
   /** The time added to the time it takes to walk an edge of the layer. */
   double delaySeconds(int layer) {
     return layer < 0 ? 0 : layers.get(layer).costedDelaySeconds;
@@ -180,25 +164,6 @@ public class PedestrianCostSpec {
     final double costFactor;
     /** The delay of the layer, multiplied like the rest of the cost if the layer is avoided. */
     final double costedDelaySeconds;
-
-    boolean sameCostAs(ResolvedLayer o) {
-      if (blocked || o.blocked) {
-        return blocked == o.blocked;
-      }
-      return (
-        hasIncline == o.hasIncline &&
-        maxUphill == o.maxUphill &&
-        maxDownhill == o.maxDownhill &&
-        ideal == o.ideal &&
-        kUp == o.kUp &&
-        kDown == o.kDown &&
-        minLengthForLimits == o.minLengthForLimits &&
-        delaySeconds == o.delaySeconds &&
-        requireCurbRamps == o.requireCurbRamps &&
-        speedFactor == o.speedFactor &&
-        costFactor == o.costFactor
-      );
-    }
 
     ResolvedLayer(PedestrianCostProfile.Layer layer, Map<String, JsonNode> params) {
       this.name = layer.name;

@@ -1015,6 +1015,8 @@ type QueryType {
     Maximum value: 1440 minutes (24h)
     """
     searchWindow: Int,
+    "Which street network the whole trip is on, in a graph that has OpenSidewalks data and other street data, such as OpenStreetMap, that are not joined to each other. On `OPEN_SIDEWALKS` walking is costed with the pedestrian cost profile, and cycling and driving use the roads of the OpenSidewalks data, if it has any. If this is left out, a trip with `pedestrianCost` values is on `OPEN_SIDEWALKS` and one without on `STREETS`. `STREETS` with `pedestrianCost` values is rejected. This has no effect unless the server has streets built by the OpenSidewalks sandbox feature."
+    streetNetwork: StreetNetwork,
     """
     Search for the best trip options within a time window. If `true` two TripPatterns are considered optimal if one is better on arrival time(earliest wins) and the other is better on departure time (latest wins).In combination with `arriveBy` this parameter cover the following 3 use cases:
     
@@ -2095,6 +2097,14 @@ enum StreetMode {
   scooter_rental
   "Traveling by taxi. This can include walking before being picked up and/or after being dropped off."
   taxi @deprecated(reason : "This value is experimental.")
+}
+
+"The street networks of a graph that has OpenSidewalks data and other street data. This is part of the OpenSidewalks sandbox feature."
+enum StreetNetwork {
+  "The OpenSidewalks data."
+  OPEN_SIDEWALKS
+  "The other street data, such as OpenStreetMap."
+  STREETS
 }
 
 enum TransportMode {

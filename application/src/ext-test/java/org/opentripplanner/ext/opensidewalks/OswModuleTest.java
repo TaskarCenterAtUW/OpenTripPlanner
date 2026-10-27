@@ -47,7 +47,7 @@ class OswModuleTest {
   private static final OswCosting PROFILE = OswCosting.fromFile(PROFILE_FILE, Map.of());
 
   @Test
-  void withoutAProfileEveryEdgeIsAnOrdinaryWalkableStreet() {
+  void withoutAProfileEveryEdgeIsAnOrdinaryStreet() {
     var graph = build(null);
 
     var edges = ListUtils.ofIterable(graph.findEdges(StreetEdge.class));
@@ -55,7 +55,12 @@ class OswModuleTest {
     assertThat(edges).hasSize(32);
     for (StreetEdge edge : edges) {
       assertFalse(edge instanceof OswStreetEdge);
-      assertEquals(StreetTraversalPermission.PEDESTRIAN, edge.getPermission());
+      // Only walked, except the road, which bicycles and cars can use too
+      boolean road = "Example St".equals(edge.getName().toString());
+      assertEquals(
+        road ? StreetTraversalPermission.ALL : StreetTraversalPermission.PEDESTRIAN,
+        edge.getPermission()
+      );
     }
     assertTrue(graph.hasStreets);
 
@@ -74,10 +79,14 @@ class OswModuleTest {
   void edgesNoTravellerCanUseAreLeftOut() {
     var graph = build(PROFILE);
 
-    // Steps, plain footways and roads are in no layer of this profile
+    // Steps and plain footways are in no layer of this profile
     assertNull(edge(graph, "12", "51"));
     assertNull(edge(graph, "n-west", "11"));
-    assertNull(edge(graph, "3", "61"));
+    // Nor are roads, but they are kept for bicycles and cars
+    var road = osw(graph, "3", "61");
+    assertEquals(StreetTraversalPermission.ALL, road.getPermission());
+    assertFalse(road.isUsableByAll());
+    assertTrue(PROFILE.hasRoads());
     // Any other edge is there, also the ones only some travellers can use: a sidewalk that is
     // 10% uphill, and a crossing with a raised kerb
     assertFalse(osw(graph, "2", "3").isUsableByAll());

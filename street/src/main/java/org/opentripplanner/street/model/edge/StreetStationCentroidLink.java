@@ -8,11 +8,11 @@ import org.opentripplanner.street.model.vertex.StreetVertex;
  */
 public class StreetStationCentroidLink extends FreeEdge {
 
-  private StreetStationCentroidLink(StreetVertex fromv, StationCentroidVertex tov) {
+  protected StreetStationCentroidLink(StreetVertex fromv, StationCentroidVertex tov) {
     super(fromv, tov);
   }
 
-  private StreetStationCentroidLink(StationCentroidVertex fromv, StreetVertex tov) {
+  protected StreetStationCentroidLink(StationCentroidVertex fromv, StreetVertex tov) {
     super(fromv, tov);
   }
 

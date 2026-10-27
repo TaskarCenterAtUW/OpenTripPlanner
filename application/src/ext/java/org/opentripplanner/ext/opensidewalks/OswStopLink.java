@@ -1,6 +1,5 @@
 package org.opentripplanner.ext.opensidewalks;
 
-import org.opentripplanner.street.geometry.SphericalDistanceLibrary;
 import org.opentripplanner.street.model.edge.StreetTransitEntityLink;
 import org.opentripplanner.street.model.vertex.StreetVertex;
 import org.opentripplanner.street.model.vertex.TransitStopVertex;
@@ -14,19 +13,16 @@ import org.opentripplanner.street.model.vertex.TransitStopVertex;
  */
 public class OswStopLink extends StreetTransitEntityLink<TransitStopVertex> {
 
-  /** The speed the distance is walked at. A link does not know the speed of the request. */
-  private static final double WALK_SPEED = 1.3;
-
   private final int walkSeconds;
 
   private OswStopLink(StreetVertex from, TransitStopVertex to) {
     super(from, to, to.getWheelchairAccessibility());
-    this.walkSeconds = walkSeconds(from, to);
+    this.walkSeconds = OswLinkModule.walkSeconds(from, to);
   }
 
   private OswStopLink(TransitStopVertex from, StreetVertex to) {
     super(from, to, from.getWheelchairAccessibility());
-    this.walkSeconds = walkSeconds(to, from);
+    this.walkSeconds = OswLinkModule.walkSeconds(to, from);
   }
 
   /** Link the stop and the place on the street to each other, in both directions. */
@@ -44,13 +40,5 @@ public class OswStopLink extends StreetTransitEntityLink<TransitStopVertex> {
   protected int getStreetToStopTime() {
     var stop = getTransitEntityVertex();
     return (stop.hasPathways() ? 0 : stop.getStreetToStopTime()) + walkSeconds;
-  }
-
-  private static int walkSeconds(StreetVertex streetVertex, TransitStopVertex stop) {
-    double meters = SphericalDistanceLibrary.distance(
-      streetVertex.getCoordinate(),
-      stop.getCoordinate()
-    );
-    return (int) Math.round(meters / WALK_SPEED);
   }
 }

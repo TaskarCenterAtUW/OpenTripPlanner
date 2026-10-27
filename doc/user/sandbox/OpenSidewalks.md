@@ -257,36 +257,51 @@ The `openSidewalks` section of `build-config.json` has these parameters:
 A relative path is resolved against the OTP base directory, the one holding `build-config.json`.
 
 `routingDefaults.pedestrianCost` in `router-config.json` has the parameter values of the traveller
-that requests are planned for, for example `{ "uphill": 0.083, "avoid_curbs": true }`.
+that requests are planned for, for example `{ "uphill": 0.083, "avoid_curbs": true }`. It does not
+choose the network a request is on, see [With OpenStreetMap data](#with-openstreetmap-data).
 
 ### How a dataset becomes streets
 
-- Each edge of a dataset becomes a pair of street edges, one in each direction, that can only be
-  walked. Points, lines, polygons and zones are ignored, as are edges without a `highway` property
-  and those with `highway=construction` or `highway=proposed`.
+- Each edge of a dataset becomes a pair of street edges, one in each direction. Points, lines,
+  polygons and zones are ignored, as are edges without a `highway` property and those with
+  `highway=construction` or `highway=proposed`.
+- Roads (`highway` `trunk`, `primary`, `secondary`, `tertiary`, `unclassified`, `residential`,
+  `service` or `living_street`) can be used by bicycles and cars as well, in both directions: the
+  OpenSidewalks schema has no one-way streets or turn restrictions. A car goes at the
+  `ext:maxspeed` of the road, such as `40 mph`, or else at OTP's default for that kind of road.
+  Roads are kept even where the profile lets no traveller walk them. Everything else can only be
+  walked.
 - The length of a street edge is the `length` property of the OSW edge, if it has one.
 - Nodes at the same position, to 7 decimal places, are one node, whatever their ids. Some datasets
   rely on this, for example where steps end on a node of their own that sits on a sidewalk node.
 - Transit stops are linked to these streets like to any other. OTP can be run on OpenSidewalks
   data alone, with transit data, or both.
-- Small disconnected parts of the network are kept if there is no OpenStreetMap data, since island
-  pruning only runs when there is.
+- Small disconnected parts of the network are kept. Island pruning, which runs when there is
+  OpenStreetMap data, leaves the OpenSidewalks network alone.
 
 ### With OpenStreetMap data
 
 OpenStreetMap data can be loaded in the same graph. The streets from it and the OpenSidewalks
-edges are two networks that are not joined to each other, so each is for its own travellers:
+edges are two networks that are not joined to each other, so a request is on one of them, for
+the whole trip:
 
-- **A traveller the profile makes a difference for walks the OpenSidewalks edges.** That is a
-  request whose `pedestrianCost` values make the profile cost an edge differently than for the
-  most able traveller: someone with a limit on grades, who avoids curbs, or the like. The places
-  of the trip are linked to OpenSidewalks edges, and the profile applies to all of the walking.
-- **Everyone else uses the OpenStreetMap streets, as OTP has them.** That is people on foot
-  without such values, or with values that ask for nothing, as well as cars and bicycles, ridden
-  or walked.
+- **A request says which**, with `preferences.street.network` of a plan query of the GTFS API, or
+  the `streetNetwork` argument of a trip query of the Transmodel API: `OPEN_SIDEWALKS` or
+  `STREETS`.
+- **If it does not say**, a request with `pedestrianCost` values is on `OPEN_SIDEWALKS`, and one
+  without is on `STREETS`. Values in `routingDefaults.pedestrianCost` of the router configuration
+  do not count: they say what a traveller can manage, not which network to use.
+- **`STREETS` with `pedestrianCost` values is rejected**, since the profile does not apply to the
+  OpenStreetMap streets.
+
+On `OPEN_SIDEWALKS` everything is on the OpenSidewalks data: the places of the trip are linked
+to it, walking is costed with the profile, and cycling and driving use its roads. If the dataset
+has no roads, a request on it that includes cycling or driving is rejected with an error that
+says so. On `STREETS` everything is on the OpenStreetMap streets, as OTP has them.
 
 So a deployment with both is OTP as it is for most trips, with the OpenSidewalks data as the
-network for travellers with limits. The wheelchair setting of OTP does not choose the network,
+network for travellers with limits, or for anyone who asks for it. The wheelchair setting of OTP
+does not choose the network,
 see [Wheelchair users and trips with transit](#wheelchair-users-and-trips-with-transit): a
 request with that setting and no `pedestrianCost` gets the wheelchair routing of OTP on the
 OpenStreetMap streets.
@@ -297,25 +312,45 @@ with limits came out as on a graph with the OpenSidewalks data alone.
 
 Things to know:
 
-- A stop is linked to both networks: by OTP to the OpenStreetMap streets, and to the OpenSidewalks
-  edges as described under [Transit stops and transfers](#transit-stops-and-transfers). Transfers
-  are found on both as well, and a traveller is given the ones on their own network.
-- Bicycle and car parks, and rental stations, are only linked to the OpenStreetMap streets. A
-  traveller with limits can not walk to or from one.
+- A stop, or the entrance of a station that has GTFS pathways, is linked to both networks: by
+  OTP to the OpenStreetMap streets, and to the OpenSidewalks edges as described under
+  [Transit stops and transfers](#transit-stops-and-transfers). Transfers are found on both as
+  well, and a traveller is given the ones on their own network. The pathways inside a station are
+  used by everyone.
+- Car parks are linked to the OpenSidewalks edges for walking, like a stop is, see
+  [Transit stops and transfers](#transit-stops-and-transfers), and to the nearest road of the
+  OpenSidewalks data for cars, so a trip on `OPEN_SIDEWALKS` can park and ride. Car parks that a
+  vehicle parking updater adds are linked to both networks too, to the nearest edge of each.
+- Rental stations and vehicles for rent are linked to both networks when a vehicle rental updater
+  adds them: to the nearest walkable edge of each. A vehicle rented on the OpenSidewalks data is
+  walked to the nearest road, where the crossings meet it, and ridden or driven on the roads.
+- Bicycle parks are linked to the OpenSidewalks edges for walking, like car parks, and the
+  centroids of stations like stops.
+- A flex vehicle that starts on the OpenSidewalks data, in a flex zone where a road of the data
+  meets a crossing, drives on the roads of the data. Not tried with a real GTFS-Flex feed.
+- Transfers with a bicycle taken along, or any other transfer request in `transferRequests` that
+  is not walking, are found on the roads of the OpenSidewalks data too, if it has any, for trips
+  on `OPEN_SIDEWALKS`.
+- A car picks up and drops off a traveller on `OPEN_SIDEWALKS` where a road meets a crossing or a
+  sidewalk, as OTP does on other streets.
+- Walking in a trip that rents a vehicle or is picked up by car is costed with the profile, and
+  the traveller does not walk an edge they can not use. Where OTP itself does the walking, such as
+  the edge where a car drops the traveller off, or at the boundary of a geofencing zone, it
+  takes the time OTP gives it.
 - Where there is no OpenSidewalks data, a traveller with limits has no route. The trip is not
   planned on the OpenStreetMap streets instead, which would not have the limits.
-- Changing a value from asking for nothing to asking for something moves the trip from one network
-  to the other, so its path and its duration can change more than the value suggests. A crossing
-  takes 30 seconds longer on the OpenSidewalks edges of the Walksheds profile, for one.
-- Island pruning runs when there is OpenStreetMap data, and removes small disconnected parts of
-  the OpenSidewalks network too. A place next to such a part is then linked to the rest of the
-  network, if that is near enough, so some trips are found that would otherwise have none: 19 of
-  400 in Seattle. Set `islandPruning.islandWithoutStopsMaxSize` and `islandWithStopsMaxSize` to 0
-  in the build configuration to keep those parts.
+- A trip on one network and the same trip on the other can differ more than the values of the
+  request suggest. A crossing takes 30 seconds longer on the OpenSidewalks edges of the Walksheds
+  profile, for one.
+- Island pruning runs when there is OpenStreetMap data, on the OpenStreetMap streets only. Small
+  disconnected parts of the OpenSidewalks network are kept, as AccessMap and R5 keep them, and
+  the OpenSidewalks network does not count as streets near an island of OpenStreetMap streets.
 - A profile is needed for this. Without one the OpenSidewalks edges are ordinary streets that
   everyone walks, on two networks that are not joined.
 - This can not be used together with the Data Overlay sandbox feature. Both use the one extension
-  a street edge has.
+  a street edge has. Nothing stops the two being turned on together, but Data Overlay runs last in
+  the graph build and replaces the extension of every street edge, so the pedestrian cost profile
+  is not applied and the two networks are walked by everyone.
 
 ### How a profile is applied
 
@@ -430,6 +465,9 @@ graph is built. No traveller is known then, so both are done for all of them.
   a stop along the nearest of those they can use.
 - The link between a stop and an OpenSidewalks edge takes the time of walking the distance between
   them at 1.3 m/s. The links OTP makes between stops and other streets take no time.
+- The entrances of stations with GTFS pathways, and of car parks that can be walked through, are
+  linked to the OpenSidewalks edges in the same way, and their links take the time of walking
+  them too.
 - The paths of transfers are found by OTP for the requests in `transferRequests` of
   `build-config.json`, which is one walking request unless it is set. Then the stops within reach
   of each stop are searched for again by less and less able travellers, to find the paths of the

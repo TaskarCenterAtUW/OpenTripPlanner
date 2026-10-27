@@ -4367,6 +4367,17 @@ enum StopType {
 }
 
 """
+The street networks of a graph that has OpenSidewalks data and other street data. This is part
+of the OpenSidewalks sandbox feature.
+"""
+enum StreetNetwork {
+  "The OpenSidewalks data."
+  OPEN_SIDEWALKS
+  "The other street data, such as OpenStreetMap."
+  STREETS
+}
+
+"""
 Transit modes include modes that are used within organized transportation networks
 run by public transportation authorities, taxi companies etc.
 Equivalent to GTFS route_type or to NeTEx TransportMode.
@@ -5270,6 +5281,16 @@ input PlanStreetPreferencesInput {
   taxi travel.
   """
   car: CarPreferencesInput
+  """
+  Which street network the whole trip is on, in a graph that has OpenSidewalks data and other
+  street data, such as OpenStreetMap, that are not joined to each other. On `OPEN_SIDEWALKS`
+  walking is costed with the pedestrian cost profile, and cycling and driving use the roads of
+  the OpenSidewalks data, if it has any. If this is left out, a trip with `pedestrianCost` values
+  is on `OPEN_SIDEWALKS` and one without on `STREETS`. `STREETS` with `pedestrianCost` values is
+  rejected. This has no effect unless the server has streets built by the OpenSidewalks sandbox
+  feature.
+  """
+  network: StreetNetwork
   "Scooter (kick or electrical) related preferences."
   scooter: ScooterPreferencesInput
   """

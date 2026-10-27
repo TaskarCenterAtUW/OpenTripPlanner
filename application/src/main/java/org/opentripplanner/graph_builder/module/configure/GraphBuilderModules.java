@@ -11,9 +11,11 @@ import org.opentripplanner.datastore.api.CompositeDataSource;
 import org.opentripplanner.datastore.api.DataSource;
 import org.opentripplanner.ext.dataoverlay.EdgeUpdaterModule;
 import org.opentripplanner.ext.dataoverlay.configure.DataOverlayFactory;
+import org.opentripplanner.ext.opensidewalks.OswStreetEdge;
 import org.opentripplanner.ext.stopconsolidation.StopConsolidationModule;
 import org.opentripplanner.ext.stopconsolidation.StopConsolidationRepository;
 import org.opentripplanner.ext.transferanalyzer.DirectTransferAnalyzer;
+import org.opentripplanner.framework.application.OTPFeature;
 import org.opentripplanner.graph_builder.GraphBuilderDataSources;
 import org.opentripplanner.graph_builder.issue.api.DataImportIssueStore;
 import org.opentripplanner.graph_builder.issue.api.DataImportIssueSummary;
@@ -217,7 +219,9 @@ public class GraphBuilderModules {
       transitRepository,
       issueStore,
       new StreetLinkerModule(graph, linker, parkingRepository, transitRepository, issueStore),
-      parameters
+      parameters,
+      // The OpenSidewalks network is not joined to the other streets, and is not pruned
+      OTPFeature.OpenSidewalks.isOn() ? OswStreetEdge::isOnOpenSidewalksEdge : v -> false
     );
   }
 

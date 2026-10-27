@@ -1,6 +1,7 @@
 package org.opentripplanner.ext.opensidewalks;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +15,6 @@ import org.opentripplanner.graph_builder.model.GraphBuilderModule;
 import org.opentripplanner.street.geometry.GeometryUtils;
 import org.opentripplanner.street.geometry.SphericalDistanceLibrary;
 import org.opentripplanner.street.graph.Graph;
-import org.opentripplanner.street.model.StreetTraversalPermission;
 import org.opentripplanner.street.model.edge.StreetEdge;
 import org.opentripplanner.street.model.edge.StreetEdgeBuilder;
 import org.opentripplanner.street.model.vertex.StreetVertex;
@@ -53,6 +53,7 @@ public class OswModule implements GraphBuilderModule {
   private int edgesNotForAll = 0;
   private int impassableEdges = 0;
   private int unusableEdges = 0;
+  private int roadEdges = 0;
   private boolean fasterThanWalking = false;
 
   /**
@@ -123,8 +124,17 @@ public class OswModule implements GraphBuilderModule {
       build(sources.get(i), labelPrefix);
     }
     graph.hasStreets = true;
+    if (roadEdges > 0) {
+      if (costing != null) {
+        costing.setHasRoads();
+      }
+      LOG.info(
+        "{} of the street edges from OpenSidewalks data are roads, which bicycles and cars can use in both directions.",
+        roadEdges
+      );
+    }
     LOG.info(
-      "Built {} street edges from OpenSidewalks data, {} of which only some travellers can use. Left out {} that no traveller can use and {} that are not usable ways.",
+      "Built {} street edges from OpenSidewalks data, {} of which only some travellers can use. Left out {} that no traveller can walk and are not roads, and {} that are not usable ways.",
       builtEdges,
       edgesNotForAll,
       impassableEdges,
@@ -139,22 +149,25 @@ public class OswModule implements GraphBuilderModule {
 
   /**
    * The streets that are in the graph before the OpenSidewalks edges are from other data, and are
-   * not joined to the OpenSidewalks edges. If people can walk them, each of the two networks is
-   * for its own travellers from here on, see {@link OtherStreet}.
+   * not joined to the OpenSidewalks edges. If people can walk them, a request travels on one of
+   * the two networks from here on, see {@link OtherStreet}.
    */
   private void shareTheGraphWithOtherStreets(OswCosting costing) {
     var otherStreet = new OtherStreet(costing);
     int streets = 0;
+    List<StreetEdge> edges = new ArrayList<>();
     for (StreetEdge edge : graph.findEdges(StreetEdge.class)) {
+      edges.add(edge);
       if (edge.getPermission().allows(TraverseMode.WALK)) {
-        edge.setCostExtension(otherStreet);
         streets++;
       }
     }
     if (streets > 0) {
+      // Every street, so that a request on the OpenSidewalks edges does not drive on any of them
+      edges.forEach(edge -> edge.setCostExtension(otherStreet));
       costing.setBesideOtherStreets();
       LOG.info(
-        "The graph has {} street edges from other data that can be walked. Travellers the pedestrian cost profile makes a difference for walk the OpenSidewalks edges, and everyone else the other streets.",
+        "The graph has {} street edges from other data that can be walked. A request travels on the OpenSidewalks edges if it says so, and otherwise on the other streets.",
         streets
       );
     }
@@ -207,6 +220,7 @@ public class OswModule implements GraphBuilderModule {
     @Nullable OswEdgeTags tags,
     boolean back
   ) {
+    boolean road = OswRoads.isRoad(edge.tags().get("highway"));
     StreetEdgeBuilder<?> builder;
     if (costing == null) {
       builder = new StreetEdgeBuilder<>();
@@ -220,7 +234,7 @@ public class OswModule implements GraphBuilderModule {
         }
         fasterThanWalking |= speedFactor > 1;
       }
-      if (usableBy == 0) {
+      if (usableBy == 0 && !road) {
         impassableEdges++;
         return;
       }
@@ -241,9 +255,13 @@ public class OswModule implements GraphBuilderModule {
       .withMilliMeterLength((int) Math.round(length * 1000))
       .withName(I18NString.of(name != null ? name : derivedName(edge.tags())))
       .withBogusName(name == null)
-      .withPermission(StreetTraversalPermission.PEDESTRIAN)
-      .withBack(back)
-      .buildAndConnect();
+      .withPermission(OswRoads.permission(edge.tags()))
+      .withBack(back);
+    if (road) {
+      builder.withCarSpeed(OswRoads.carSpeed(edge.tags()));
+      roadEdges++;
+    }
+    builder.buildAndConnect();
     builtEdges++;
   }
 

@@ -64,6 +64,14 @@ public class TemporaryOswStreetEdge extends TemporaryPartialStreetEdge {
     if (states != null) {
       return states;
     }
-    return costing.besideOtherStreets() ? State.empty() : super.traverse(s0);
+    // Cycling and driving on roads, and walking with a vehicle, as OTP has them
+    return OswWalkCost.withoutWalksTheTravellerCanNotMake(
+      s0,
+      super.traverse(s0),
+      this,
+      costing,
+      attributes,
+      delayShare
+    );
   }
 }

@@ -233,6 +233,7 @@ public class TripQuery {
           .build()
       )
       .argument(TransmodelPedestrianCost.ARGUMENT)
+      .argument(TransmodelPedestrianCost.NETWORK_ARGUMENT)
       .argument(
         GraphQLArgument.newArgument()
           .name("ignoreRealtimeUpdates")

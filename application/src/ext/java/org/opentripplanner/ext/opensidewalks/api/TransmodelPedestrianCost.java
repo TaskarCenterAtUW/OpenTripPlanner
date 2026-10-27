@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 import org.opentripplanner.ext.opensidewalks.OswCosting;
+import org.opentripplanner.ext.opensidewalks.StreetNetwork;
 import org.opentripplanner.routing.api.request.preference.RoutingPreferencesBuilder;
 import org.opentripplanner.street.graph.Graph;
 
@@ -29,6 +30,7 @@ import org.opentripplanner.street.graph.Graph;
 public class TransmodelPedestrianCost {
 
   private static final String NAME = "pedestrianCost";
+  private static final String NETWORK_NAME = "streetNetwork";
 
   private static final String PARAMETER_TYPE = "PedestrianCostParameterInput";
   private static final String PARAMETER_NAME = "name";
@@ -66,6 +68,38 @@ public class TransmodelPedestrianCost {
         "sandbox feature."
     )
     .type(new GraphQLList(new GraphQLNonNull(PARAMETER)))
+    .build();
+
+  public static final GraphQLArgument NETWORK_ARGUMENT = GraphQLArgument.newArgument()
+    .name(NETWORK_NAME)
+    .description(
+      "Which street network the whole trip is on, in a graph that has OpenSidewalks data and " +
+        "other street data, such as OpenStreetMap, that are not joined to each other. On " +
+        "`OPEN_SIDEWALKS` walking is costed with the pedestrian cost profile, and cycling and " +
+        "driving use the roads of the OpenSidewalks data, if it has any. If this is left out, a " +
+        "trip with `pedestrianCost` values is on `OPEN_SIDEWALKS` and one without on " +
+        "`STREETS`. `STREETS` with `pedestrianCost` values is rejected. This has no effect " +
+        "unless the server has streets built by the OpenSidewalks sandbox feature."
+    )
+    .type(
+      GraphQLEnumType.newEnum()
+        .name("StreetNetwork")
+        .description(
+          "The street networks of a graph that has OpenSidewalks data and other street data. " +
+            "This is part of the OpenSidewalks sandbox feature."
+        )
+        .value(
+          StreetNetwork.OPEN_SIDEWALKS.name(),
+          StreetNetwork.OPEN_SIDEWALKS,
+          "The OpenSidewalks data."
+        )
+        .value(
+          StreetNetwork.STREETS.name(),
+          StreetNetwork.STREETS,
+          "The other street data, such as OpenStreetMap."
+        )
+        .build()
+    )
     .build();
 
   /**
@@ -114,19 +148,22 @@ public class TransmodelPedestrianCost {
     );
   }
 
-  /** Add the values of the query to the ones the request has from the router configuration. */
+  /**
+   * Add the values of the query to the ones the request has from the router configuration, and
+   * say which network the request is on.
+   */
   public static void map(
     DataFetchingEnvironment environment,
     RoutingPreferencesBuilder preferences
   ) {
     List<Map<String, Object>> parameters = environment.getArgument(NAME);
-    if (parameters == null) {
-      return;
-    }
     Map<String, String> values = new LinkedHashMap<>();
-    for (var parameter : parameters) {
-      values.put((String) parameter.get("name"), (String) parameter.get("value"));
+    if (parameters != null) {
+      for (var parameter : parameters) {
+        values.put((String) parameter.get("name"), (String) parameter.get("value"));
+      }
     }
-    PedestrianCostParametersMapper.addPedestrianCost(preferences, values);
+    StreetNetwork network = environment.getArgument(NETWORK_NAME);
+    PedestrianCostParametersMapper.addPedestrianCost(preferences, values, network);
   }
 }

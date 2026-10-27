@@ -24,8 +24,10 @@ public final class OswCosting implements Serializable {
   /** Whether the graph has streets from other data that can be walked, too. */
   private boolean besideOtherStreets = false;
 
+  /** Whether the OpenSidewalks data has roads, which bicycles and cars can use. */
+  private boolean hasRoads = false;
+
   private transient volatile PedestrianCostProfile profile;
-  private transient volatile PedestrianCostSpec mostAble;
 
   /**
    * @param profileJson the definition of the profile
@@ -76,8 +78,8 @@ public final class OswCosting implements Serializable {
   }
 
   /**
-   * Whether the graph has streets from other data that can be walked. Travellers the profile
-   * makes no difference for then walk those, and the OpenSidewalks edges are for the others.
+   * Whether the graph has streets from other data that can be walked. A request then travels on
+   * one of the two, see {@link #usesOpenSidewalks}.
    */
   public boolean besideOtherStreets() {
     return besideOtherStreets;
@@ -87,35 +89,27 @@ public final class OswCosting implements Serializable {
     this.besideOtherStreets = true;
   }
 
+  /** Whether the OpenSidewalks data has roads, which bicycles and cars can use. */
+  public boolean hasRoads() {
+    return hasRoads;
+  }
+
+  void setHasRoads() {
+    this.hasRoads = true;
+  }
+
   /**
-   * Whether the traveller of a request walks the OpenSidewalks edges, and not the other streets
-   * of the graph, if it has any. That is so if the values of the request make the profile cost
-   * an edge differently than for the most able traveller: someone it closes nothing for that it
-   * could leave open. A request without values walks the other streets.
+   * Whether a request travels on the OpenSidewalks edges, and not on the other streets of the
+   * graph, if it has any. That is so if the request says it does, see {@link StreetNetwork}. A
+   * request that does not say travels on the other streets.
    *
    * @param parameters the parameter values of the request, or {@code null} if it has none
    */
-  public boolean walksOpenSidewalks(@Nullable PedestrianCostParameters parameters) {
+  public boolean usesOpenSidewalks(@Nullable PedestrianCostParameters parameters) {
     if (!besideOtherStreets) {
       return true;
     }
-    if (parameters == null) {
-      return false;
-    }
-    return (
-      parameters.isOnOpenSidewalks() || parameters.differsFrom(mostAble(), profile(), defaults)
-    );
-  }
-
-  private PedestrianCostSpec mostAble() {
-    var spec = mostAble;
-    if (spec == null) {
-      Map<String, String> values = new TreeMap<>(defaults);
-      values.putAll(new OswTravellers(profile()).mostAble());
-      spec = profile().resolve(values);
-      mostAble = spec;
-    }
-    return spec;
+    return parameters != null && parameters.isOnOpenSidewalks();
   }
 
   /**

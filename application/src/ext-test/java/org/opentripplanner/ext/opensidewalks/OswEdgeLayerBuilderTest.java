@@ -32,9 +32,10 @@ class OswEdgeLayerBuilderTest {
 
     var features = new OswEdgeLayerBuilder(graph, "transportation", 0).findGeometries(EVERYWHERE);
 
-    // Each of the 16 edges that has a direction in the graph, once. Steps, the plain footway and
-    // the road are in no layer of the profile, so in the graph neither way.
-    assertThat(features).hasSize(13);
+    // Each of the 16 edges that has a direction in the graph, once. Steps and the plain footway
+    // are in no layer of the profile, so in the graph neither way. The road is kept for bicycles
+    // and cars.
+    assertThat(features).hasSize(14);
     var sidewalk = feature(features, graph, "2", "3");
     assertEquals(0.1, sidewalk.incline(), 1e-9);
     assertEquals("sidewalk", sidewalk.attributes().tags().footway());
@@ -51,7 +52,7 @@ class OswEdgeLayerBuilderTest {
 
     var features = new OswEdgeLayerBuilder(graph, "transportation", 0).findGeometries(EVERYWHERE);
 
-    assertThat(features).hasSize(13);
+    assertThat(features).hasSize(14);
     // The incline and geometry are as the edge is mapped, from 2 to 3
     var sidewalk = feature(features, graph, "2", "3");
     assertEquals(0.1, sidewalk.incline(), 1e-9);

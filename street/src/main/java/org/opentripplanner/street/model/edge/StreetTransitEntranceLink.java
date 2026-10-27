@@ -12,12 +12,12 @@ public class StreetTransitEntranceLink extends StreetTransitEntityLink<TransitEn
 
   private final boolean isEntrance;
 
-  private StreetTransitEntranceLink(StreetVertex fromv, TransitEntranceVertex tov) {
+  protected StreetTransitEntranceLink(StreetVertex fromv, TransitEntranceVertex tov) {
     super(fromv, tov, tov.getWheelchairAccessibility());
     isEntrance = true;
   }
 
-  private StreetTransitEntranceLink(TransitEntranceVertex fromv, StreetVertex tov) {
+  protected StreetTransitEntranceLink(TransitEntranceVertex fromv, StreetVertex tov) {
     super(fromv, tov, fromv.getWheelchairAccessibility());
     isEntrance = false;
   }

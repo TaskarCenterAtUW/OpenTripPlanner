@@ -18,12 +18,14 @@ This page is for those working on the code.
 | `api/TransmodelPedestrianCost`                | The `pedestrianCost` argument of the trip query of the Transmodel API, with the parameter names of the profile as an enumeration. |
 | `OswDataset`                                  | Reads the nodes and edges of a dataset.                                                           |
 | `OswModule`                                   | The graph builder module: builds the street edges.                                                |
-| `OtherStreet`                                 | Set on the streets from other data: travellers with limits walk the OpenSidewalks edges, everyone else those. |
-| `OswStopLinkModule`, `OswStopLink`            | A graph builder module that links stops to the edges that travellers who can not use all need.    |
+| `OswRoads`                                    | Which edges are roads, which bicycles and cars can use, and how fast a car goes on them.          |
+| `StreetNetwork`                               | Which of the two networks a request is on, when the graph has other street data too.              |
+| `OtherStreet`                                 | Set on the streets from other data: keeps a request on the OpenSidewalks network off them.        |
+| `OswLinkModule`, `OswStopLink`, `OswEntranceLink`, `OswParkingLink` | A graph builder module that links stops, station entrances and car parks to the edges that travellers who can not use all need. |
 | `OswTravellers`                               | Finds the least able travellers who can use an edge, which says who can use it.                   |
 | `OswTransferModule`                           | A graph builder module that finds transfer paths for travellers who can not use the ones OTP found. |
 | `PedestrianCostProfile`, `PedestrianCostSpec` | The profile format, and the cost function for one set of parameter values.                        |
-| `PedestrianCostParameters`                    | The parameter values of a request. Carried by the route request to the street search and linking. |
+| `PedestrianCostParameters`                    | The parameter values of a request, and its network. Carried by the route request to the street search and linking. |
 | `OswCosting`                                  | The profile of a graph, shared by its edges. Turns the values of a request into a cost function.  |
 | `OswEdgeAttributes`, `CurbRamps`              | What the profile needs to know about an edge: its layer, incline, length and curb ramps.          |
 | `OswStreetEdge`, `TemporaryOswStreetEdge`     | Street edges that are walked at the cost the profile gives them, and the parts they split into.   |
