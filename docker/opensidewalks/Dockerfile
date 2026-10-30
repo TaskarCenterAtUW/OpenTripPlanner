@@ -21,15 +21,7 @@ RUN --mount=type=cache,target=/root/.m2 \
 FROM node:20-bookworm-slim AS ui
 WORKDIR /src
 COPY --from=accessmap . .
-COPY docker/opensidewalks/ui/config.ts src/constants/config.ts
-COPY docker/opensidewalks/ui/regions.ts src/constants/regions.ts
-COPY docker/opensidewalks/ui/RegionsMaskSource.tsx src/features/map/sources/RegionsMaskSource.tsx
-COPY docker/opensidewalks/ui/RegionSelector.tsx src/features/region/RegionSelector.tsx
-COPY docker/opensidewalks/ui/index.prod.html src/index.prod.html
-# The app reads the regions and the key from config.json, see config.ts
-RUN sed -i 's/MAPTILER_KEY: JSON.stringify(process.env.MAPTILER_KEY)/MAPTILER_KEY: "window.ACCESSMAP_CONFIG.maptilerKey"/' webpack.prod.js \
- && grep -q ACCESSMAP_CONFIG webpack.prod.js \
- && npm install --legacy-peer-deps --ignore-scripts --no-audit --no-fund \
+RUN npm install --legacy-peer-deps --ignore-scripts --no-audit --no-fund \
  && npm install --legacy-peer-deps --no-save --no-audit --no-fund sass@1.32.13 \
  && rm -rf node_modules/node-sass \
  && NODE_OPTIONS=--openssl-legacy-provider npm run build \

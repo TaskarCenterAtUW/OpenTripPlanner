@@ -15,7 +15,8 @@ docker build -f docker/opensidewalks/Dockerfile \
   -t otp-accessmap .
 ```
 
-To build with a local checkout of the web app, give its path as the `accessmap` context.
+To build with a local checkout of the web app, give its path as the `accessmap` context. It needs the
+version of the app that reads `config.json`.
 
 ## Run
 
