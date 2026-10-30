@@ -231,6 +231,31 @@ class OswModuleTest {
   }
 
   @Test
+  void datasetsAreLoadedSideBySideWithoutJoining() {
+    var graph = new Graph();
+
+    // The same dataset twice: the same node ids and the same positions
+    new OswModule(graph, List.of(DATASET, DATASET), null).buildGraph();
+
+    assertThat(ListUtils.ofIterable(graph.findEdges(StreetEdge.class))).hasSize(64);
+    var first = graph.getVertex(VertexLabel.string("osw:0:2"));
+    var second = graph.getVertex(VertexLabel.string("osw:1:2"));
+    assertThat(first).isNotNull();
+    assertThat(second).isNotNull();
+    var request = StreetSearchRequest.of().build();
+    var reached = StreetSearchBuilder.of()
+      .withRequest(request)
+      .withFrom(first)
+      .getShortestPathTree()
+      .getAllStates()
+      .stream()
+      .map(State::getVertex)
+      .toList();
+    assertThat(reached).contains(graph.getVertex(VertexLabel.string("osw:0:3")));
+    assertThat(reached).doesNotContain(second);
+  }
+
+  @Test
   void aConfigurationWithoutSourcesBuildsNothing() {
     var config = new OpenSidewalksConfig(List.of(), null, Map.of());
     assertNull(OswModule.create(config, new Graph(), DATASET));
