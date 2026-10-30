@@ -54,3 +54,6 @@ graph.obj
 # EPSG files
 application/v??.?.??
 .vscode/settings.json
+
+# The image of the OpenSidewalks and AccessMap deployment
+!docker/opensidewalks/Dockerfile
