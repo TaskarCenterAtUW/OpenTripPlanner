@@ -1,0 +1,58 @@
+# Unit and integration tests for the OpenSidewalks branches of a fork. The workflows from upstream
+# are left as they are, so that merging from upstream stays simple: they only run for its own
+# branches and repository.
+name: OpenSidewalks tests
+
+on:
+  push:
+    branches:
+      - opensidewalks-*
+  pull_request:
+    branches:
+      - opensidewalks-*
+
+env:
+  MAVEN_ARGS: "--no-transfer-progress -Dstyle.color=always"
+
+jobs:
+  unit:
+    # A pull request between branches of this repository is already tested by the push
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      # nodejs is needed because Spotless runs Prettier through node/npm
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - name: Set up JDK 25
+        uses: actions/setup-java@v5
+        with:
+          java-version: 25
+          distribution: temurin
+          cache: maven
+
+      - name: Build and run unit tests
+        run: mvn test -P prettierCheck
+
+  integration:
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up JDK 25
+        uses: actions/setup-java@v5
+        with:
+          java-version: 25
+          distribution: temurin
+          cache: maven
+
+      - name: Run integration tests
+        run: mvn test -P integrationTests
