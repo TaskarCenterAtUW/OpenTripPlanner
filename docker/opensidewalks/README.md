@@ -18,6 +18,11 @@ docker build -f docker/opensidewalks/Dockerfile \
 To build with a local checkout of the web app, give its path as the `accessmap` context. It needs the
 version of the app that reads `config.json`.
 
+A push to `opensidewalks-dynamic` builds the image and pushes it to the registry of the organization
+as `otp-accessmap`, tagged with the commit and `latest`, see
+`.github/workflows/opensidewalks-image.yml`. It uses the web app as it is on its `main` branch at that
+moment.
+
 ## Run
 
 ```bash
