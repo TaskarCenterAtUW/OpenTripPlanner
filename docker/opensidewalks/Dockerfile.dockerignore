@@ -1,0 +1,7 @@
+# Applies when building with -f docker/opensidewalks/Dockerfile.
+.git/
+.venv/
+.vscode/
+.idea/
+**/target/
+**/node_modules/
