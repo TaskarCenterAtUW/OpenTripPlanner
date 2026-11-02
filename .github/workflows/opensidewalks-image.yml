@@ -7,7 +7,6 @@ on:
   push:
     branches:
       - opensidewalks-dynamic
-      - opensidewalks-docker
 
 permissions:
   contents: read
